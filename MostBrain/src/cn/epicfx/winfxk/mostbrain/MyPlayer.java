@@ -37,7 +37,7 @@ public class MyPlayer {
 	 * @return
 	 */
 	public double getMoney() {
-		return ac.getEconomy().getMoney(player);
+		return ac.getEconomy().getMoney(player.getName());
 	}
 
 	/**

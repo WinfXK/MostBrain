@@ -15,4 +15,4 @@ permissions:
       default: true
    MostBrain.Command.Admin:
       description: MostBrain管理员主命令
-      default: false
+      default: op

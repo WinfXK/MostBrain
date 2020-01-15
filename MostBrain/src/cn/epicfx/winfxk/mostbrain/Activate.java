@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -16,10 +17,14 @@ import cn.nukkit.utils.Config;
  * @author Winfxk
  */
 public class Activate {
+	public Player setPlayer;
+	public boolean isStartGame = false;
+	public boolean SettingModel = false;
+	public boolean isGameSettingUp = false;
 	public final static String[] FormIDs = {};
 	public final static String MessageFileName = "Message.yml", ConfigFileName = "Config.yml",
 			CommandFileName = "Command.yml", EconomyListConfigName = "EconomyList.yml", FormIDFileName = "FormID.yml",
-			MostBrainConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players";
+			GameConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players";
 	private MostBrain mis;
 	private MyEconomy economy;
 	private EconomyManage money;
@@ -28,7 +33,7 @@ public class Activate {
 	protected FormID FormID;
 	protected Message message;
 	protected ResCheck resCheck;
-	protected Config config, MainMenu, CommandConfig;
+	protected Config config, MainMenu, CommandConfig, GameConfig;
 	protected static final String[] loadFile = { ConfigFileName, CommandFileName };
 	protected static final String[] defaultFile = { ConfigFileName, CommandFileName, MessageFileName };
 
@@ -41,12 +46,16 @@ public class Activate {
 		activate = this;
 		mis = kis;
 		FormID = new FormID();
+		Players = new LinkedHashMap<>();
 		if ((resCheck = new ResCheck(this).start()) == null)
 			return;
 		money = new EconomyManage();
 		money.addEconomyAPI(new EconomyAPI(this));
-		Players = new LinkedHashMap<>();
-		economy = money.getEconomy(config.getString("EconomyAPI"));
+		economy = money.getEconomy(config.getString("默认货币"));
+		GameConfig = new Config(new File(kis.getDataFolder(), GameConfigFileName), Config.YAML);
+		isGameSettingUp = GameConfig.getBoolean("GameSettingUp");
+		if (!isGameSettingUp)
+			kis.getLogger().warning(message.getMessage("游戏未设置"));
 		kis.getServer().getCommandMap().register(getName(), new ACommand(this));
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
@@ -58,7 +67,8 @@ public class Activate {
 	}
 
 	public void setEconomy(String EconomyName) {
-		this.economy = money.getEconomy(EconomyName);
+		if (money.supportEconomy(EconomyName))
+			this.economy = money.getEconomy(EconomyName);
 	}
 
 	/**

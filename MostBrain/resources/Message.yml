@@ -9,20 +9,25 @@
 #Winfxk: 是{帅逼}
 #注：当前已有全局变量包括：n：换行、ServerName：服务器名称、PluginName：插件名称、RandColor：随机颜色、服务器货币名称：{MoneyName}
 # 进服若是检测没有快捷菜单将提示的内容，可用变量：Player：玩家名
-lang: chs
+lang: chs-中文
+游戏未设置: §4{PluginName}未设置
 权限不足: §4你无权限执行此操作！
 金币不足: §4您的{MoneyName}不足！
 插件启动: '{RGBTextStart}{PluginName}启动...{RGBTextEnd}        §6欢迎{RGBTextStart}使用{PluginName}{RGBTextEnd}§f(*￣︶￣)'
 无法初始化配置: §4无法初始化配置文件：{FileName}，请检查!
 无法效验语言文件: §4无法效验语言文件！请检查！
+请在游戏内自行命令: §4请在游戏内执行此命令！
 Command:
-   PlayerCommand:
-      set: '{RandColor}开始设置{PluginName}'
-      del: '{RandColor}删除所有{PluginName}设置'
+   AdminCommand:
+      setMsg: '{RandColor}开始设置{PluginName}'
+      delMsg: '{RandColor}删除所有{PluginName}设置'
+      已有玩家正在设置: §4当前已经有一个玩家正在设置游戏！Player：{ByPlayer}
+      正在设置: §4您当前已经在设置游戏！
+      游戏已设置完毕: §4游戏已设置！若要重新设置请输入/Admin{PluginName} del
+      StartGame: §4你正在开始设置游戏！请使用工具点击地面以标记游戏区域的第一个角
 Event:
    PlayerJoin:
       Tip: §e欢迎来到§1{ServerName}§e！本服支持{RGBTextStart}最强大脑{RGBTextEnd}§e小游戏！快来体验吧！
    Death:
       Tip: §4啊哦！你已经失败了！请不要气馁，下次加油！
       得分: §e本次得分：§5{Goal}
-      

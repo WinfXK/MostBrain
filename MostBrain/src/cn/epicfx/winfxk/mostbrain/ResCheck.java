@@ -127,6 +127,9 @@ public class ResCheck {
 			e.printStackTrace();
 			log.info(ac.message.getMessage("无法效验语言文件"));
 		}
+		file = new File(kis.getDataFolder(), Activate.PlayerDataDirName);
+		if (!file.exists())
+			file.mkdirs();
 		ac.config = new Config(new File(kis.getDataFolder(), Activate.ConfigFileName), Config.YAML);
 		ac.message = new Message(ac);
 		ac.CommandConfig = new Config(new File(kis.getDataFolder(), Activate.CommandFileName), Config.YAML);
