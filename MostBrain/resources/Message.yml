@@ -1,0 +1,28 @@
+#各种可以自定义的内容
+#注：若是可以使用变量，变量一律用{}包围，如{ServerName}
+#注：变量对大小写敏感！
+#注意！！！！
+#注意！！！！#注意！！！！#注意！！！！
+#注意！！！！#注意！！！！#注意！！！！#注意！！！！#注意！！！！
+#大阔海开头的值请一律用'包围！如以下，若不是大括号开头，则可以不限
+#FF_SB: '{true}'
+#Winfxk: 是{帅逼}
+#注：当前已有全局变量包括：n：换行、ServerName：服务器名称、PluginName：插件名称、RandColor：随机颜色、服务器货币名称：{MoneyName}
+# 进服若是检测没有快捷菜单将提示的内容，可用变量：Player：玩家名
+lang: chs
+权限不足: §4你无权限执行此操作！
+金币不足: §4您的{MoneyName}不足！
+插件启动: '{RGBTextStart}{PluginName}启动...{RGBTextEnd}        §6欢迎{RGBTextStart}使用{PluginName}{RGBTextEnd}§f(*￣︶￣)'
+无法初始化配置: §4无法初始化配置文件：{FileName}，请检查!
+无法效验语言文件: §4无法效验语言文件！请检查！
+Command:
+   PlayerCommand:
+      set: '{RandColor}开始设置{PluginName}'
+      del: '{RandColor}删除所有{PluginName}设置'
+Event:
+   PlayerJoin:
+      Tip: §e欢迎来到§1{ServerName}§e！本服支持{RGBTextStart}最强大脑{RGBTextEnd}§e小游戏！快来体验吧！
+   Death:
+      Tip: §4啊哦！你已经失败了！请不要气馁，下次加油！
+      得分: §e本次得分：§5{Goal}
+      

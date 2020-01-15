@@ -1,0 +1,18 @@
+name: MostBrain
+main: cn.epicfx.winfxk.mostbrain.MostBrain
+api:
+- 1.0.0
+version: 1.0
+load: POSTWORLD
+website: http://Winfxk.EpicFX.cn
+description: 一个傻不拉几的小游戏~
+author: Winfxk
+loadbefore:
+- EconomyAPI
+permissions:
+   MostBrain.Command.main:
+      description: MostBrain主命令
+      default: true
+   MostBrain.Command.Admin:
+      description: MostBrain管理员主命令
+      default: false
