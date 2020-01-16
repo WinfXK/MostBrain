@@ -3,7 +3,9 @@ package cn.epicfx.winfxk.mostbrain.event;
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -11,7 +13,6 @@ import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.inventory.InventoryClickEvent;
-import cn.nukkit.event.inventory.InventoryMoveItemEvent;
 import cn.nukkit.event.player.PlayerDeathEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
@@ -39,28 +40,20 @@ public class PlayerEvent implements Listener {
 	}
 
 	@EventHandler
-	public void onInventoryMoveItem(InventoryMoveItemEvent e) {
-		if (!ac.getMostBrain().isEnabled())
-			return;
-		if (ac.SettingModel) {
-			Item item = e.getItem();
-			if (item.getId() == 290 && item.getDamage() == 0)
-				if ((item.getCustomBlockData() == null ? new CompoundTag() : item.getCustomBlockData())
-						.getBoolean(ac.getMostBrain().getName()))
-					e.setCancelled();
-			return;
-		}
-	}
-
-	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
-		if (ac.SettingModel && player.getName().equals(ac.setPlayer.getName())) {
-			e.setCancelled();
-			return;
-		}
+		if (ac.SettingModel)
+			if (player.getName().equals(ac.setPlayer.getName())) {
+				Item item = e.getSourceItem();
+				CompoundTag tag = item.getCustomBlockData() == null ? new CompoundTag() : item.getCustomBlockData();
+				if (tag.getBoolean(ac.getMostBrain().getName())) {
+					e.setCancelled();
+					return;
+				}
+			}
+
 	}
 
 	/**
@@ -91,9 +84,14 @@ public class PlayerEvent implements Listener {
 		Player player = e.getPlayer();
 		ac.setPlayers(player, new MyPlayer(player));
 		String string = msg.getSun("Event", "PlayerJoin", "Tip", player);
-		if (string == null || string.isEmpty())
-			return;
-		player.sendMessage(string);
+		if (string != null && !string.isEmpty())
+			if (!player.isOp() && ac.isGameSettingUp)
+				player.sendMessage(string);
+		string = msg.getSun("Event", "PlayerJoin", "OpTip", player);
+		if (string != null && !string.isEmpty())
+			if (player.isOp() && !ac.isGameSettingUp)
+				player.sendMessage(string);
+
 	}
 
 	/**
@@ -107,9 +105,12 @@ public class PlayerEvent implements Listener {
 			return;
 		Player player = e.getPlayer();
 		if (ac.isPlayers(player)) {
-			MyPlayer myPlayer = ac.getPlayers(player.getName());
-			myPlayer.config.save();
-			ac.setPlayers(player, new MyPlayer(player));
+			if (ac.SettingModel == false
+					|| !(ac.SettingModel == true && player.getName().equals(ac.setPlayer.getName()))) {
+				MyPlayer myPlayer = ac.getPlayers(player.getName());
+				myPlayer.config.save();
+				ac.setPlayers(player, new MyPlayer(player));
+			}
 		}
 	}
 
@@ -122,6 +123,19 @@ public class PlayerEvent implements Listener {
 	public void onQuit(PlayerQuitEvent e) {
 		if (!ac.getMostBrain().isEnabled())
 			return;
+		Player player = e.getPlayer();
+		if (ac.SettingModel && player.getName().equals(ac.setPlayer.getName())) {
+			ac.setPlayer = null;
+			ac.SettingModel = false;
+			player.getInventory().setItem(0, ac.settingGame.sbItem);
+			if (ac.settingGame.start != null)
+				ac.settingGame.start.getLevel().setBlock(ac.settingGame.start.getLocation(), ac.settingGame.start);
+			player.setGamemode(ac.settingGame.gameMode);
+			ac.getMostBrain().getLogger().warning(ac.settingGame.getMessage("管理员退出"));
+			ac.settingGame = null;
+		}
+		if (ac.isPlayers(player))
+			ac.removePlayers(player);
 	}
 
 	/**
@@ -166,6 +180,30 @@ public class PlayerEvent implements Listener {
 	public void onClick(PlayerInteractEvent e) {
 		if (!ac.getMostBrain().isEnabled())
 			return;
+		Player player = e.getPlayer();
+		Block block = e.getBlock();
+		if (ac.SettingModel) {
+			if (player.getName().equals(ac.setPlayer.getName())) {
+				Item item = e.getItem();
+				CompoundTag tag = item.getCustomBlockData() == null ? new CompoundTag() : item.getCustomBlockData();
+				if (tag.getBoolean(ac.getMostBrain().getName())) {
+					(ac.settingGame == null ? ac.settingGame = new SettingGame(ac, player) : ac.settingGame).Click(e);
+					e.setCancelled();
+					return;
+				}
+			}
+			if (ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
+					|| ac.settingGame.getStartSign() != null
+							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation())) {
+				e.setCancelled();
+				return;
+			}
+		}
+		if (ac.isGameSettingUp)
+			if (ac.getMostConfig() != null && ac.getMostConfig().isNotBreakBlock(block)) {
+				e.setCancelled();
+				return;
+			}
 	}
 
 	/**
@@ -178,10 +216,29 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
-		if (ac.SettingModel && player.getName().equals(ac.setPlayer.getName())) {
-			e.setCancelled();
-			return;
+		Block block = e.getBlock();
+		if (ac.SettingModel) {
+			if (player.getName().equals(ac.setPlayer.getName())) {
+				Item item = e.getItem();
+				CompoundTag tag = item.getCustomBlockData() == null ? new CompoundTag() : item.getCustomBlockData();
+				if (tag.getBoolean(ac.getMostBrain().getName())) {
+					e.setCancelled();
+					return;
+				}
+			}
+			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
+					|| ac.settingGame.getStartSign() != null
+							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+					&& !player.getName().equals(ac.setPlayer.getName())) {
+				e.setCancelled();
+				return;
+			}
 		}
+		if (ac.isGameSettingUp)
+			if (ac.getMostConfig() != null && ac.getMostConfig().isNotBreakBlock(block)) {
+				e.setCancelled();
+				return;
+			}
 	}
 
 	/**
@@ -194,10 +251,29 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
-		if (ac.SettingModel && player.getName().equals(ac.setPlayer.getName())) {
-			e.setCancelled();
-			return;
+		Block block = e.getBlock();
+		if (ac.SettingModel) {
+			if (player.getName().equals(ac.setPlayer.getName())) {
+				Item item = e.getItem();
+				CompoundTag tag = item.getCustomBlockData() == null ? new CompoundTag() : item.getCustomBlockData();
+				if (tag.getBoolean(ac.getMostBrain().getName())) {
+					(ac.settingGame == null ? ac.settingGame = new SettingGame(ac, player) : ac.settingGame).Click(e);
+					e.setCancelled();
+					return;
+				}
+			}
+			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
+					|| ac.settingGame.getStartSign() != null
+							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+					&& !player.getName().equals(ac.setPlayer.getName())) {
+				e.setCancelled();
+				return;
+			}
 		}
+		if (ac.isGameSettingUp)
+			if (ac.getMostConfig() != null && ac.getMostConfig().isNotBreakBlock(block)) {
+				e.setCancelled();
+				return;
+			}
 	}
-
 }

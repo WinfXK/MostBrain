@@ -1,8 +1,12 @@
 package cn.epicfx.winfxk.mostbrain.cmd;
 
+import java.util.LinkedHashMap;
+
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.game.SettingGame;
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
@@ -10,15 +14,16 @@ import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.utils.Config;
 
 /**
  * @author Winfxk
  */
 public class ACommand extends Command {
 	private Activate ac;
+	private Message msg;
 	private static final String Name_ = "Admin";
 	public static final String Permission = "MostBrain.Command.Admin";
-	private Message msg;
 	private static final String MainKey = "Command", SunKey = "AdminCommand";
 
 	public ACommand(Activate brain) {
@@ -37,20 +42,70 @@ public class ACommand extends Command {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!ac.getMostBrain().isEnabled())
 			return true;
-		if (!sender.isPlayer()) {
-			sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
-			return true;
-		}
-		Player player = (Player) sender;
 		if (!sender.hasPermission(Permission)) {
-			sender.sendMessage(msg.getMessage("权限不足", player));
+			if (sender.isPlayer())
+				sender.sendMessage(msg.getMessage("权限不足", (Player) sender));
+			else
+				sender.sendMessage(msg.getMessage("权限不足"));
 			return true;
 		}
 		if (args == null || args.length == 0)
 			return false;
+		LinkedHashMap<String, Object> map;
+		Player player;
 		switch (args[0].toLowerCase()) {
+		case "del":
+		case "remove":
+		case "删除":
+			if (ac.isStartGame) {
+				if (sender.isPlayer())
+					sender.sendMessage(getMessage("已开始游戏", (Player) sender));
+				else
+					sender.sendMessage(getMessage("已开始游戏"));
+				return true;
+			}
+			if (!ac.isGameSettingUp && ac.SettingModel) {
+				if (!sender.isPlayer() && sender.getName().equals(ac.setPlayer.getName())) {
+					ac.SettingModel = false;
+					ac.setPlayer.setGamemode(ac.settingGame.gameMode);
+					ac.setPlayer.getInventory().setItem(0, ac.settingGame.sbItem);
+					if (ac.settingGame.start != null)
+						ac.settingGame.start.getLevel().setBlock(ac.settingGame.start.getLocation(),
+								ac.settingGame.start);
+					ac.settingGame = null;
+					ac.setPlayer.sendMessage(getMessage("停止设置"));
+					if (sender.isPlayer())
+						ac.getMostBrain().getLogger().info(getMessage("管理员停止设置", ac.setPlayer));
+					ac.setPlayer = null;
+					return true;
+				}
+				if (sender.isPlayer())
+					sender.sendMessage(getMessage("不能阻止设置", (Player) sender));
+				else
+					sender.sendMessage(getMessage("不能阻止设置"));
+				return true;
+			} else if (!ac.isGameSettingUp && !ac.SettingModel) {
+				sender.sendMessage(ac.getMessage().getMessage("游戏未设置"));
+				return true;
+			}
+			Config config = ac.getGameConfig();
+			map = new LinkedHashMap<>();
+			map.put("Remove", sender.getName());
+			config.setAll(map);
+			config.save();
+			ac.setGameConfig(config);
+			ac.isGameSettingUp = false;
+			sender.sendMessage(getMessage("删除游戏"));
+			if (sender.isPlayer())
+				ac.getMostBrain().getLogger().info(getMessage("管理员删除游戏"));
+			break;
 		case "set":
 		case "设置":
+			if (!sender.isPlayer()) {
+				sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
+				return true;
+			}
+			player = (Player) sender;
 			if (ac.isGameSettingUp) {
 				player.sendMessage(msg.getSun(MainKey, SunKey, "游戏已设置完毕", player));
 				return true;
@@ -66,10 +121,15 @@ public class ACommand extends Command {
 			ac.SettingModel = true;
 			ac.setPlayer = player;
 			MyPlayer myPlayer = ac.getPlayers(player.getName());
+			ac.settingGame = new SettingGame(ac, player);
+			ac.settingGame.sbItem = player.getInventory().getItem(0);
+			ac.settingGame.gameMode = player.getGamemode();
+			player.setGamemode(1);
 			myPlayer.SettingModel = true;
 			ac.setPlayers(player, myPlayer);
-			Item item = new Item(290, 0, 1);
-			item.setCustomName("§e游戏创作者");
+			int[] ID = Tool.IDtoFullID(ac.getConfig().get("快捷工具"));
+			Item item = new Item(ID[0], ID[1], 1);
+			item.setCustomName(getMessage("Tool", player));
 			item.addEnchantment(Enchantment.get(28));
 			CompoundTag tag = item.getCustomBlockData() == null ? new CompoundTag() : item.getCustomBlockData();
 			tag.putBoolean(ac.getMostBrain().getName(), true);
@@ -83,5 +143,9 @@ public class ACommand extends Command {
 
 	public String getMessage(String Key) {
 		return msg.getSun(MainKey, SunKey, Key);
+	}
+
+	public String getMessage(String Key, Player player) {
+		return msg.getSun(MainKey, SunKey, Key, player);
 	}
 }

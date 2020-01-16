@@ -1,4 +1,4 @@
-package cn.epicfx.winfxk.mostbrain;
+package cn.epicfx.winfxk.mostbrain.game;
 
 /**
  * @author Winfxk

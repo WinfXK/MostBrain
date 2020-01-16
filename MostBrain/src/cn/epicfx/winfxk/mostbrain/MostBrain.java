@@ -23,6 +23,16 @@ public class MostBrain extends PluginBase {
 
 	@Override
 	public void onDisable() {
+		getLogger().info(ac.getMessage().getMessage("插件关闭"));
 		super.onDisable();
+	}
+
+	/**
+	 * PY
+	 * 
+	 * @return
+	 */
+	public static Activate getInstance() {
+		return ac;
 	}
 }

@@ -2,6 +2,7 @@ package cn.epicfx.winfxk.mostbrain;
 
 import java.io.File;
 
+import cn.epicfx.winfxk.mostbrain.game.GameData;
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
 

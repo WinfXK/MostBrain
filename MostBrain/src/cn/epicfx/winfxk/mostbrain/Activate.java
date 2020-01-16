@@ -7,6 +7,8 @@ import java.util.List;
 import cn.epicfx.winfxk.mostbrain.cmd.ACommand;
 import cn.epicfx.winfxk.mostbrain.cmd.PCommand;
 import cn.epicfx.winfxk.mostbrain.event.PlayerEvent;
+import cn.epicfx.winfxk.mostbrain.game.MostConfig;
+import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.epicfx.winfxk.mostbrain.money.EconomyAPI;
 import cn.epicfx.winfxk.mostbrain.money.EconomyManage;
 import cn.epicfx.winfxk.mostbrain.money.MyEconomy;
@@ -18,6 +20,7 @@ import cn.nukkit.utils.Config;
  */
 public class Activate {
 	public Player setPlayer;
+	public SettingGame settingGame;
 	public boolean isStartGame = false;
 	public boolean SettingModel = false;
 	public boolean isGameSettingUp = false;
@@ -28,12 +31,13 @@ public class Activate {
 	private MostBrain mis;
 	private MyEconomy economy;
 	private EconomyManage money;
+	private MostConfig mostConfig;
 	private static Activate activate;
 	private LinkedHashMap<String, MyPlayer> Players;
 	protected FormID FormID;
 	protected Message message;
 	protected ResCheck resCheck;
-	protected Config config, MainMenu, CommandConfig, GameConfig;
+	protected Config config, CommandConfig, GameConfig;
 	protected static final String[] loadFile = { ConfigFileName, CommandFileName };
 	protected static final String[] defaultFile = { ConfigFileName, CommandFileName, MessageFileName };
 
@@ -56,10 +60,21 @@ public class Activate {
 		isGameSettingUp = GameConfig.getBoolean("GameSettingUp");
 		if (!isGameSettingUp)
 			kis.getLogger().warning(message.getMessage("游戏未设置"));
+		else
+			reloadMostConfig();
 		kis.getServer().getCommandMap().register(getName(), new ACommand(this));
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
 		kis.getLogger().info(message.getMessage("插件启动"));
+	}
+
+	public MostConfig reloadMostConfig() {
+		mostConfig = new MostConfig(this);
+		return mostConfig;
+	}
+
+	public MostConfig getMostConfig() {
+		return mostConfig;
 	}
 
 	public MyEconomy getEconomy() {
@@ -140,16 +155,16 @@ public class Activate {
 		return FormID;
 	}
 
-	public Config getMainMenu() {
-		return MainMenu;
-	}
-
 	public Message getMessage() {
 		return message;
 	}
 
 	public static Activate getActivate() {
 		return activate;
+	}
+
+	public Config getGameConfig() {
+		return GameConfig;
 	}
 
 	/**
@@ -163,5 +178,9 @@ public class Activate {
 
 	public Config getConfig() {
 		return config;
+	}
+
+	public void setGameConfig(Config gameConfig) {
+		GameConfig = gameConfig;
 	}
 }

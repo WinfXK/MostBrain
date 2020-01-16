@@ -18,6 +18,10 @@ public class Message {
 	private String[] Data;
 	private Config Message;
 
+	public Config getConfig() {
+		return Message;
+	}
+
 	/**
 	 * 文本变量快速插入♂
 	 * 
@@ -274,7 +278,7 @@ public class Message {
 			String[] strings = text.split("\\{RandColor\\}");
 			text = "";
 			for (String s : strings)
-				text += (text.isEmpty() ? "" : Tool.getRandColor()) + s;
+				text += Tool.getRandColor() + s;
 		}
 		if (text.contains("{RGBTextStart}") && text.contains("{RGBTextEnd}")) {
 			String rgb = "", rString, gString;
