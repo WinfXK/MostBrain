@@ -3,6 +3,7 @@ package cn.epicfx.winfxk.mostbrain.event;
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.game.MostConfig;
 import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
@@ -16,10 +17,12 @@ import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.player.PlayerDeathEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.event.player.PlayerRespawnEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Location;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 /**
@@ -39,6 +42,11 @@ public class PlayerEvent implements Listener {
 		msg = ac.getMessage();
 	}
 
+	/**
+	 * 背包点击事件
+	 * 
+	 * @param e
+	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if (!ac.getMostBrain().isEnabled())
@@ -162,6 +170,8 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Entity entity = e.getEntity();
+		if (ac.isGameSettingUp && ac.isStartGame)
+			ac.gameEvent.onDamage(e);
 		if (!(entity instanceof Player))
 			return;
 		Player player = (Player) e.getEntity();
@@ -182,9 +192,12 @@ public class PlayerEvent implements Listener {
 			return;
 		Player player = e.getPlayer();
 		Block block = e.getBlock();
+		Item item = e.getItem();
+		Action action = e.getAction();
+		if (action == null || item == null || block == null || action.equals(Action.PHYSICAL))
+			return;
 		if (ac.SettingModel) {
 			if (player.getName().equals(ac.setPlayer.getName())) {
-				Item item = e.getItem();
 				CompoundTag tag = item.getCustomBlockData() == null ? new CompoundTag() : item.getCustomBlockData();
 				if (tag.getBoolean(ac.getMostBrain().getName())) {
 					(ac.settingGame == null ? ac.settingGame = new SettingGame(ac, player) : ac.settingGame).Click(e);
@@ -200,9 +213,15 @@ public class PlayerEvent implements Listener {
 			}
 		}
 		if (ac.isGameSettingUp)
-			if (ac.getMostConfig() != null && ac.getMostConfig().isNotBreakBlock(block)) {
-				e.setCancelled();
-				return;
+			if (ac.getMostConfig() != null) {
+				MostConfig config = ac.getMostConfig();
+				Location location = block.getLocation();
+				if (location.level.getFolderName().equals(config.Level))
+					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
+							&& location.z == config.Start.get("Z"))
+						ac.gameEvent.Start(e);
+				if (ac.getMostConfig().isNotBreakBlock(block))
+					e.setCancelled();
 			}
 	}
 

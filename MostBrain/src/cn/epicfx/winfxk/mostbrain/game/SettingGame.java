@@ -1,7 +1,7 @@
 package cn.epicfx.winfxk.mostbrain.game;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +36,6 @@ public class SettingGame {
 	public Block start, end;
 	private Map<String, Object> GameMessage;
 	private boolean lastSet = false;
-	private List<String> NotBreakBlocks;
 	private double resX, resY, resZ;
 	public Item sbItem;
 	public int gameMode;
@@ -111,83 +110,86 @@ public class SettingGame {
 		new Thread() {
 			@Override
 			public void run() {
-				int x1 = (int) (start.getX() > end.getX() ? start.getX() : end.getX());
-				int x2 = (int) (start.getX() < end.getX() ? start.getX() : end.getX());
-				int y1 = (int) (start.getY() > end.getY() ? start.getY() : end.getY());
-				int y2 = (int) (start.getY() < end.getY() ? start.getY() : end.getY());
-				int z1 = (int) (start.getZ() > end.getZ() ? start.getZ() : end.getZ());
-				int z2 = (int) (start.getZ() < end.getZ() ? start.getZ() : end.getZ());
+				double x1 = (start.getX() > end.getX() ? start.getX() : end.getX());
+				double x2 = (start.getX() < end.getX() ? start.getX() : end.getX());
+				double y1 = (start.getY() > end.getY() ? start.getY() : end.getY());
+				double y2 = (start.getY() < end.getY() ? start.getY() : end.getY());
+				double z1 = (start.getZ() > end.getZ() ? start.getZ() : end.getZ());
+				double z2 = (start.getZ() < end.getZ() ? start.getZ() : end.getZ());
 				resX = x2 + ((x1 - x2) / 2);
 				resY = y2 + 1;
 				resZ = z2 + ((z1 - z2) / 2);
 				Level level = start.getLevel();
-				for (int i = x2; i < x1; i++)
-					for (int j = y2; j < y1; j++)
-						for (int k = z2; k < z1; k++)
-							if ((int) startSign.getX() != i || (int) startSign.y != j || (int) startSign.z != k)
+				String SignLevel = startSign.getLevel().getFolderName();
+				String StartLevel = start.getLevel().getFolderName();
+				for (double i = x2; i < x1; i++)
+					for (double j = y2; j < y1; j++)
+						for (double k = z2; k < z1; k++)
+							if (startSign.x != i || startSign.y != j || startSign.z != k
+									|| !SignLevel.equals(StartLevel))
 								level.setBlock(new Vector3(i, j, k), Block.get(0, 0));
-				NotBreakBlocks = new ArrayList<>();
-				int sb = 0;
-				Vector3 v1;
-				for (int i = x2; i < x1 + 1; i++)
-					for (int j = y2; j < y1 + 1; j++) {
+				if (ac.getConfig().getBoolean("生成外壳")) {
+					int sb = 0;
+					Vector3 v1;
+					for (double i = x2; i < x1 + 1; i++) {
 						sb++;
-						v1 = new Vector3(i, j, z2);
-						if ((int) v1.x != (int) startSign.x || (int) v1.z != (int) startSign.z
-								|| (int) v1.y != (int) startSign.y) {
-							NotBreakBlocks.add("Le." + level.getFolderName() + " x." + i + " y." + j + " z." + z1);
-							level.setBlock(v1, sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
-						}
-						v1 = new Vector3(i, j, z1);
-						if ((int) v1.x != (int) startSign.x || (int) v1.z != (int) startSign.z
-								|| (int) v1.y != (int) startSign.y) {
-							level.setBlock(new Vector3(i, j, z1),
-									sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
-							NotBreakBlocks.add("Le." + level.getFolderName() + " x." + i + " y." + j + " z." + z2);
+						for (double j = y2; j < y1 + 1; j++) {
+							v1 = new Vector3(i, j, z2);
+							if (v1.x != startSign.x || v1.z != startSign.z || v1.y != startSign.y
+									|| !SignLevel.equals(StartLevel))
+								level.setBlock(v1,
+										sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
+							v1 = new Vector3(i, j, z1);
+							if (v1.x != startSign.x || v1.z != startSign.z || v1.y != startSign.y
+									|| !SignLevel.equals(StartLevel))
+								level.setBlock(new Vector3(i, j, z1),
+										sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
 						}
 					}
-				for (int k = z2; k < z1 + 1; k++)
-					for (int i = x2; i < x1 + 1; i++) {
+					sb = 0;
+					for (double k = z2; k < z1 + 1; k++) {
 						sb++;
-						v1 = new Vector3(i, y1, k);
-						if ((int) v1.x != (int) startSign.x || (int) v1.z != (int) startSign.z
-								|| (int) v1.y != (int) startSign.y) {
-							NotBreakBlocks.add("Le." + level.getFolderName() + " x." + i + " y." + y1 + " z." + k);
-							level.setBlock(v1, sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
-						}
-						v1 = new Vector3(i, y2, k);
-						if ((int) v1.x != (int) startSign.x || (int) v1.z != (int) startSign.z
-								|| (int) v1.y != (int) startSign.y) {
-							level.setBlock(v1, sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
-							NotBreakBlocks.add("Le." + level.getFolderName() + " x." + i + " y." + y2 + " z." + k);
+						for (double i = x2; i < x1 + 1; i++) {
+							sb++;
+							v1 = new Vector3(i, y1, k);
+							if (v1.x != startSign.x || v1.z != startSign.z || v1.y != startSign.y
+									|| !SignLevel.equals(StartLevel))
+								level.setBlock(v1,
+										sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
+							v1 = new Vector3(i, y2, k);
+							if (v1.x != startSign.x || v1.z != startSign.z || v1.y != startSign.y
+									|| !SignLevel.equals(StartLevel))
+								level.setBlock(v1,
+										sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
 						}
 					}
-				for (int j = y2; j < y1 + 1; j++)
-					for (int k = z2; k < z1 + 1; k++) {
+					sb = 0;
+					for (double j = y2; j < y1 + 1; j++) {
 						sb++;
-						v1 = new Vector3(x1, j, k);
-						if ((int) v1.x != (int) startSign.x || (int) v1.z != (int) startSign.z
-								|| (int) v1.y != (int) startSign.y) {
-							NotBreakBlocks.add("Le." + level.getFolderName() + " x." + x1 + " y." + j + " z." + k);
-							level.setBlock(v1, sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
-						}
-						v1 = new Vector3(x2, j, k);
-						if ((int) v1.x != (int) startSign.x || (int) v1.z != (int) startSign.z
-								|| (int) v1.y != (int) startSign.y) {
-							level.setBlock(v1, sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
-							NotBreakBlocks.add("Le." + level.getFolderName() + " x." + x2 + " y." + j + " z." + k);
+						for (double k = z2; k < z1 + 1; k++) {
+							sb++;
+							v1 = new Vector3(x1, j, k);
+							if (v1.x != startSign.x || v1.z != startSign.z || v1.y != startSign.y
+									|| !SignLevel.equals(StartLevel))
+								level.setBlock(v1,
+										sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
+							v1 = new Vector3(x2, j, k);
+							if (v1.x != startSign.x || v1.z != startSign.z || v1.y != startSign.y
+									|| !SignLevel.equals(StartLevel))
+								level.setBlock(v1,
+										sb % 6 == 0 ? Block.get(169, 0) : Block.get(35, sb % 2 == 0 ? 0 : 15));
 						}
 					}
+				}
 				ac.SettingModel = false;
 				ac.setPlayer = null;
 				lastSet = false;
 				Config config = ac.getGameConfig();
-				NotBreakBlocks.add("Le." + level.getFolderName() + " x." + (int) startSign.getX() + " y."
-						+ (int) startSign.getY() + " z." + (int) startSign.getZ());
-				if (config.exists("Remove"))
-					config.remove("Remove");
+				config.setAll(new LinkedHashMap<String, Object>());
 				config.set("GameSettingUp", true);
 				config.set("Creator", player.getName());
+				config.set("StartLevel", SignLevel);
+				config.set("Level", StartLevel);
 				config.set("CreatorTime", Tool.getDate() + " " + Tool.getTime());
 				Map<String, Double> map = new HashMap<>();
 				map.put("X", startSign.getX());
@@ -199,9 +201,16 @@ public class SettingGame {
 				map.put("Y", resY);
 				map.put("Z", resZ);
 				config.set("Spawn", map);
-				config.set("Played", new HashMap<String, Integer>());
-				config.set("PlayingGame", new ArrayList<Player>());
-				config.set("NotBreakBlocks", NotBreakBlocks);
+				map = new HashMap<>();
+				map.put("X", x1);
+				map.put("Y", y1);
+				map.put("Z", z1);
+				config.set("MaxLocation", map);
+				map = new HashMap<>();
+				map.put("X", x2);
+				map.put("Y", y2);
+				map.put("Z", z2);
+				config.set("MinLocation", map);
 				config.save();
 				ac.setGameConfig(config);
 				ac.isGameSettingUp = true;

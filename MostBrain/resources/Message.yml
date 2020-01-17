@@ -17,7 +17,8 @@ lang: chs-中文
 无法初始化配置: §4无法初始化配置文件：{FileName}，请检查!
 无法效验语言文件: §4无法效验语言文件！请检查！
 请在游戏内自行命令: §4请在游戏内执行此命令！
-插件关闭: "{RGBTextStart}{PluginName}已关闭！感谢使用！若经济允许，希望能赞助一下！支付宝：2508543202@qq.com{RGBTextEnd}"
+插件关闭: '{RGBTextStart}{PluginName}已关闭！感谢使用！若经济允许，希望能赞助一下！支付宝：2508543202@qq.com{RGBTextEnd}'
+数据加载错误: §4无法读取游戏数据！请删除所有数据后尝试重新创建！
 Command:
    AdminCommand:
       setMsg: '{RandColor}开始设置{PluginName}'
@@ -51,6 +52,7 @@ SettingGame:
    生成完成: §6游戏区域已设置！快来玩游戏啦~
    管理员退出: §4正在设置游戏的管理员({Player})退出！所有未完成的设置将会撤销！
 Game:
+   游戏已开始: §4游戏已开始！请等待。
    NotStartSign:
    - ' '
    - '{RandColor}{PluginName}'

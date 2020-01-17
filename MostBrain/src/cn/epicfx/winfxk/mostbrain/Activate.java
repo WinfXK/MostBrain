@@ -7,6 +7,8 @@ import java.util.List;
 import cn.epicfx.winfxk.mostbrain.cmd.ACommand;
 import cn.epicfx.winfxk.mostbrain.cmd.PCommand;
 import cn.epicfx.winfxk.mostbrain.event.PlayerEvent;
+import cn.epicfx.winfxk.mostbrain.game.GameEvent;
+import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.game.MostConfig;
 import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.epicfx.winfxk.mostbrain.money.EconomyAPI;
@@ -20,7 +22,11 @@ import cn.nukkit.utils.Config;
  */
 public class Activate {
 	public Player setPlayer;
+	public GameEvent gameEvent;
+	public GameHandle gameHandle;
 	public SettingGame settingGame;
+	public boolean GameError = false;
+	public boolean ReadyModel = false;
 	public boolean isStartGame = false;
 	public boolean SettingModel = false;
 	public boolean isGameSettingUp = false;
@@ -182,5 +188,9 @@ public class Activate {
 
 	public void setGameConfig(Config gameConfig) {
 		GameConfig = gameConfig;
+	}
+
+	public void setMostConfig(MostConfig mostConfig) {
+		this.mostConfig = mostConfig;
 	}
 }

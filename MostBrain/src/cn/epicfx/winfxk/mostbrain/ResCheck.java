@@ -34,6 +34,9 @@ public class ResCheck {
 		for (String string : s)
 			if (!config.exists(string))
 				config.set(string, 0);
+		if (!config.exists("Inventory"))
+			config.set("Inventory", null);
+		config.save();
 		return config;
 	}
 

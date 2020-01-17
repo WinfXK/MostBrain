@@ -5,14 +5,21 @@ import java.util.LinkedHashMap;
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.game.MostConfig;
 import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
+import cn.nukkit.Server;
+import cn.nukkit.block.Block;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntitySign;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
+import cn.nukkit.level.Level;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Config;
 
@@ -91,6 +98,34 @@ public class ACommand extends Command {
 			Config config = ac.getGameConfig();
 			map = new LinkedHashMap<>();
 			map.put("Remove", sender.getName());
+			new Thread() {
+				@Override
+				public void run() {
+					MostConfig config2 = ac.getMostConfig();
+					if (config2 != null) {
+						String SignLevelName = config2.StartLevel;
+						String StartLevelName = config2.Level;
+						Level signLevel = Server.getInstance().getLevelByName(SignLevelName);
+						Level startLevel = Server.getInstance().getLevelByName(StartLevelName);
+						if (startLevel != null) {
+							for (double i = config2.MinX; i < config2.MaxX + 1; i++)
+								for (double j = config2.MinY; j < config2.MaxY + 1; j++)
+									for (double k = config2.MinZ; k < config2.MaxZ + 1; k++)
+										startLevel.setBlock(new Vector3(i, j, k), Block.get(0, 0));
+						}
+						if (signLevel != null) {
+							Block block = signLevel.getBlock(config2.getStart());
+							BlockEntity blockEntity = signLevel.getBlockEntity(block);
+							BlockEntitySign sign = (blockEntity instanceof BlockEntitySign)
+									? (BlockEntitySign) blockEntity
+									: new BlockEntitySign(
+											block.getLevel().getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4),
+											BlockEntity.getDefaultCompound(block, BlockEntity.SIGN));
+							sign.setText("", "", "", "");
+						}
+					}
+				}
+			}.start();
 			config.setAll(map);
 			config.save();
 			ac.setGameConfig(config);

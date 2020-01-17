@@ -13,9 +13,10 @@ public class MyPlayer {
 	private Activate ac;
 	public Config config;
 	private Player player;
-	public boolean SettingModel = false;
-	public boolean GameModel = false;
 	public GameData gameData;
+	public boolean GameModel = false;
+	public boolean ReadyModel = false;
+	public boolean SettingModel = false;
 
 	/**
 	 * 记录存储玩家的一些数据
