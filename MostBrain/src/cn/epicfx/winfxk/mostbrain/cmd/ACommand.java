@@ -11,8 +11,6 @@ import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
-import cn.nukkit.blockentity.BlockEntity;
-import cn.nukkit.blockentity.BlockEntitySign;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
@@ -113,16 +111,8 @@ public class ACommand extends Command {
 									for (double k = config2.MinZ; k < config2.MaxZ + 1; k++)
 										startLevel.setBlock(new Vector3(i, j, k), Block.get(0, 0));
 						}
-						if (signLevel != null) {
-							Block block = signLevel.getBlock(config2.getStart());
-							BlockEntity blockEntity = signLevel.getBlockEntity(block);
-							BlockEntitySign sign = (blockEntity instanceof BlockEntitySign)
-									? (BlockEntitySign) blockEntity
-									: new BlockEntitySign(
-											block.getLevel().getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4),
-											BlockEntity.getDefaultCompound(block, BlockEntity.SIGN));
-							sign.setText("", "", "", "");
-						}
+						if (signLevel != null)
+							Tool.setSign(signLevel.getBlock(config2.getStart()), " ");
 					}
 				}
 			}.start();

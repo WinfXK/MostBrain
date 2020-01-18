@@ -18,6 +18,7 @@ import cn.nukkit.event.player.PlayerDeathEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
+import cn.nukkit.event.player.PlayerItemConsumeEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.event.player.PlayerRespawnEvent;
@@ -64,6 +65,11 @@ public class PlayerEvent implements Listener {
 
 	}
 
+	@EventHandler
+	public void onItemConsume(PlayerItemConsumeEvent e) {
+
+	}
+
 	/**
 	 * 玩家丢东西事件
 	 * 
@@ -99,7 +105,8 @@ public class PlayerEvent implements Listener {
 		if (string != null && !string.isEmpty())
 			if (player.isOp() && !ac.isGameSettingUp)
 				player.sendMessage(string);
-
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		myPlayer.setInventory();
 	}
 
 	/**

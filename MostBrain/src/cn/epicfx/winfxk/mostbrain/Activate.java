@@ -6,6 +6,7 @@ import java.util.List;
 
 import cn.epicfx.winfxk.mostbrain.cmd.ACommand;
 import cn.epicfx.winfxk.mostbrain.cmd.PCommand;
+import cn.epicfx.winfxk.mostbrain.effect.Effecttor;
 import cn.epicfx.winfxk.mostbrain.event.PlayerEvent;
 import cn.epicfx.winfxk.mostbrain.game.GameEvent;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
@@ -26,7 +27,6 @@ public class Activate {
 	public GameHandle gameHandle;
 	public SettingGame settingGame;
 	public boolean GameError = false;
-	public boolean ReadyModel = false;
 	public boolean isStartGame = false;
 	public boolean SettingModel = false;
 	public boolean isGameSettingUp = false;
@@ -36,6 +36,7 @@ public class Activate {
 			GameConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players";
 	private MostBrain mis;
 	private MyEconomy economy;
+	private Effecttor effecttor;
 	private EconomyManage money;
 	private MostConfig mostConfig;
 	private static Activate activate;
@@ -72,6 +73,10 @@ public class Activate {
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
 		kis.getLogger().info(message.getMessage("插件启动"));
+	}
+
+	public Effecttor getEffecttor() {
+		return effecttor;
 	}
 
 	public MostConfig reloadMostConfig() {

@@ -17,6 +17,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -36,7 +37,15 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntitySign;
+import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
+import cn.nukkit.math.Vector3;
 
 /**
  * @author Winfxk
@@ -44,6 +53,155 @@ import cn.nukkit.Server;
 public class Tool implements X509TrustManager, HostnameVerifier {
 	private static String colorKeyString = "123456789abcdef";
 	private static String randString = "-+abcdefghijklmnopqrstuvwxyz_";
+
+	/**
+	 * 写入木牌内容
+	 * 
+	 * @param Level
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param list
+	 */
+	public static void setSign(String Level, double x, double y, double z, String... list) {
+		Level level = Server.getInstance().getLevelByName(Level);
+		if (level == null)
+			return;
+		setSign(new Location(x, y, z, level), list);
+	}
+
+	/**
+	 * 写入木牌内容
+	 * 
+	 * @param location
+	 * @param list
+	 */
+	public static void setSign(Location location, String... list) {
+		setSign(location.level.getBlock(location), list);
+	}
+
+	/**
+	 * 写入木牌内容
+	 * 
+	 * @param Level
+	 * @param vector3
+	 * @param list
+	 */
+	public static void setSign(String Level, Vector3 vector3, String... list) {
+		Level level = Server.getInstance().getLevelByName(Level);
+		if (level == null)
+			return;
+		setSign(new Location(vector3.x, vector3.y, vector3.z, level), list);
+	}
+
+	/**
+	 * 写入木牌内容
+	 * 
+	 * @param level
+	 * @param vector3
+	 * @param list
+	 */
+	public static void setSign(Level level, Vector3 vector3, String... list) {
+		setSign(new Location(vector3.x, vector3.y, vector3.z, level), list);
+	}
+
+	/**
+	 * 写入木牌内容
+	 * 
+	 * @param block
+	 * @param list
+	 */
+	public static void setSign(Block block, String... list) {
+		if (list == null || block == null)
+			return;
+		BlockEntity blockEntity = block.getLevel().getBlockEntity(block);
+		BlockEntitySign sign = (blockEntity instanceof BlockEntitySign) ? (BlockEntitySign) blockEntity
+				: new BlockEntitySign(block.getLevel().getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4),
+						BlockEntity.getDefaultCompound(block, BlockEntity.SIGN));
+		String[] Tile = { " ", " ", " ", " " };
+		for (int i = 0; i < list.length; i++) {
+			Tile[i] = list[i] == null ? "" : list[i];
+			if (i >= 3)
+				break;
+		}
+		sign.setText(Tile);
+	}
+
+	/**
+	 * 将一个数据物品化
+	 * 
+	 * @param map
+	 * @param file
+	 * @return
+	 */
+	public static Item loadItem(Map<String, Object> map) {
+		Item item = new Item((int) map.get("ID"), (int) map.get("Damage"), (int) map.get("Count"));
+		String name = (String) map.get("Name");
+		if (name != null && !name.isEmpty())
+			item.setCustomName(name);
+		try {
+			item.setCompoundTag((byte[]) map.get("Nbt"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return item;
+	}
+
+	/**
+	 * 将一个物品数据化
+	 * 
+	 * @param item
+	 * @return
+	 */
+	public static Map<String, Object> saveItem(Item item) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("Nbt", item.getCompoundTag());
+		map.put("ID", item.getId());
+		map.put("Damage", item.getDamage());
+		map.put("Name", item.hasCustomName() ? item.getName() : null);
+		map.put("Count", item.getCount());
+		return map;
+	}
+
+	/**
+	 * 将保存起来的玩家背包读取到一个对象 </br>
+	 * <b>player.getInventory().setContents(取得的对象);</b>
+	 * 
+	 * @return
+	 */
+	public static Map<Integer, Item> loadInventory(List<Map<String, Object>> list) {
+		Map<Integer, Item> Contents = new HashMap<>();
+		for (int i = 0; i < list.size(); i++) {
+			Map<String, Object> map = list.get(i);
+			Item item = new Item((int) map.get("ID"), (int) map.get("Damage"), (int) map.get("Count"),
+					(String) map.get("Name"));
+			item.setCompoundTag((byte[]) map.get("Nbt"));
+			Contents.put(i, item);
+		}
+		return Contents;
+	}
+
+	/**
+	 * 将一个玩家的背包保存到文件
+	 * 
+	 * @param player 要保存背包的玩家对象
+	 * @return
+	 */
+	public static List<Map<String, Object>> saveInventory(Player player) {
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<Integer, Item> Contents = player.getInventory().getContents();
+		for (Integer i : Contents.keySet()) {
+			Item item = Contents.get(i);
+			Map<String, Object> map = new HashMap<>();
+			map.put("Nbt", item.getCompoundTag());
+			map.put("ID", item.getId());
+			map.put("Damage", item.getDamage());
+			map.put("Name", item.getName());
+			map.put("Count", item.getCount());
+			list.add(map);
+		}
+		return list;
+	}
 
 	/**
 	 * 获取服务器当前的语言

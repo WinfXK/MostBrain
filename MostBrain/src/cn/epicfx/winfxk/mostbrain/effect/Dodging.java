@@ -1,0 +1,48 @@
+package cn.epicfx.winfxk.mostbrain.effect;
+
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
+import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.player.PlayerItemConsumeEvent;
+
+/**
+ * 自己被攻击时有概率闪避攻击</br>
+ * 末影珍珠
+ * 
+ * @author Winfxk
+ */
+public class Dodging extends EffectItem {
+	public static final int MinGing = 0, MaxGing = 5;
+
+	@Override
+	public int getID() {
+		return 368;
+	}
+
+	@Override
+	public int getDamage() {
+		return -1;
+	}
+
+	@Override
+	public void onItemConsume(PlayerItemConsumeEvent e) {
+	}
+
+	@Override
+	public void onDamage(EntityDamageEvent e) {
+	}
+
+	@Override
+	public void onConsume() {
+	}
+
+	@Override
+	public void onBeingDamage(EntityDamageEvent e) {
+		if (Tool.getRand(MinGing, MaxGing) != 1)
+			return;
+		e.setCancelled();
+	}
+
+	@Override
+	public void Wake() {
+	}
+}

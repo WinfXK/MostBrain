@@ -2232,7 +2232,6 @@ public enum ItemIDSunName {
      * 白色混凝土粉末
      * */
     CONCRETE_POWDER_WHITE("白色混凝土粉末",237,0,"textures/blocks/concrete_powder_white.png"),
-
     /**
      * 淡灰色混凝土
      * */
