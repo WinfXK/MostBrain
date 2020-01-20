@@ -30,21 +30,12 @@ public class Protection extends EffectItem {
 	}
 
 	@Override
-	public String getName() {
-		return null;
-	}
-
-	@Override
-	public String Function() {
-		return null;
-	}
-
-	@Override
 	public void onConsume() {
 	}
 
 	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
+		e.setDamage(e.getDamage() / 2);
 	}
 
 	@Override

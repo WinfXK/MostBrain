@@ -1,6 +1,5 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
-import cn.nukkit.Player;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -35,9 +34,7 @@ public class Deathgodson extends EffectItem {
 
 	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
-		Player player = (Player) e.getEntity();
-		if (i < 1 && ((int) (player.getHealth() - e.getDamage())) <= 0) {
-			i++;
+		if (i++ < 2 && ((int) (player.getHealth() - e.getDamage())) <= 0) {
 			e.setCancelled();
 			player.setHealth(player.getMaxHealth() / 2);
 		}

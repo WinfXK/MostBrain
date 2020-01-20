@@ -8,7 +8,10 @@ import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
 import cn.epicfx.winfxk.mostbrain.game.GameData;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 
 /**
@@ -68,7 +71,7 @@ public class MyPlayer {
 	}
 
 	/**
-	 * 保存玩家的背包
+	 * 加载玩家的背包
 	 * 
 	 * @return
 	 */
@@ -86,6 +89,66 @@ public class MyPlayer {
 	 */
 	public MyPlayer saveInventory() {
 		config.set("Inventory", Tool.saveInventory(player));
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 保存玩家的血量数据
+	 * 
+	 * @return
+	 */
+	public MyPlayer saveHealth() {
+		config.set("Health", player.getHealth());
+		config.set("MaxHealth", player.getMaxHealth());
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 加载玩家的位置
+	 * 
+	 * @return
+	 */
+	public MyPlayer loadXYZ() {
+		Level level = Server.getInstance().getLevelByName(config.getString("Level"));
+		if (level == null) {
+			level = player.getLevel();
+			player.teleport(level.getSpawnLocation());
+		} else
+			player.teleport(new Location(config.getDouble("X"), config.getDouble("Y"), config.getDouble("Z"), level));
+		config.remove("X");
+		config.remove("Y");
+		config.remove("Z");
+		config.remove("Level");
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 保存玩家所在的位置
+	 * 
+	 * @return
+	 */
+	public MyPlayer saveXYZ() {
+		config.set("X", player.getX());
+		config.set("Y", player.getY());
+		config.set("Z", player.getZ() + 1);
+		config.set("Level", player.getLevel().getFolderName());
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 加载玩家的血量
+	 * 
+	 * @return
+	 */
+	public MyPlayer setHealth() {
+		player.setMaxHealth(config.getInt("MaxHealth"));
+		player.setHealth(Tool.objToFloat(config.get("Health"), player.getMaxHealth() + 0.0000001f));
+		config.remove("MaxHealth");
+		config.remove("Health");
 		config.save();
 		return this;
 	}

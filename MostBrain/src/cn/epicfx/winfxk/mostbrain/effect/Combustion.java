@@ -1,7 +1,5 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
-import cn.nukkit.entity.Entity;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -29,10 +27,7 @@ public class Combustion extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-		if (!(e instanceof EntityDamageEvent))
-			return;
-		Entity en = ((EntityDamageByEntityEvent) e).getDamager();
-		en.setOnFire(3);
+		e.getEntity().setOnFire(3);
 	}
 
 	@Override

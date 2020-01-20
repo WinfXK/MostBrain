@@ -1,5 +1,9 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import java.util.List;
+
+import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -10,11 +14,6 @@ import cn.nukkit.event.player.PlayerItemConsumeEvent;
  * @author Winfxk
  */
 public class Theft extends EffectItem {
-
-	@Override
-	public String getName() {
-		return null;
-	}
 
 	@Override
 	public int getID() {
@@ -32,11 +31,17 @@ public class Theft extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public String Function() {
-		return null;
+		if (i++ > 1)
+			return;
+		Entity entity = e.getEntity();
+		if (!(entity instanceof Player))
+			return;
+		Player player2 = (Player) entity;
+		if (!handle.getGamePlayers().contains(player2))
+			return;
+		List<EffectItem> list = ac.getPlayers(player2.getName()).items;
+		for (EffectItem item : list)
+			handle.giveBuffs(player2, item);
 	}
 
 	@Override

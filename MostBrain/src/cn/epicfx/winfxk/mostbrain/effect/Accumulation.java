@@ -1,7 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.nukkit.entity.Entity;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -32,10 +31,9 @@ public class Accumulation extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-		if (i >= 3 || !(e instanceof EntityDamageByEntityEvent))
+		if (i++ > 3)
 			return;
-		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
-		i++;
+		Entity entity = e.getEntity();
 		entity.setHealth(entity.getHealth() / 2);
 	}
 

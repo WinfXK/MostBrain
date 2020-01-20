@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
@@ -37,7 +38,7 @@ public class Firegod extends EffectItem {
 
 	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
-		if (!(e instanceof EntityDamageByEntityEvent))
+		if (!(e instanceof EntityDamageByEntityEvent) || Tool.getRand(0, 3) != 1)
 			return;
 		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
 		entity.setOnFire(2);

@@ -1,5 +1,8 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -10,11 +13,6 @@ import cn.nukkit.event.player.PlayerItemConsumeEvent;
  * @author Winfxk
  */
 public class Philanthropist extends EffectItem {
-
-	@Override
-	public String getName() {
-		return null;
-	}
 
 	@Override
 	public int getID() {
@@ -35,16 +33,20 @@ public class Philanthropist extends EffectItem {
 	}
 
 	@Override
-	public String Function() {
-		return null;
-	}
-
-	@Override
 	public void onConsume() {
 	}
 
 	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
+		if (!(e instanceof EntityDamageByEntityEvent))
+			return;
+		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
+		float h = entity.getHealth();
+		int mh = entity.getMaxHealth();
+		if (h >= mh)
+			return;
+		h += (h / 5) <= 1 ? mh : Tool.getRand(1, (int) (h / 5));
+		entity.setHealth(h > mh ? mh : h);
 	}
 
 	@Override

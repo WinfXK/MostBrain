@@ -31,6 +31,7 @@ public class Meteors extends EffectItem {
 
 	@Override
 	public void onConsume() {
+		handle.giveBuffs(player).giveBuffs(player);
 	}
 
 	@Override

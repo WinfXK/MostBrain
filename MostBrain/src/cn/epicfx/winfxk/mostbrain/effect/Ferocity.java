@@ -1,6 +1,5 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -28,8 +27,6 @@ public class Ferocity extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-		if (!(e instanceof EntityDamageByEntityEvent))
-			return;
 		e.setDamage((float) (e.getDamage() * 1.5));
 	}
 

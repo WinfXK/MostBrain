@@ -2,6 +2,7 @@ package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.event.entity.EntityDamageEvent;
@@ -17,10 +18,12 @@ public abstract class EffectItem {
 	public Activate ac;
 	private static final String SystemKey = "EffectItem";
 	public int i = 0;
+	public GameHandle handle;
 
 	public void setPlayer(Player player) {
 		this.player = player;
 		ac = Activate.getActivate();
+		handle = ac.gameHandle;
 		myPlayer = ac.getPlayers(player.getName());
 	}
 
@@ -29,7 +32,7 @@ public abstract class EffectItem {
 	 * 
 	 * @return
 	 */
-	public String Function() {
+	public String getFunction() {
 		return getMeaage("Hint", player);
 	}
 

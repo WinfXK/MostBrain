@@ -40,6 +40,7 @@ public class Eternalife extends EffectItem {
 	public void Wake() {
 		if (player.getHealth() >= player.getMaxHealth() || i++ < 3)
 			return;
+		i = 0;
 		float f = player.getHealth() + 1;
 		player.setMaxHealth((int) (f > player.getMaxHealth() ? player.getMaxHealth() : f));
 	}

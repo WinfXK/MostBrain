@@ -43,6 +43,7 @@ public class Expedite extends EffectItem {
 	public void Wake() {
 		if (i++ < 10)
 			return;
+		i = 0;
 		Effect effect = Effect.getEffect(1);
 		effect.setDuration(280);
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));

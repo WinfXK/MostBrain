@@ -37,7 +37,7 @@ public class Brambles extends EffectItem {
 
 	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
-		if (!(e instanceof EntityDamageEvent))
+		if (!(e instanceof EntityDamageByEntityEvent))
 			return;
 		Entity en = ((EntityDamageByEntityEvent) e).getDamager();
 		en.setHealth(en.getHealth() - 1);

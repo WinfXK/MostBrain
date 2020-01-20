@@ -20,6 +20,24 @@ lang: chs-中文
 插件关闭: '{RGBTextStart}{PluginName}已关闭！感谢使用！若经济允许，希望能赞助一下！支付宝：2508543202@qq.com{RGBTextEnd}'
 数据加载错误: §4无法读取游戏数据！请删除所有数据后尝试重新创建！
 EffectItem:
+   Vertigo:
+      Name: 巴豆战士
+      Hint: 被赋予这个神力的玩家第一次攻击时将附带反胃Buff
+   Theft:
+      Name: 复刻之神
+      Hint: 被赋予这个神力的玩家第一次攻击时将得到对手的所有Buff
+   Slowness:
+      Name: 极速杀手
+      Hint: 被赋予这个神力的玩家攻击时将附带减速Buff
+   Satiate:
+      Name: 幸福小康
+      Hint: 被赋予这个神力的玩家将在游戏内不会饥饿
+   Protection:
+      Name: 铜皮铁肤
+      Hint: 被赋予这个神力的玩家攻击时将会得到受伤减半的Buff
+   Philanthropist:
+      Name: 高斯奥特曼
+      Hint: 被赋予这个Buff的玩家被攻击时概率恢复攻击自己的玩家血量
    Meteors:
       Name: 幸运天使
       Hint: 使用后将会随机给予两个Buff
@@ -106,6 +124,7 @@ Game:
    游戏出现错误: §4游戏中出现了一个错误！请检查或联系作者！
    即将开始: '{RandColor}即将开始游戏！剩余等待时间：{RandColor}{ReadyTime}'
    人数不足: '{RandColor}当前已等待时间：即将开始游戏！剩余等待时间：{RandColor}{ReadyTime}！人数持续不足！'
+   游戏即将结束: '{RandColor}游戏即将结束！剩余时间：{GameTime}'
    加入准备:
    - '{RandColor}欢迎来到{PluginName}'
    - '{RandColor}当前人数：{RandColor}{Count}{RandColor}，将在达到{RandColor}{MinCount}{RandColor}后开始游戏！'

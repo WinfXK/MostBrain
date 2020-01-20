@@ -9,8 +9,6 @@ import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.blockentity.BlockEntity;
-import cn.nukkit.blockentity.BlockEntitySign;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.item.Item;
@@ -65,18 +63,12 @@ public class SettingGame {
 		Block block = e.getBlock();
 		if (startSign == null) {
 			if (isItemID(block, 63) || isItemID(block, 323) || isItemID(block, 68)) {
-				startSign = block;
-				Level level = block.getLevel();
-				BlockEntity blockEntity = level.getBlockEntity(block);
-				BlockEntitySign sign = (blockEntity instanceof BlockEntitySign) ? (BlockEntitySign) blockEntity
-						: new BlockEntitySign(block.getLevel().getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4),
-								BlockEntity.getDefaultCompound(block, BlockEntity.SIGN));
 				List<?> list = (List<?>) GameMessage.get("NotStartSign");
-				sign.setText(ac.getMessage().getText(Tool.objToString(list.get(0), ""), player),
+				player.sendMessage(getMessage("点击木牌"));
+				Tool.setSign(block, ac.getMessage().getText(Tool.objToString(list.get(0), ""), player),
 						ac.getMessage().getText(Tool.objToString(list.get(1), ""), player),
 						ac.getMessage().getText(Tool.objToString(list.get(2), ""), player),
 						ac.getMessage().getText(Tool.objToString(list.get(3), ""), player));
-				player.sendMessage(getMessage("点击木牌"));
 				return;
 			}
 			return;

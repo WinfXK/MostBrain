@@ -45,10 +45,6 @@ public class GameHandle {
 	 * 重生点所在的世界
 	 */
 	private Level SpawnLevel;
-	/**
-	 * 玩家在准备状态时木牌显示的内容
-	 */
-	private String[] ReadySign;
 
 	public GameHandle(Activate ac) {
 		this.ac = ac;
@@ -60,7 +56,10 @@ public class GameHandle {
 		GameMinCount = GameMinCount < 2 ? 2 : GameMinCount;
 		gamePlayers = new ArrayList<>();
 		ReadyTime = ac.getConfig().getInt("等待时间");
-		ReadySign = getMessageList("加入准备");
+	}
+
+	public List<Player> getGamePlayers() {
+		return gamePlayers;
 	}
 
 	public void addPlayer(Player player) {
@@ -75,9 +74,14 @@ public class GameHandle {
 		}
 		gamePlayers.add(player);
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
-		myPlayer.saveInventory();
+		myPlayer.saveInventory().saveHealth().saveXYZ();
 		player.getInventory().clearAll();
 		String[] list = getMessageList("加入准备");
+		int Max = ac.getConfig().getInt("游戏最大血量");
+		int h = ac.getConfig().getInt("游戏血量");
+		h = h > Max ? Max : h;
+		player.setMaxHealth(Max);
+		player.setHealth(h);
 		for (int i = 0; i < list.length; i++)
 			list[i] = ac.getMessage().getText(list[i],
 					new String[] { "{Player}", "{Money}", "{Count}", "{MinCount}", "{IsCount}" },
@@ -98,17 +102,16 @@ public class GameHandle {
 		public void run() {
 			try {
 				while (ReadyisModel) {
-					if (gamePlayers.size() > GameMinCount)
-						for (Player player : gamePlayers)
+					sleep(1000);
+					for (Player player : gamePlayers)
+						if (gamePlayers.size() > GameMinCount)
 							player.sendMessage(ac.getMessage().getSon("Game", "即将开始",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" }, new Object[] {
 											player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime-- }));
-					else if (ReadyisTime > 120)
-						for (Player player : gamePlayers)
+						else if (ReadyisTime > 120)
 							player.sendMessage(ac.getMessage().getSon("Game", "人数不足",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" }, new Object[] {
 											player.getName(), MyPlayer.getMoney(player.getName()), ReadyisTime++ }));
-					sleep(1000);
 					String[] list = getMessageList("ReadyisGameSign");
 					for (int i = 0; i < list.length; i++)
 						list[i] = ac.getMessage().getText(list[i],
@@ -136,32 +139,80 @@ public class GameHandle {
 		}
 	}
 
+	private void QuitGame() {
+		
+	}
+
 	/**
 	 * 游戏主线程
 	 * 
 	 * @author Winfxk
 	 */
 	private class GameMainThread extends Thread {
+		private int GameTime;
+
+		public GameMainThread() {
+			GameTime = ac.getConfig().getInt("游戏时间");
+		}
+
 		@Override
 		public void run() {
+			new BuffThread().start();
 			for (Player player : gamePlayers) {
 				player.teleport(location);
 				player.sendTitle(getMessage("开始游戏", player));
 			}
-			for (int i = 0; i < gamePlayers.size() * 5; i++)
-				location.level.dropItem(
-						new Vector3(Tool.getRand((int) mostConfig.MinX + 1, (int) mostConfig.MaxX - 1),
-								Tool.getRand((int) mostConfig.MinX + 1, (int) mostConfig.MaxX - 1),
-								Tool.getRand((int) mostConfig.MinX + 1, (int) mostConfig.MaxX - 1)),
+			int ItemCount = Tool.getRand(1, 5);
+			for (int i = 0; i < gamePlayers.size() * ItemCount; i++)
+				location.level.dropItem(new Vector3(Tool.getRand((int) mostConfig.MinX + 1, (int) mostConfig.MaxX - 1),
+						Tool.getRand((int) mostConfig.MinY + 1, (int) mostConfig.MaxY - 1), mostConfig.MinZ + 2),
 						getItem(), null, true, 3);
-			while (StartGame) {
-
+			try {
+				while (StartGame && GameTime > 0) {
+					for (Player player : gamePlayers) {
+						if ((GameTime > 3 && GameTime < 10) || GameTime == 25 || GameTime == 30)
+							player.sendTitle(ac.getMessage().getSon("Game", "游戏即将结束",
+									new String[] { "{Player}", "{Money}", "{GameTime}" },
+									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), GameTime }));
+						if (GameTime <= 3)
+							player.sendTitle(Tool.getRandColor() + GameTime);
+					}
+					GameTime--;
+					sleep(1000);
+				}
+				QuitGame();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			super.run();
 		}
 
 		public Item getItem() {
-			return null;
+			EffectItem[] effectItems = ac.getEffecttor().getList();
+			EffectItem effectItem = effectItems[Tool.getRand(0, effectItems.length - 1)];
+			Item item = ac.getEffecttor().getItem(effectItem);
+			item.setCount(Tool.getRand(1, 3));
+			return item;
+		}
+
+		private class BuffThread extends Thread {
+			@Override
+			public void run() {
+				try {
+					MyPlayer myPlayer;
+					while (StartGame) {
+						for (Player player : gamePlayers) {
+							myPlayer = ac.getPlayers(player.getName());
+							for (EffectItem item : myPlayer.items)
+								item.Wake();
+						}
+						sleep(1000);
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				super.run();
+			}
 		}
 	}
 
@@ -179,22 +230,25 @@ public class GameHandle {
 	 * @param player
 	 * @param effectItem
 	 */
-	public void giveBuffs(Player player) {
+	public GameHandle giveBuffs(Player player) {
+		if (!gamePlayers.contains(player))
+			return this;
 		EffectItem[] items = ac.getEffecttor().getList();
-		EffectItem item = items[Tool.getRand(0, items.length - 1)];
-		player.getInventory().addItem(ac.getEffecttor().getItem(item));
+		player.getInventory().addItem(ac.getEffecttor().getItem(items[Tool.getRand(0, items.length - 1)]));
+		return this;
 	}
 
 	/**
-	 * 随机给予玩家一个Buff
+	 * 给予玩家一个Buff
 	 * 
 	 * @param player
 	 * @param effectItem
 	 */
-	public void giveBuffs(Player player, EffectItem effectItem) {
+	public GameHandle giveBuffs(Player player, EffectItem effectItem) {
 		if (!gamePlayers.contains(player) || effectItem == null)
-			return;
+			return this;
 		player.getInventory().addItem(ac.getEffecttor().getItem(effectItem));
+		return this;
 	}
 
 	/**
@@ -202,12 +256,13 @@ public class GameHandle {
 	 * 
 	 * @param player
 	 */
-	public void clearBuffs(Player player) {
+	public GameHandle clearBuffs(Player player) {
 		if (!gamePlayers.contains(player))
-			return;
+			return this;
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
 		myPlayer.items = new ArrayList<>();
 		ac.setPlayers(player, myPlayer);
+		return this;
 	}
 
 	/**

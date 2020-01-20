@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.nukkit.PlayerFood;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -10,6 +11,7 @@ import cn.nukkit.event.player.PlayerItemConsumeEvent;
  * @author Winfxk
  */
 public class Satiate extends EffectItem {
+	private PlayerFood food;
 
 	@Override
 	public int getID() {
@@ -30,17 +32,8 @@ public class Satiate extends EffectItem {
 	}
 
 	@Override
-	public String getName() {
-		return null;
-	}
-
-	@Override
-	public String Function() {
-		return null;
-	}
-
-	@Override
 	public void onConsume() {
+		food = player.getFoodData();
 	}
 
 	@Override
@@ -49,5 +42,7 @@ public class Satiate extends EffectItem {
 
 	@Override
 	public void Wake() {
+		food.setLevel(food.getLevel() < 1 ? 1 : food.getLevel(),
+				food.getFoodSaturationLevel() < 1 ? 1 : food.getFoodSaturationLevel());
 	}
 }

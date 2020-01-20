@@ -2,7 +2,6 @@ package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
@@ -30,9 +29,9 @@ public class Formatting extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-		if (i++ > 1 || !(e instanceof EntityDamageByEntityEvent))
+		if (i++ > 1)
 			return;
-		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
+		Entity entity = e.getEntity();
 		if (!(entity instanceof Player))
 			return;
 		Player player = (Player) entity;

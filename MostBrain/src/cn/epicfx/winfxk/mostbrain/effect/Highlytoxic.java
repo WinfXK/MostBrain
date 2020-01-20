@@ -1,8 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 import cn.nukkit.potion.Effect;
@@ -31,13 +29,10 @@ public class Highlytoxic extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-		if (!(e instanceof EntityDamageByEntityEvent))
-			return;
-		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
 		Effect effect = Effect.getEffect(19);
 		effect.setDuration(60);
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
-		entity.addEffect(effect);
+		e.getEntity().addEffect(effect);
 	}
 
 	@Override

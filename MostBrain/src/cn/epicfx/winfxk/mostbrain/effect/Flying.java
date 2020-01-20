@@ -41,6 +41,9 @@ public class Flying extends EffectItem {
 
 	@Override
 	public void Wake() {
+		if (i++ < 10)
+			return;
+		i = 0;
 		Effect effect = Effect.getEffect(24);
 		effect.setDuration(280);
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));

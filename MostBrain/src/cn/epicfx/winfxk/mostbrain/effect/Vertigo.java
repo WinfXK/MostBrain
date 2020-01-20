@@ -1,7 +1,9 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
+import cn.nukkit.potion.Effect;
 
 /**
  * 眩晕 被自己攻击的人会眩晕 </br>
@@ -27,16 +29,10 @@ public class Vertigo extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public String getName() {
-		return null;
-	}
-
-	@Override
-	public String Function() {
-		return null;
+		Effect effect = Effect.getEffect(9);
+		effect.setDuration(280);
+		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
+		e.getEntity().addEffect(effect);
 	}
 
 	@Override
