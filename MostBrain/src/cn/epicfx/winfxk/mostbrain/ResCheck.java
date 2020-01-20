@@ -30,7 +30,7 @@ public class ResCheck {
 	}
 
 	public Config Check(Config config) {
-		String[] s = { "得分", "造成伤害", "受到损伤", "答题数", "正确数", "杀敌数", "恢复生命", "恶意度" };
+		String[] s = { "得分", "造成伤害", "受到损伤", "答题数", "正确数", "杀敌数", "恢复生命", "恶意度", "荣誉" };
 		for (String string : s)
 			if (!config.exists(string))
 				config.set(string, 0);

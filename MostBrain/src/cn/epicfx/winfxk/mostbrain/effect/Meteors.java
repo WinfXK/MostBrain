@@ -1,8 +1,5 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
-
 /**
  * 使用后随机获得两个道具 </br>
  * 绿宝石
@@ -22,23 +19,10 @@ public class Meteors extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
 	public void onConsume() {
+		super.onConsume();
 		handle.giveBuffs(player).giveBuffs(player);
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void Wake() {
+		gameData.honor += 2;
+		gameData.score += gameData.score / 2;
 	}
 }

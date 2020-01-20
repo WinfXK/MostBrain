@@ -4,7 +4,6 @@ import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 攻击自己的人会随机回血 </br>
@@ -25,18 +24,6 @@ public class Philanthropist extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void onConsume() {
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		if (!(e instanceof EntityDamageByEntityEvent))
 			return;
@@ -47,9 +34,7 @@ public class Philanthropist extends EffectItem {
 			return;
 		h += (h / 5) <= 1 ? mh : Tool.getRand(1, (int) (h / 5));
 		entity.setHealth(h > mh ? mh : h);
-	}
-
-	@Override
-	public void Wake() {
+		gameData.honor -= 5;
+		gameData.score -= h;
 	}
 }

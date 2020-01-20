@@ -2,7 +2,6 @@ package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 自己被攻击时有概率闪避攻击</br>
@@ -24,25 +23,11 @@ public class Dodging extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void onConsume() {
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		if (Tool.getRand(MinGing, MaxGing) != 1)
 			return;
+		gameData.honor++;
+		gameData.score += e.getDamage();
 		e.setCancelled();
-	}
-
-	@Override
-	public void Wake() {
 	}
 }

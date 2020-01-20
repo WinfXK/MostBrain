@@ -6,6 +6,7 @@ import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 /**
@@ -15,6 +16,8 @@ public class Effecttor {
 
 	private EffectItem[] list;
 	private Activate ac;
+	public static final int[] Ak = { 268, 272, 276, 283, 267, 258, 271, 275, 279, 286 };
+	public static final int[] AkEn = { 9, 12, 13, 29 };
 
 	public EffectItem[] getList() {
 		return list;
@@ -23,6 +26,31 @@ public class Effecttor {
 	public Effecttor(GameHandle gameHandle) {
 		load();
 		ac = Activate.getActivate();
+	}
+
+	/**
+	 * 给玩家随机一个武器
+	 * 
+	 * @return
+	 */
+	public Item getAK() {
+		Item item = new Item(Ak[Tool.getRand(0, Ak.length - 1)]);
+		CompoundTag nbt = item.getNamedTag();
+		nbt = nbt == null ? new CompoundTag() : nbt;
+		Enchantment en = Enchantment.get(AkEn[Tool.getRand(0, AkEn.length - 1)]);
+		en.setLevel(en.getMaxLevel() > 1 ? Tool.getRand(1, en.getMaxLevel()) : en.getMaxLevel());
+		item.addEnchantment(en);
+		item.addEnchantment(Enchantment.getEnchantment(28));
+		item.addEnchantment();
+		nbt.putString(ac.getMostBrain().getName(), ac.getMostBrain().getName());
+		int aks = Tool.getRand(1, 5);
+		int abs = item.getAttackDamage();
+		abs = abs <= 0 ? 1 : abs;
+		nbt.putInt("Ak", aks * abs);
+		item.setCompoundTag(nbt);
+		item.setLore(ac.getMessage().getSon("Game", "武器介绍", new String[] { "{Rate}", "{Damage}", "{MaxDamage}" },
+				new Object[] { aks, abs, item.getDamage() }));
+		return item;
 	}
 
 	public Item getItem(EffectItem item) {

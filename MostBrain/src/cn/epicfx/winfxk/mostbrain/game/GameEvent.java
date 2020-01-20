@@ -1,9 +1,11 @@
 package cn.epicfx.winfxk.mostbrain.game;
 
 import cn.epicfx.winfxk.mostbrain.Activate;
+import cn.epicfx.winfxk.mostbrain.MyPlayer;
 import cn.nukkit.Player;
-import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.event.player.PlayerQuitEvent;
 
 /**
  * @author Winfxk
@@ -16,27 +18,50 @@ public class GameEvent {
 	}
 
 	/**
+	 * 玩家在游戏内退出游戏事件
+	 * 
+	 * @param e
+	 */
+	public void QuitGame(PlayerQuitEvent e) {
+		Player player = e.getPlayer();
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		if (myPlayer != null && (myPlayer.GameModel || myPlayer.ReadyModel))
+			new Thread() {
+				@Override
+				public void run() {
+					ac.gameHandle.QuitGame(player, true, true);
+				}
+			}.start();
+	}
+
+	/**
+	 * 点击开始木牌
+	 * 
+	 * @param e
+	 */
+	public void Start(BlockBreakEvent e) {
+		Start(new PlayerInteractEvent(e.getPlayer(), e.getItem(), e.getBlock(), e.getFace()));
+	}
+
+	/**
 	 * 点击开始木牌
 	 * 
 	 * @param e
 	 */
 	public void Start(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
-		if (ac.isStartGame) {
+		if (ac.gameHandle.StartGame()) {
 			player.sendMessage(getMessage("游戏已开始", player));
 			e.setCancelled();
 			return;
 		}
-
-	}
-
-	/**
-	 * 在游戏中发生攻击事件
-	 * 
-	 * @param e
-	 */
-	public void onDamage(EntityDamageEvent e) {
-
+		if (ac.gameHandle.getGamePlayers().contains(player)) {
+			player.sendMessage(getMessage("已加入", player));
+			e.setCancelled();
+			return;
+		}
+		ac.gameHandle.addPlayer(player);
+		e.setCancelled();
 	}
 
 	public String getMessage(String Key) {

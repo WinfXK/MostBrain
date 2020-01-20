@@ -5,7 +5,6 @@ import java.util.List;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 第一次攻击能完全克隆对手的所有特效</br>
@@ -26,10 +25,6 @@ public class Theft extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
 		if (i++ > 1)
 			return;
@@ -41,18 +36,8 @@ public class Theft extends EffectItem {
 			return;
 		List<EffectItem> list = ac.getPlayers(player2.getName()).items;
 		for (EffectItem item : list)
-			handle.giveBuffs(player2, item);
-	}
-
-	@Override
-	public void onConsume() {
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void Wake() {
+			handle.giveBuffs(player, item);
+		gameData.honor++;
+		gameData.score += list.size() * 2;
 	}
 }

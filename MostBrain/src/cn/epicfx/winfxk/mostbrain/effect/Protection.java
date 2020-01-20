@@ -1,7 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 自己伤害减半 </br>
@@ -22,24 +21,9 @@ public class Protection extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void onConsume() {
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		e.setDamage(e.getDamage() / 2);
+		gameData.honor++;
+		gameData.score += e.getDamage() / 2;
 	}
-
-	@Override
-	public void Wake() {
-	}
-
 }

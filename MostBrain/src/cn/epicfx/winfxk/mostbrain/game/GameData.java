@@ -7,37 +7,9 @@ public class GameData {
 	/**
 	 * 得分
 	 */
-	public double goal;
+	public int score = 0;
 	/**
-	 * 杀敌数
+	 * 荣耀
 	 */
-	public int kills;
-	/**
-	 * 造成伤害
-	 */
-	public double harm;
-	/**
-	 * 使用食物回复生命总值
-	 */
-	public double health;
-	/**
-	 * 自己损伤总值
-	 */
-	public double bruise;
-	/**
-	 * 总题数
-	 */
-	public int wors;
-	/**
-	 * 正确数
-	 */
-	public int correct;
-	/**
-	 * 佛光普照，立即重生
-	 */
-	public boolean god;
-	/**
-	 * 职业
-	 */
-	public int job;
+	public int honor = 0;
 }

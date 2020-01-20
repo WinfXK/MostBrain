@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.PlayerFood;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 自己的前三次攻击将会把被攻击者的饱食度直接清空 </br>
@@ -25,14 +24,6 @@ public class Beggar extends EffectItem {
 	}
 
 	@Override
-	public void onConsume() {
-	}
-
-	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
 		if (i++ > 3)
 			return;
@@ -41,15 +32,9 @@ public class Beggar extends EffectItem {
 			Player player = (Player) en;
 			PlayerFood food = player.getFoodData();
 			food.setLevel(food.getLevel(), 0);
+			gameData.honor++;
+			gameData.score += food.getLevel() + food.getFoodSaturationLevel();
 		}
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void Wake() {
 	}
 
 }

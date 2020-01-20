@@ -49,10 +49,9 @@ public class MostConfig {
 			MinX = MinLocation.get("X");
 			MinY = MinLocation.get("Y");
 			MinZ = MinLocation.get("Z");
-			ac.gameEvent = new GameEvent(ac);
-			ac.gameHandle = new GameHandle(ac);
 		} catch (Exception e) {
-			ac.getMostBrain().getLogger().error(ac.getMessage().getMessage("数据加载错误"));
+			e.printStackTrace();
+			ac.getMostBrain().getLogger().error(ac.getMessage().getMessage("数据加载错误") + e.getMessage());
 			ac.isStartGame = false;
 			ac.SettingModel = false;
 			ac.settingGame = null;

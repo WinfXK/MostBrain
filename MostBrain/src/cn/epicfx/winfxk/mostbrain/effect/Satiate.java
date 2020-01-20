@@ -1,8 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.nukkit.PlayerFood;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 自己不会饥饿</br>
@@ -24,20 +22,9 @@ public class Satiate extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
 	public void onConsume() {
 		food = player.getFoodData();
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
+		gameData.honor++;
 	}
 
 	@Override

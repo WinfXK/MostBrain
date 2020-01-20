@@ -1,30 +1,159 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import java.util.ArrayList;
+
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.game.GameData;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
+import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
+import cn.nukkit.nbt.tag.CompoundTag;
 
 /**
  * @author Winfxk
  */
 public abstract class EffectItem {
+	public Activate ac = Activate.getActivate();
 	public Player player;
 	public MyPlayer myPlayer;
-	public Activate ac;
-	private static final String SystemKey = "EffectItem";
-	public int i = 0;
 	public GameHandle handle;
+	public GameData gameData;
+	public int i = 0;
+	private static final String SystemKey = "EffectItem";
 
+	/**
+	 * 分配玩家对象
+	 * 
+	 * @param player
+	 */
 	public void setPlayer(Player player) {
 		this.player = player;
 		ac = Activate.getActivate();
 		handle = ac.gameHandle;
 		myPlayer = ac.getPlayers(player.getName());
+		gameData = new GameData();
+	}
+
+	/**
+	 * 分配玩家物品使用处理事件
+	 * 
+	 * @param e
+	 */
+	public static void receiveItemConsume(PlayerItemConsumeEvent e) {
+		Player player = e.getPlayer();
+		MyPlayer myPlayer = Activate.getActivate().getPlayers(player.getName());
+		if (myPlayer == null)
+			return;
+		boolean isOK = false;
+		if (myPlayer.GameModel || myPlayer.ReadyModel) {
+			Item item2 = e.getItem();
+			CompoundTag nbt = item2.getNamedTag();
+			nbt = nbt == null ? new CompoundTag() : nbt;
+			if (nbt.getString(Activate.getActivate().getMostBrain().getName()) != null) {
+				for (EffectItem item3 : Activate.getActivate().getEffecttor().getList()) {
+					if (item2.getId() == item3.getID()
+							&& (item3.getDamage() < 0 || item3.getDamage() == item2.getDamage())) {
+						try {
+							EffectItem item4 = item3.getClass().newInstance();
+							myPlayer.items = myPlayer.items == null ? new ArrayList<>() : myPlayer.items;
+							item4.setPlayer(player);
+							myPlayer.items.add(item4);
+							item4.onConsume();
+							Activate.getActivate().setPlayers(player, myPlayer);
+							if (item2.getCount() <= 1)
+								item2 = new Item(0, 0);
+							else
+								item2.setCount(item2.getCount() - 1);
+							player.getInventory().setItemInHand(item2);
+							isOK = true;
+							player.sendMessage(Activate.getActivate().getMessage().getSon("Game", "使用道具",
+									new String[] { "{Player}", "{Money}", "{Buff}" }, new Object[] { player.getName(),
+											MyPlayer.getMoney(player.getName()), item4.getName() }));
+							e.setCancelled();
+							break;
+						} catch (InstantiationException | IllegalAccessException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+				return;
+			}
+			if (!isOK && myPlayer.items.size() > 0)
+				for (EffectItem item : myPlayer.items)
+					item.onItemConsume(e);
+		}
+	}
+
+	/**
+	 * 发回处理
+	 * 
+	 * @param e
+	 */
+	public static void receiveDamage(EntityDamageEvent e) {
+		Entity entity = e.getEntity();
+		MyPlayer myPlayer;
+		if (entity instanceof Player) {
+			myPlayer = Activate.getActivate().getPlayers(entity.getName());
+			if (myPlayer.GameModel || myPlayer.ReadyModel)
+				if (myPlayer.items.size() > 0)
+					for (EffectItem item : myPlayer.items)
+						item.allotDamageEvent(e);
+		}
+		if (e instanceof EntityDamageByEntityEvent) {
+			entity = ((EntityDamageByEntityEvent) e).getDamager();
+			if (entity instanceof Player) {
+				myPlayer = Activate.getActivate().getPlayers(entity.getName());
+				if (myPlayer.GameModel || myPlayer.ReadyModel)
+					if (myPlayer.items.size() > 0)
+						for (EffectItem item : myPlayer.items)
+							item.allotDamageEvent(e);
+			}
+		}
+	}
+
+	/**
+	 * 分配伤害事件
+	 * 
+	 * @param e
+	 */
+	public void allotDamageEvent(EntityDamageEvent e) {
+		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
+		if (e instanceof EntityDamageByEntityEvent && isPlayer(entity)) {
+			Item item = ((Player) entity).getInventory().getItemInHand();
+			CompoundTag nbt = item.getNamedTag();
+			nbt = nbt == null ? new CompoundTag() : nbt;
+			if (nbt.getString(ac.getMostBrain().getName()) != null) {
+				int ak = nbt.getInt("Ak");
+				e.setDamage(ak >= 0 ? e.getDamage() : ak);
+			}
+			onDamage(e);
+		}
+		if (isPlayer(e.getEntity()))
+			onBeingDamage(e);
+	}
+
+	/**
+	 * 是否是游戏内的玩家触发的事件
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	private boolean isPlayer(Entity entity) {
+		if (!(entity instanceof Player))
+			return false;
+		if (!ac.isPlayers(entity.getName()))
+			return false;
+		MyPlayer myPlayer = ac.getPlayers(entity.getName());
+		if (!myPlayer.GameModel && !myPlayer.ReadyModel)
+			return false;
+		return myPlayer.getPlayer().getName().equals(player.getName());
 	}
 
 	/**
@@ -39,7 +168,10 @@ public abstract class EffectItem {
 	/**
 	 * 道具消耗时调用
 	 */
-	public abstract void onConsume();
+	public void onConsume() {
+		gameData.honor++;
+		gameData.score += 5;
+	}
 
 	/**
 	 * 道具的名称
@@ -50,7 +182,9 @@ public abstract class EffectItem {
 		return getMeaage("Name", player);
 	}
 
-	public abstract void Wake();
+	public void Wake() {
+		gameData.score++;
+	}
 
 	/**
 	 * 对应物品的ID
@@ -71,21 +205,29 @@ public abstract class EffectItem {
 	 * 
 	 * @param e
 	 */
-	public abstract void onItemConsume(PlayerItemConsumeEvent e);
+	public void onItemConsume(PlayerItemConsumeEvent e) {
+		gameData.score++;
+	}
 
 	/**
 	 * 实体损伤事件<自己造成伤害>
 	 * 
 	 * @param e
 	 */
-	public abstract void onDamage(EntityDamageEvent e);
+	public void onDamage(EntityDamageEvent e) {
+		gameData.honor++;
+		gameData.score += e.getDamage() / 2;
+	}
 
 	/**
 	 * 实体损伤事件<自己被伤害>
 	 * 
 	 * @param e
 	 */
-	public abstract void onBeingDamage(EntityDamageEvent e);
+	public void onBeingDamage(EntityDamageEvent e) {
+		gameData.honor -= 2;
+		gameData.score -= e.getDamage() * 2;
+	}
 
 	/**
 	 * 

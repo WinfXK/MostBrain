@@ -1,8 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 import cn.nukkit.potion.Effect;
 
 /**
@@ -24,28 +22,14 @@ public class Expedite extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void onConsume() {
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
-	}
-
-	@Override
 	public void Wake() {
+		super.Wake();
 		if (i++ < 10)
 			return;
 		i = 0;
 		Effect effect = Effect.getEffect(1);
 		effect.setDuration(280);
+		gameData.score++;
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
 		player.addEffect(effect);
 	}

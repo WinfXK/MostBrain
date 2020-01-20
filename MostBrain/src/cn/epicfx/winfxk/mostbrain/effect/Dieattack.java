@@ -1,7 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 必死一击，自己第一次打人必死</br>
@@ -21,26 +20,11 @@ public class Dieattack extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
 		if (i++ > 1)
 			return;
 		e.setDamage(e.getEntity().getHealth());
+		gameData.honor++;
+		gameData.score += e.getEntity().getHealth();
 	}
-
-	@Override
-	public void onConsume() {
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void Wake() {
-	}
-
 }

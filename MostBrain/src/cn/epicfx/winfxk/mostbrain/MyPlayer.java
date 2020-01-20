@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
-import cn.epicfx.winfxk.mostbrain.game.GameData;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -21,7 +20,6 @@ public class MyPlayer {
 	private Activate ac;
 	public Config config;
 	private Player player;
-	public GameData gameData;
 	public boolean GameModel = false;
 	public boolean ReadyModel = false;
 	public boolean SettingModel = false;
@@ -43,6 +41,32 @@ public class MyPlayer {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	/**
+	 * 增加游戏总分
+	 * 
+	 * @param score
+	 * @return
+	 */
+	public MyPlayer addScore(int score) {
+		long h = config.getLong("score");
+		config.set("score", h + score);
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 增加玩家的荣耀
+	 * 
+	 * @param honor
+	 * @return
+	 */
+	public MyPlayer addHonor(int honor) {
+		long h = config.getLong("honor");
+		config.set("honor", h + honor);
+		config.save();
+		return this;
 	}
 
 	/**
@@ -79,6 +103,8 @@ public class MyPlayer {
 		List<Map<String, Object>> list = config.getList("Inventory");
 		if (list == null || list.size() < 1)
 			return null;
+		config.remove("Inventory");
+		config.save();
 		return Tool.loadInventory(list);
 	}
 
@@ -89,6 +115,27 @@ public class MyPlayer {
 	 */
 	public MyPlayer saveInventory() {
 		config.set("Inventory", Tool.saveInventory(player));
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 加载玩家的游戏模式
+	 */
+	public MyPlayer loadGameMode() {
+		player.setGamemode(config.getInt("GameMode"));
+		config.remove("GameMode");
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 保存玩家的游戏模式
+	 * 
+	 * @return
+	 */
+	public MyPlayer saveGameMode() {
+		config.set("GameMode", player.getGamemode());
 		config.save();
 		return this;
 	}

@@ -1,8 +1,6 @@
-package cn.epicfx.winfxk.mostbrain.event;
+package cn.epicfx.winfxk.mostbrain;
 
-import cn.epicfx.winfxk.mostbrain.Activate;
-import cn.epicfx.winfxk.mostbrain.Message;
-import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
 import cn.epicfx.winfxk.mostbrain.game.MostConfig;
 import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.nukkit.Player;
@@ -67,7 +65,8 @@ public class PlayerEvent implements Listener {
 
 	@EventHandler
 	public void onItemConsume(PlayerItemConsumeEvent e) {
-
+		if (ac.isStartGame)
+			EffectItem.receiveItemConsume(e);
 	}
 
 	/**
@@ -119,10 +118,11 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
 		if (ac.isPlayers(player)) {
 			if (ac.SettingModel == false
-					|| !(ac.SettingModel == true && player.getName().equals(ac.setPlayer.getName()))) {
-				MyPlayer myPlayer = ac.getPlayers(player.getName());
+					|| !(ac.SettingModel == true && player.getName().equals(ac.setPlayer.getName()))
+					|| !(myPlayer.GameModel || myPlayer.ReadyModel)) {
 				myPlayer.config.save();
 				ac.setPlayers(player, new MyPlayer(player));
 			}
@@ -148,7 +148,8 @@ public class PlayerEvent implements Listener {
 			player.setGamemode(ac.settingGame.gameMode);
 			ac.getMostBrain().getLogger().warning(ac.settingGame.getMessage("管理员退出"));
 			ac.settingGame = null;
-		}
+		} else if (ac.gameEvent != null && ac.isStartGame)
+			ac.gameEvent.QuitGame(e);
 		if (ac.isPlayers(player))
 			ac.removePlayers(player);
 	}
@@ -177,8 +178,6 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Entity entity = e.getEntity();
-		if (ac.isGameSettingUp && ac.isStartGame)
-			ac.gameEvent.onDamage(e);
 		if (!(entity instanceof Player))
 			return;
 		Player player = (Player) e.getEntity();
@@ -186,6 +185,8 @@ public class PlayerEvent implements Listener {
 			e.setCancelled();
 			return;
 		}
+		if (ac.isStartGame)
+			EffectItem.receiveDamage(e);
 	}
 
 	/**
@@ -227,6 +228,7 @@ public class PlayerEvent implements Listener {
 					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
 							&& location.z == config.Start.get("Z"))
 						ac.gameEvent.Start(e);
+				EffectItem.receiveItemConsume(new PlayerItemConsumeEvent(player, e.getItem()));
 				if (ac.getMostConfig().isNotBreakBlock(block))
 					e.setCancelled();
 			}
@@ -297,8 +299,15 @@ public class PlayerEvent implements Listener {
 			}
 		}
 		if (ac.isGameSettingUp)
-			if (ac.getMostConfig() != null && ac.getMostConfig().isNotBreakBlock(block)) {
-				e.setCancelled();
+			if (ac.getMostConfig() != null) {
+				MostConfig config = ac.getMostConfig();
+				Location location = block.getLocation();
+				if (location.level.getFolderName().equals(config.Level))
+					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
+							&& location.z == config.Start.get("Z"))
+						ac.gameEvent.Start(e);
+				if (ac.getMostConfig().isNotBreakBlock(block))
+					e.setCancelled();
 				return;
 			}
 	}

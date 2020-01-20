@@ -17,7 +17,7 @@ lang: chs-中文
 无法初始化配置: §4无法初始化配置文件：{FileName}，请检查!
 无法效验语言文件: §4无法效验语言文件！请检查！
 请在游戏内自行命令: §4请在游戏内执行此命令！
-插件关闭: '{RGBTextStart}{PluginName}已关闭！感谢使用！若经济允许，希望能赞助一下！支付宝：2508543202@qq.com{RGBTextEnd}'
+插件关闭: '{RGBTextStart}{PluginName}已关闭！感谢使用！{RGBTextEnd}{RandColor}若经济允许，希望能赞助一下！支付宝：2508543202@qq.com'
 数据加载错误: §4无法读取游戏数据！请删除所有数据后尝试重新创建！
 EffectItem:
    Vertigo:
@@ -94,9 +94,7 @@ Command:
       正在设置: §4您当前已经在设置游戏！
       游戏已设置完毕: §4游戏已设置！若要重新设置请输入/Admin{PluginName} del
       StartGame: §4你正在开始设置游戏！请使用游戏设置工具点击一个木牌以标记开始点
-      不能阻止设置: §4你不能阻止其他管理员设置游戏！
       停止设置: §4您已经停止设置游戏。
-      管理员停止设置: §4{Player}已取消设置{PluginName}
       删除游戏: §f您已经成功删除原有的游戏设置！
       管理员删除游戏: §4{Player}已经删除原有的游戏设置
       已开始游戏: §4已有玩家开始游戏！请稍后重试!
@@ -125,6 +123,12 @@ Game:
    即将开始: '{RandColor}即将开始游戏！剩余等待时间：{RandColor}{ReadyTime}'
    人数不足: '{RandColor}当前已等待时间：即将开始游戏！剩余等待时间：{RandColor}{ReadyTime}！人数持续不足！'
    游戏即将结束: '{RandColor}游戏即将结束！剩余时间：{GameTime}'
+   游戏结束: '{RandColor}游戏结束！§e本次得分：{RandColor}{Score}§e，获得荣耀：{RandColor}{Honor}'
+   已加入: §4您已加入游戏！
+   武器介绍: '{RandColor}伤害加成：{RandColor}{Rate}{n}{RandColor}初始伤害：{RandColor}{Damage}{n}{RandColor}总伤害：{RandColor}{MaxDamage}'
+   使用道具: '{RandColor}你获得了Buff：{RandColor}{Buff}'
+   即将发送补给: '{RandColor}{SleepTime}{RandColor}秒后发送补给'
+   正在发送补给: '{RandColor}正在发送补给'
    加入准备:
    - '{RandColor}欢迎来到{PluginName}'
    - '{RandColor}当前人数：{RandColor}{Count}{RandColor}，将在达到{RandColor}{MinCount}{RandColor}后开始游戏！'

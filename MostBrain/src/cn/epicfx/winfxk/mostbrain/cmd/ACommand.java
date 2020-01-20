@@ -54,6 +54,10 @@ public class ACommand extends Command {
 				sender.sendMessage(msg.getMessage("权限不足"));
 			return true;
 		}
+		if (!sender.isPlayer()) {
+			sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
+			return true;
+		}
 		if (args == null || args.length == 0)
 			return false;
 		LinkedHashMap<String, Object> map;
@@ -70,7 +74,7 @@ public class ACommand extends Command {
 				return true;
 			}
 			if (!ac.isGameSettingUp && ac.SettingModel) {
-				if (!sender.isPlayer() && sender.getName().equals(ac.setPlayer.getName())) {
+				if (sender.getName().equals(ac.setPlayer.getName())) {
 					ac.SettingModel = false;
 					ac.setPlayer.setGamemode(ac.settingGame.gameMode);
 					ac.setPlayer.getInventory().setItem(0, ac.settingGame.sbItem);
@@ -78,16 +82,11 @@ public class ACommand extends Command {
 						ac.settingGame.start.getLevel().setBlock(ac.settingGame.start.getLocation(),
 								ac.settingGame.start);
 					ac.settingGame = null;
-					ac.setPlayer.sendMessage(getMessage("停止设置"));
-					if (sender.isPlayer())
-						ac.getMostBrain().getLogger().info(getMessage("管理员停止设置", ac.setPlayer));
+					ac.setPlayer.sendMessage(getMessage("停止设置", ac.setPlayer));
+					ac.getMostBrain().getLogger().info(getMessage("停止设置", ac.setPlayer));
 					ac.setPlayer = null;
 					return true;
 				}
-				if (sender.isPlayer())
-					sender.sendMessage(getMessage("不能阻止设置", (Player) sender));
-				else
-					sender.sendMessage(getMessage("不能阻止设置"));
 				return true;
 			} else if (!ac.isGameSettingUp && !ac.SettingModel) {
 				sender.sendMessage(ac.getMessage().getMessage("游戏未设置"));
@@ -126,10 +125,6 @@ public class ACommand extends Command {
 			break;
 		case "set":
 		case "设置":
-			if (!sender.isPlayer()) {
-				sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
-				return true;
-			}
 			player = (Player) sender;
 			if (ac.isGameSettingUp) {
 				player.sendMessage(msg.getSun(MainKey, SunKey, "游戏已设置完毕", player));

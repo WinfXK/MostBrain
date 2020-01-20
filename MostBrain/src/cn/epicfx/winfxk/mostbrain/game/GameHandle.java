@@ -45,6 +45,18 @@ public class GameHandle {
 	 * 重生点所在的世界
 	 */
 	private Level SpawnLevel;
+	/**
+	 * 增加附属掉落间隔
+	 */
+	private int Timesleep;
+
+	public boolean ReadyisModel() {
+		return ReadyisModel;
+	}
+
+	public boolean StartGame() {
+		return StartGame;
+	}
 
 	public GameHandle(Activate ac) {
 		this.ac = ac;
@@ -53,15 +65,21 @@ public class GameHandle {
 		location = new Location(mostConfig.Spawn.get("X"), mostConfig.Spawn.get("Y"), mostConfig.Spawn.get("Z"),
 				SpawnLevel);
 		GameMinCount = ac.getConfig().getInt("游戏最小人数");
-		GameMinCount = GameMinCount < 2 ? 2 : GameMinCount;
+		GameMinCount = GameMinCount < 1 ? 2 : GameMinCount;
 		gamePlayers = new ArrayList<>();
-		ReadyTime = ac.getConfig().getInt("等待时间");
+		ReadyTime = 0;
+		Timesleep = ac.getConfig().getInt("掉落间隔");
 	}
 
 	public List<Player> getGamePlayers() {
 		return gamePlayers;
 	}
 
+	/**
+	 * 增加参与游戏的玩家数量
+	 * 
+	 * @param player
+	 */
 	public void addPlayer(Player player) {
 		if (gamePlayers.contains(player))
 			return;
@@ -72,16 +90,20 @@ public class GameHandle {
 			readyiingThread = new ReadyiingThread();
 			readyiingThread.start();
 		}
+		ac.isStartGame = true;
 		gamePlayers.add(player);
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
-		myPlayer.saveInventory().saveHealth().saveXYZ();
+		myPlayer.saveInventory().saveGameMode().saveHealth();
 		player.getInventory().clearAll();
+		myPlayer.ReadyModel = true;
 		String[] list = getMessageList("加入准备");
 		int Max = ac.getConfig().getInt("游戏最大血量");
 		int h = ac.getConfig().getInt("游戏血量");
 		h = h > Max ? Max : h;
 		player.setMaxHealth(Max);
 		player.setHealth(h);
+		player.setGamemode(0);
+		ac.setPlayers(player, myPlayer);
 		for (int i = 0; i < list.length; i++)
 			list[i] = ac.getMessage().getText(list[i],
 					new String[] { "{Player}", "{Money}", "{Count}", "{MinCount}", "{IsCount}" },
@@ -101,17 +123,24 @@ public class GameHandle {
 		@Override
 		public void run() {
 			try {
+				ReadyTime = ac.getConfig().getInt("等待时间");
 				while (ReadyisModel) {
+					if (gamePlayers.size() < 1) {
+						reload();
+						break;
+					}
 					sleep(1000);
+					if (gamePlayers.size() >= GameMinCount)
+						ReadyTime--;
 					for (Player player : gamePlayers)
-						if (gamePlayers.size() > GameMinCount)
+						if (gamePlayers.size() >= GameMinCount) {
 							player.sendMessage(ac.getMessage().getSon("Game", "即将开始",
-									new String[] { "{Player}", "{Money}", "{ReadyTime}" }, new Object[] {
-											player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime-- }));
-						else if (ReadyisTime > 120)
+									new String[] { "{Player}", "{Money}", "{ReadyTime}" },
+									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime }));
+						} else if (ReadyisTime > 120)
 							player.sendMessage(ac.getMessage().getSon("Game", "人数不足",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" }, new Object[] {
-											player.getName(), MyPlayer.getMoney(player.getName()), ReadyisTime++ }));
+											player.getName(), MyPlayer.getMoney(player.getName()), ReadyisTime }));
 					String[] list = getMessageList("ReadyisGameSign");
 					for (int i = 0; i < list.length; i++)
 						list[i] = ac.getMessage().getText(list[i],
@@ -122,7 +151,7 @@ public class GameHandle {
 														+ Tool.getRandColor() + GameMinCount });
 					Tool.setSign(mostConfig.Level, mostConfig.Start.get("X"), mostConfig.Start.get("Y"),
 							mostConfig.Start.get("Z"), list);
-					if (ReadyTime <= 0) {
+					if (ReadyTime < 0) {
 						ReadyisModel = false;
 						StartGame = true;
 						gameMainThread = new GameMainThread();
@@ -139,8 +168,65 @@ public class GameHandle {
 		}
 	}
 
-	private void QuitGame() {
-		
+	/**
+	 * 游戏设置复位
+	 */
+	public void reload() {
+		Map<String, Object> GameMessage = (Map<String, Object>) ac.getMessage().getConfig().get("Game");
+		List<?> list = (List<?>) GameMessage.get("NotStartSign");
+		Level signLevel = Server.getInstance().getLevelByName(mostConfig.Level);
+		if (signLevel != null)
+			Tool.setSign(signLevel.getBlock(mostConfig.getStart()),
+					ac.getMessage().getText(Tool.objToString(list.get(0), "")),
+					ac.getMessage().getText(Tool.objToString(list.get(1), "")),
+					ac.getMessage().getText(Tool.objToString(list.get(2), "")),
+					ac.getMessage().getText(Tool.objToString(list.get(3), "")));
+		ac.isStartGame = false;
+		StartGame = false;
+		ReadyisModel = false;
+	}
+
+	/**
+	 * 游戏时间到 所有玩家退出游戏
+	 */
+	public void QuitGame() {
+		for (Player player : gamePlayers)
+			QuitGame(player, false, false);
+		gamePlayers = new ArrayList<>();
+		reload();
+	}
+
+	/**
+	 * 玩家退出游戏的处理
+	 * 
+	 * @param player
+	 */
+	public void QuitGame(Player player, boolean isQuitServer, boolean isRemove) {
+		if (!ac.isStartGame)
+			return;
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		if (myPlayer.GameModel || myPlayer.ReadyModel) {
+			int honor = 0, score = 0;
+			for (EffectItem item : myPlayer.items) {
+				honor += item.gameData.honor;
+				score += item.gameData.score;
+			}
+			if (isQuitServer) {
+				honor = -10;
+				score = 0;
+			}
+			if (isRemove)
+				gamePlayers.remove(player);
+			player.removeAllEffects();
+			myPlayer.addHonor(honor).addScore(score).loadXYZ().loadGameMode().loadInventory();
+			myPlayer.items = new ArrayList<>();
+			myPlayer.GameModel = false;
+			myPlayer.ReadyModel = false;
+			ac.setPlayers(player, myPlayer);
+			player.sendMessage(
+					ac.getMessage().getSon("Game", "游戏结束", new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" },
+							new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), score, honor }));
+		}
 	}
 
 	/**
@@ -158,18 +244,53 @@ public class GameHandle {
 		@Override
 		public void run() {
 			new BuffThread().start();
+			MyPlayer myPlayer;
 			for (Player player : gamePlayers) {
+				if (player == null)
+					continue;
+				myPlayer = ac.getPlayers(player.getName());
+				if (myPlayer == null)
+					continue;
+				myPlayer.GameModel = true;
+				myPlayer.ReadyModel = false;
+				myPlayer.saveXYZ();
+				player.getInventory().addItem(ac.getEffecttor().getAK());
 				player.teleport(location);
+				ac.setPlayers(player, myPlayer);
 				player.sendTitle(getMessage("开始游戏", player));
 			}
+			Timesleep = ac.getConfig().getInt("掉落间隔");
 			int ItemCount = Tool.getRand(1, 5);
 			for (int i = 0; i < gamePlayers.size() * ItemCount; i++)
 				location.level.dropItem(new Vector3(Tool.getRand((int) mostConfig.MinX + 1, (int) mostConfig.MaxX - 1),
 						Tool.getRand((int) mostConfig.MinY + 1, (int) mostConfig.MaxY - 1), mostConfig.MinZ + 2),
 						getItem(), null, true, 3);
 			try {
-				while (StartGame && GameTime > 0) {
+				while (StartGame && GameTime >= 0) {
+					Map<String, Object> GameMessage = (Map<String, Object>) ac.getMessage().getConfig().get("Game");
+					List<?> list = (List<?>) GameMessage.get("StartGameSign");
+					Level signLevel = Server.getInstance().getLevelByName(mostConfig.Level);
+					if (signLevel != null)
+						Tool.setSign(signLevel.getBlock(mostConfig.getStart()),
+								ac.getMessage().getText(Tool.objToString(list.get(0), "")),
+								ac.getMessage().getText(Tool.objToString(list.get(1), "")),
+								ac.getMessage().getText(Tool.objToString(list.get(2), "")),
+								ac.getMessage().getText(Tool.objToString(list.get(3), "")));
+					Timesleep--;
 					for (Player player : gamePlayers) {
+						if (Timesleep < 5 && Timesleep > 0) {
+							player.sendMessage(ac.getMessage().getSon("Game", "即将发送补给",
+									new String[] { "{Player}", "{Money}", "{SleepTime}" },
+									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), Timesleep }));
+						}
+						if (Timesleep == 0) {
+							player.sendMessage(ac.getMessage().getSon("Game", "正在发送补给", player));
+							location.level.dropItem(
+									new Vector3(Tool.getRand((int) mostConfig.MinX + 1, (int) mostConfig.MaxX - 1),
+											Tool.getRand((int) mostConfig.MinY + 1, (int) mostConfig.MaxY - 1),
+											mostConfig.MinZ + 2),
+									getItem(), null, true, 3);
+						}
 						if ((GameTime > 3 && GameTime < 10) || GameTime == 25 || GameTime == 30)
 							player.sendTitle(ac.getMessage().getSon("Game", "游戏即将结束",
 									new String[] { "{Player}", "{Money}", "{GameTime}" },
@@ -177,8 +298,11 @@ public class GameHandle {
 						if (GameTime <= 3)
 							player.sendTitle(Tool.getRandColor() + GameTime);
 					}
+					Timesleep = Timesleep <= 0 ? ac.getConfig().getInt("掉落间隔") : Timesleep;
 					GameTime--;
 					sleep(1000);
+					if (GameTime < 0)
+						break;
 				}
 				QuitGame();
 			} catch (InterruptedException e) {
@@ -203,8 +327,10 @@ public class GameHandle {
 					while (StartGame) {
 						for (Player player : gamePlayers) {
 							myPlayer = ac.getPlayers(player.getName());
-							for (EffectItem item : myPlayer.items)
-								item.Wake();
+							if (myPlayer != null && myPlayer.items != null)
+								for (EffectItem item : myPlayer.items)
+									if (item != null)
+										item.Wake();
 						}
 						sleep(1000);
 					}
@@ -249,6 +375,19 @@ public class GameHandle {
 			return this;
 		player.getInventory().addItem(ac.getEffecttor().getItem(effectItem));
 		return this;
+	}
+
+	/**
+	 * 返回玩家持有的效果数量
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public int getEffects(Player player) {
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		if (myPlayer.ReadyModel || myPlayer.GameModel)
+			return myPlayer.items.size();
+		return 0;
 	}
 
 	/**

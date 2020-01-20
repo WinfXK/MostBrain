@@ -65,7 +65,7 @@ public class SettingGame {
 			if (isItemID(block, 63) || isItemID(block, 323) || isItemID(block, 68)) {
 				List<?> list = (List<?>) GameMessage.get("NotStartSign");
 				player.sendMessage(getMessage("点击木牌"));
-				Tool.setSign(block, ac.getMessage().getText(Tool.objToString(list.get(0), ""), player),
+				Tool.setSign(startSign = block, ac.getMessage().getText(Tool.objToString(list.get(0), ""), player),
 						ac.getMessage().getText(Tool.objToString(list.get(1), ""), player),
 						ac.getMessage().getText(Tool.objToString(list.get(2), ""), player),
 						ac.getMessage().getText(Tool.objToString(list.get(3), ""), player));

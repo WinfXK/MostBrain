@@ -14,6 +14,7 @@ public class PCommand extends Command {
 	public PCommand(Activate ac) {
 		super(ac.getName(), ac.getName() + "命令", "/" + ac.getName() + " help", ac.getCommands("PlayerCommand"));
 		this.ac = ac;
+		
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
-
 /**
  * 每隔一段时间增加一点血量</br>
  * 不死图腾
@@ -25,24 +22,12 @@ public class Eternalife extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
-	}
-
-	@Override
 	public void Wake() {
 		if (player.getHealth() >= player.getMaxHealth() || i++ < 3)
 			return;
 		i = 0;
 		float f = player.getHealth() + 1;
+		gameData.score++;
 		player.setMaxHealth((int) (f > player.getMaxHealth() ? player.getMaxHealth() : f));
 	}
-
 }

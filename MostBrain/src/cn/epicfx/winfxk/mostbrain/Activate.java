@@ -7,7 +7,6 @@ import java.util.List;
 import cn.epicfx.winfxk.mostbrain.cmd.ACommand;
 import cn.epicfx.winfxk.mostbrain.cmd.PCommand;
 import cn.epicfx.winfxk.mostbrain.effect.Effecttor;
-import cn.epicfx.winfxk.mostbrain.event.PlayerEvent;
 import cn.epicfx.winfxk.mostbrain.game.GameEvent;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.game.MostConfig;
@@ -81,10 +80,15 @@ public class Activate {
 
 	public MostConfig reloadMostConfig() {
 		mostConfig = new MostConfig(this);
+		gameEvent = new GameEvent(this);
+		gameHandle = new GameHandle(this);
+		effecttor = new Effecttor(gameHandle);
 		return mostConfig;
 	}
 
 	public MostConfig getMostConfig() {
+		if (mostConfig == null)
+			mostConfig = new MostConfig(this);
 		return mostConfig;
 	}
 

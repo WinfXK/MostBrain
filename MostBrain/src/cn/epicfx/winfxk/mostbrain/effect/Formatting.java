@@ -3,7 +3,6 @@ package cn.epicfx.winfxk.mostbrain.effect;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.player.PlayerItemConsumeEvent;
 
 /**
  * 自己的第一次攻击能清除对手的所有buff</br>
@@ -24,10 +23,6 @@ public class Formatting extends EffectItem {
 	}
 
 	@Override
-	public void onItemConsume(PlayerItemConsumeEvent e) {
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
 		if (i++ > 1)
 			return;
@@ -35,18 +30,8 @@ public class Formatting extends EffectItem {
 		if (!(entity instanceof Player))
 			return;
 		Player player = (Player) entity;
+		gameData.honor++;
+		gameData.score += 2 * ac.gameHandle.getEffects(player);
 		ac.gameHandle.clearBuffs(player);
-	}
-
-	@Override
-	public void onConsume() {
-	}
-
-	@Override
-	public void onBeingDamage(EntityDamageEvent e) {
-	}
-
-	@Override
-	public void Wake() {
 	}
 }

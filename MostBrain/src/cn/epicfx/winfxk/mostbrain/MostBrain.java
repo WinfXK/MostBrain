@@ -24,6 +24,8 @@ public class MostBrain extends PluginBase {
 	@Override
 	public void onDisable() {
 		getLogger().info(ac.getMessage().getMessage("插件关闭"));
+		if (ac.gameHandle != null)
+			ac.gameHandle.reload();
 		super.onDisable();
 	}
 
