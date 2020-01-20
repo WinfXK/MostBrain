@@ -18,6 +18,11 @@ public class Healthgod extends EffectItem {
 	}
 
 	@Override
+	public boolean Affiliate() {
+		return false;
+	}
+
+	@Override
 	public int getID() {
 		return 466;
 	}

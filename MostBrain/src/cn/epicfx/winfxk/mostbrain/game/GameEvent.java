@@ -26,12 +26,7 @@ public class GameEvent {
 		Player player = e.getPlayer();
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
 		if (myPlayer != null && (myPlayer.GameModel || myPlayer.ReadyModel))
-			new Thread() {
-				@Override
-				public void run() {
-					ac.gameHandle.QuitGame(player, true, true);
-				}
-			}.start();
+			ac.gameHandle.QuitGame(player, true, true, false);
 	}
 
 	/**

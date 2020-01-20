@@ -22,6 +22,11 @@ public class Flying extends EffectItem {
 	}
 
 	@Override
+	public boolean isReDo() {
+		return false;
+	}
+
+	@Override
 	public void Wake() {
 		if (i++ < 10)
 			return;

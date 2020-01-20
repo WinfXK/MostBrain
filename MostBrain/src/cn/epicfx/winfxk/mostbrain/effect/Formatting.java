@@ -23,6 +23,11 @@ public class Formatting extends EffectItem {
 	}
 
 	@Override
+	public boolean isReDo() {
+		return false;
+	}
+
+	@Override
 	public void onDamage(EntityDamageEvent e) {
 		if (i++ > 1)
 			return;

@@ -191,7 +191,7 @@ public class GameHandle {
 	 */
 	public void QuitGame() {
 		for (Player player : gamePlayers)
-			QuitGame(player, false, false);
+			QuitGame(player, false, false,true);
 		gamePlayers = new ArrayList<>();
 		reload();
 	}
@@ -201,7 +201,7 @@ public class GameHandle {
 	 * 
 	 * @param player
 	 */
-	public void QuitGame(Player player, boolean isQuitServer, boolean isRemove) {
+	public void QuitGame(Player player, boolean isQuitServer, boolean isRemove,boolean isMsg) {
 		if (!ac.isStartGame)
 			return;
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
@@ -218,11 +218,13 @@ public class GameHandle {
 			if (isRemove)
 				gamePlayers.remove(player);
 			player.removeAllEffects();
-			myPlayer.addHonor(honor).addScore(score).loadXYZ().loadGameMode().loadInventory();
+			player.getInventory()
+					.setContents(myPlayer.addHonor(honor).addScore(score).loadXYZ().loadGameMode().loadInventory());
 			myPlayer.items = new ArrayList<>();
 			myPlayer.GameModel = false;
 			myPlayer.ReadyModel = false;
 			ac.setPlayers(player, myPlayer);
+			if(isMsg)
 			player.sendMessage(
 					ac.getMessage().getSon("Game", "游戏结束", new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" },
 							new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), score, honor }));

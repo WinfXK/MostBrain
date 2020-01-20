@@ -70,7 +70,8 @@ public class Effecttor {
 		list = new EffectItem[] { new Accumulation(), new Beggar(), new Brambles(), new Combustion(), new Deathgodson(),
 				new Dieattack(), new Dodging(), new Eternalife(), new Expedite(), new Ferocity(), new Firegod(),
 				new Flying(), new Formatting(), new Healthgod(), new Highlytoxic(), new Meteors(), new Philanthropist(),
-				new Protection(), new Satiate(), new Slowness(), new Theft(), new Vertigo() };
+				new Protection(), new Suckblood(), new Burst(), new Satiate(), new Slowness(), new Theft(),
+				new Vertigo(), new Stamp() };
 	}
 
 	/**

@@ -19,6 +19,11 @@ public class Meteors extends EffectItem {
 	}
 
 	@Override
+	public boolean Affiliate() {
+		return false;
+	}
+
+	@Override
 	public void onConsume() {
 		super.onConsume();
 		handle.giveBuffs(player).giveBuffs(player);

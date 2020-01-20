@@ -20,6 +20,16 @@ lang: chs-中文
 插件关闭: '{RGBTextStart}{PluginName}已关闭！感谢使用！{RGBTextEnd}{RandColor}若经济允许，希望能赞助一下！支付宝：2508543202@qq.com'
 数据加载错误: §4无法读取游戏数据！请删除所有数据后尝试重新创建！
 EffectItem:
+   Burst:
+      Name: 核能爆发
+      Hint: 被赋予这个神力的玩家在攻击时概率触发爆炸效果
+   Suckblood:
+      Name: 吸血精灵
+      Hint: 被赋予这个神力的玩家在攻击时概率触发吸血效果
+   Stamp:
+      Name: 万众瞩目
+      Hint: 被赋予这个神力的玩家在攻击时被攻击者会被标记
+      Text: '{RandColor}我是傻逼！{n}{RandColor}求{RandColor}打'
    Vertigo:
       Name: 巴豆战士
       Hint: 被赋予这个神力的玩家第一次攻击时将附带反胃Buff
@@ -87,6 +97,17 @@ EffectItem:
       Name: 血腥镰刀
       Hint: 被赋予这个神力的玩家的前三次攻击将会造成被攻击者血量直接减半的效果
 Command:
+   PlayerCommand:
+      ReferScore: "{RandColor}查询分数"
+      TraGame: "{RandColor}传送到游戏区域"
+      QuitGame: "{RandColor}退出游戏"
+      JoinGame: "{RandColor}加入游戏"
+      未加入游戏: §4您当前还未加入任何游戏
+      中途退出: §4由于您中途退出游戏！无法获得任何奖励并且荣誉降低！
+      无法加入游戏: §4无法加入游戏！请联系管理员！
+      无法传送: §4无法传送至游戏！请联系管理员！
+      传送成功: §4您以传送到游戏开始处！
+      您的游戏数据: "{RandColor}您的游戏总得分：{RandColor}{Score}"
    AdminCommand:
       setMsg: '{RandColor}开始设置{PluginName}'
       delMsg: '{RandColor}删除所有{PluginName}设置'

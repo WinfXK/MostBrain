@@ -28,6 +28,11 @@ public class Satiate extends EffectItem {
 	}
 
 	@Override
+	public boolean isReDo() {
+		return false;
+	}
+
+	@Override
 	public void Wake() {
 		food.setLevel(food.getLevel() < 1 ? 1 : food.getLevel(),
 				food.getFoodSaturationLevel() < 1 ? 1 : food.getFoodSaturationLevel());

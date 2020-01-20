@@ -47,15 +47,12 @@ public class ACommand extends Command {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!ac.getMostBrain().isEnabled())
 			return true;
-		if (!sender.hasPermission(Permission)) {
-			if (sender.isPlayer())
-				sender.sendMessage(msg.getMessage("权限不足", (Player) sender));
-			else
-				sender.sendMessage(msg.getMessage("权限不足"));
-			return true;
-		}
 		if (!sender.isPlayer()) {
 			sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
+			return true;
+		}
+		if (!sender.hasPermission(Permission)) {
+			sender.sendMessage(msg.getMessage("权限不足", (Player) sender));
 			return true;
 		}
 		if (args == null || args.length == 0)

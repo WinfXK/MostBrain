@@ -22,6 +22,11 @@ public class Expedite extends EffectItem {
 	}
 
 	@Override
+	public boolean isReDo() {
+		return false;
+	}
+
+	@Override
 	public void Wake() {
 		super.Wake();
 		if (i++ < 10)

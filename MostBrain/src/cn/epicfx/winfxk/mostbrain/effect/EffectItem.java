@@ -42,6 +42,24 @@ public abstract class EffectItem {
 	}
 
 	/**
+	 * 是否加入玩家特效列表
+	 * 
+	 * @return
+	 */
+	public boolean Affiliate() {
+		return true;
+	}
+
+	/**
+	 * 是否允许重复
+	 * 
+	 * @return
+	 */
+	public boolean isReDo() {
+		return true;
+	}
+
+	/**
 	 * 分配玩家物品使用处理事件
 	 * 
 	 * @param e
@@ -64,7 +82,16 @@ public abstract class EffectItem {
 							EffectItem item4 = item3.getClass().newInstance();
 							myPlayer.items = myPlayer.items == null ? new ArrayList<>() : myPlayer.items;
 							item4.setPlayer(player);
-							myPlayer.items.add(item4);
+							if (item4.Affiliate())
+								if (!item4.isReDo()) {
+									boolean isOKb = false;
+									for (EffectItem item5 : myPlayer.items)
+										if (isOKb = item5.getName().equals(item4.getName()))
+											break;
+									if (!isOKb)
+										myPlayer.items.add(item4);
+								} else
+									myPlayer.items.add(item4);
 							item4.onConsume();
 							Activate.getActivate().setPlayers(player, myPlayer);
 							if (item2.getCount() <= 1)
@@ -182,6 +209,15 @@ public abstract class EffectItem {
 		return getMeaage("Name", player);
 	}
 
+	/**
+	 * 返回附属文本
+	 * 
+	 * @return
+	 */
+	public String getText() {
+		return getMeaage("Text", player);
+	}
+
 	public void Wake() {
 		gameData.score++;
 	}
@@ -198,7 +234,9 @@ public abstract class EffectItem {
 	 * 
 	 * @return
 	 */
-	public abstract int getDamage();
+	public int getDamage() {
+		return -1;
+	}
 
 	/**
 	 * 项目消耗事件

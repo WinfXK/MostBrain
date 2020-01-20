@@ -8,10 +8,6 @@ package cn.epicfx.winfxk.mostbrain.effect;
  */
 public class Eternalife extends EffectItem {
 	@Override
-	public void onConsume() {
-	}
-
-	@Override
 	public int getID() {
 		return 450;
 	}

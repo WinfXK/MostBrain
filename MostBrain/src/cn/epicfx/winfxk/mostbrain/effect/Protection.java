@@ -22,7 +22,9 @@ public class Protection extends EffectItem {
 
 	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
-		e.setDamage(e.getDamage() / 2);
+		float ak = e.getDamage() / 2;
+		ak = ak < 1 ? 1 : ak;
+		e.setDamage(ak);
 		gameData.honor++;
 		gameData.score += e.getDamage() / 2;
 	}

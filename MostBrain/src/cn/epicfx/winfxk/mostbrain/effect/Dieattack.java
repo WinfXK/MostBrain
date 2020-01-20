@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
 
 /**
@@ -21,9 +22,12 @@ public class Dieattack extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
+		Entity en = e.getEntity();
+		if (en.getHealth() <= 0)
+			return;
 		if (i++ > 1)
 			return;
-		e.setDamage(e.getEntity().getHealth());
+		e.setDamage(en.getHealth());
 		gameData.honor++;
 		gameData.score += e.getEntity().getHealth();
 	}

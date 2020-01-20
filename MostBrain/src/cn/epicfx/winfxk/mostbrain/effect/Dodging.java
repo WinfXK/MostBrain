@@ -24,7 +24,7 @@ public class Dodging extends EffectItem {
 
 	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
-		if (Tool.getRand(MinGing, MaxGing) != 1)
+		if (Tool.getRand(MinGing, MaxGing) != 1 || e.isCancelled())
 			return;
 		gameData.honor++;
 		gameData.score += e.getDamage();

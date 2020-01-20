@@ -23,6 +23,11 @@ public class Vertigo extends EffectItem {
 	}
 
 	@Override
+	public boolean isReDo() {
+		return false;
+	}
+
+	@Override
 	public void onDamage(EntityDamageEvent e) {
 		Effect effect = Effect.getEffect(9);
 		effect.setDuration(280);

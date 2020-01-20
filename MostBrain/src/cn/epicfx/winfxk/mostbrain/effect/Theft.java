@@ -20,6 +20,11 @@ public class Theft extends EffectItem {
 	}
 
 	@Override
+	public boolean isReDo() {
+		return false;
+	}
+
+	@Override
 	public int getDamage() {
 		return -1;
 	}
