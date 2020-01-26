@@ -41,33 +41,48 @@ public class ACommand extends Command {
 				new CommandParameter(getMessage("setMsg"), false, new String[] { "set", "设置" }) });
 		commandParameters.put(getMessage("delMsg"), new CommandParameter[] {
 				new CommandParameter(getMessage("delMsg"), false, new String[] { "del", "删除" }) });
+		commandParameters.put(getMessage("stopMsg"), new CommandParameter[] {
+				new CommandParameter(getMessage("stopMsg"), false, new String[] { "stop", "停止" }) });
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!ac.getMostBrain().isEnabled())
 			return true;
-		if (!sender.isPlayer()) {
-			sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
-			return true;
-		}
 		if (!sender.hasPermission(Permission)) {
 			sender.sendMessage(msg.getMessage("权限不足", (Player) sender));
 			return true;
 		}
 		if (args == null || args.length == 0)
 			return false;
+		switch (args[0].toLowerCase()) {
+		case "stop":
+		case "停止":
+		case "终止":
+			if (!ac.isGameSettingUp) {
+				sender.sendMessage(msg.getMessage("游戏未设置"));
+				return true;
+			}
+			if (!ac.isStartGame || (!ac.gameHandle.ReadyisModel() && !ac.gameHandle.StartGame())) {
+				sender.sendMessage(msg.getMessage("游戏未开始"));
+				return true;
+			}
+			ac.gameHandle.setCommandSender(sender).setAdminStopGame(true);
+			sender.sendMessage(msg.getMessage("终止成功"));
+			return true;
+		}
+		if (!sender.isPlayer()) {
+			sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
+			return true;
+		}
 		LinkedHashMap<String, Object> map;
-		Player player;
+		Player player = (Player) sender;
 		switch (args[0].toLowerCase()) {
 		case "del":
 		case "remove":
 		case "删除":
 			if (ac.isStartGame) {
-				if (sender.isPlayer())
-					sender.sendMessage(getMessage("已开始游戏", (Player) sender));
-				else
-					sender.sendMessage(getMessage("已开始游戏"));
+				sender.sendMessage(getMessage("已开始游戏", player));
 				return true;
 			}
 			if (!ac.isGameSettingUp && ac.SettingModel) {
@@ -86,7 +101,7 @@ public class ACommand extends Command {
 				}
 				return true;
 			} else if (!ac.isGameSettingUp && !ac.SettingModel) {
-				sender.sendMessage(ac.getMessage().getMessage("游戏未设置"));
+				sender.sendMessage(ac.getMessage().getMessage("游戏未设置", player));
 				return true;
 			}
 			Config config = ac.getGameConfig();
@@ -116,13 +131,12 @@ public class ACommand extends Command {
 			config.save();
 			ac.setGameConfig(config);
 			ac.isGameSettingUp = false;
-			sender.sendMessage(getMessage("删除游戏"));
+			sender.sendMessage(getMessage("删除游戏", player));
 			if (sender.isPlayer())
-				ac.getMostBrain().getLogger().info(getMessage("管理员删除游戏"));
+				ac.getMostBrain().getLogger().info(getMessage("管理员删除游戏", player));
 			break;
 		case "set":
 		case "设置":
-			player = (Player) sender;
 			if (ac.isGameSettingUp) {
 				player.sendMessage(msg.getSun(MainKey, SunKey, "游戏已设置完毕", player));
 				return true;

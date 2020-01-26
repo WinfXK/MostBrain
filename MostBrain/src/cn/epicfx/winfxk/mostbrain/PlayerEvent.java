@@ -1,9 +1,12 @@
 package cn.epicfx.winfxk.mostbrain;
 
+import java.util.Map;
+
 import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
 import cn.epicfx.winfxk.mostbrain.game.MostConfig;
 import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
@@ -21,7 +24,9 @@ import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.event.player.PlayerRespawnEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 /**
@@ -60,7 +65,6 @@ public class PlayerEvent implements Listener {
 					return;
 				}
 			}
-
 	}
 
 	@EventHandler
@@ -95,7 +99,8 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
-		ac.setPlayers(player, new MyPlayer(player));
+		MyPlayer myPlayer = new MyPlayer(player);
+		ac.setPlayers(player, myPlayer);
 		String string = msg.getSun("Event", "PlayerJoin", "Tip", player);
 		if (string != null && !string.isEmpty())
 			if (!player.isOp() && ac.isGameSettingUp)
@@ -104,8 +109,32 @@ public class PlayerEvent implements Listener {
 		if (string != null && !string.isEmpty())
 			if (player.isOp() && !ac.isGameSettingUp)
 				player.sendMessage(string);
-		MyPlayer myPlayer = ac.getPlayers(player.getName());
-		myPlayer.setInventory();
+		myPlayer.loadInventory();
+		MostConfig mc = ac.getMostConfig();
+		if (ac.isGameSettingUp && mc != null) {
+			double x = player.getX(), y = player.getY(), z = player.getZ();
+			if (x > mc.MinX && x < mc.MaxX && y > mc.MinY && y < mc.MaxY && z > mc.MinZ && z < mc.MaxZ
+					&& player.getLevel().getFolderName().equals(mc.StartLevel)) {
+				Level level = Server.getInstance().getLevelByName(mc.Level);
+				Vector3 v = mc.getStart();
+				if (level != null)
+					new RespawnThread(player, new Location(v.x, v.y, v.z, level)).start();
+			}
+		}
+		Map<Integer, Item> map = player.getInventory().getContents();
+		for (Integer i : map.keySet()) {
+			Item item = map.get(i);
+			if (item == null || item.getId() == 0)
+				continue;
+			CompoundTag nbt = item.getNamedTag();
+			if (nbt == null)
+				continue;
+			if (nbt.getString(ac.getMostBrain().getName()) != null) {
+				item = new Item(0, 0);
+				map.put(i, item);
+			}
+		}
+		player.getInventory().setContents(map);
 	}
 
 	/**
@@ -119,13 +148,45 @@ public class PlayerEvent implements Listener {
 			return;
 		Player player = e.getPlayer();
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
-		if (ac.isPlayers(player)) {
-			if (ac.SettingModel == false
-					|| !(ac.SettingModel == true && player.getName().equals(ac.setPlayer.getName()))
-					|| !(myPlayer.GameModel || myPlayer.ReadyModel)) {
-				myPlayer.config.save();
-				ac.setPlayers(player, new MyPlayer(player));
+
+		if (myPlayer != null && ac.isStartGame) {
+			if (myPlayer.ReadyModel) {
+				Vector3 v = ac.getMostConfig().getStart();
+				Level level = Server.getInstance().getLevelByName(ac.getMostConfig().Level);
+				if (level != null)
+					new RespawnThread(player, new Location(v.x, v.y, v.z, level)).start();
 			}
+			if (myPlayer.GameModel) {
+				Vector3 v = ac.getMostConfig().getSpawn();
+				Level level = Server.getInstance().getLevelByName(ac.getMostConfig().StartLevel);
+				if (level != null)
+					new RespawnThread(player, new Location(v.x, v.y, v.z, level)).start();
+			}
+		}
+	}
+
+	/**
+	 * 玩家传送事件延迟
+	 * 
+	 * @author Winfxk
+	 */
+	private class RespawnThread extends Thread {
+		private Player player;
+		private Location l;
+
+		public RespawnThread(Player player, Location l) {
+			this.l = l;
+			this.player = player;
+		}
+
+		@Override
+		public void run() {
+			try {
+				sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			player.teleport(l);
 		}
 	}
 
@@ -166,6 +227,13 @@ public class PlayerEvent implements Listener {
 		Player player = e.getEntity();
 		if (!player.isPlayer())
 			return;
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		if (ac.isStartGame && (ac.gameHandle.ReadyisModel() || ac.gameHandle.StartGame())
+				&& myPlayer.gameData != null) {
+			myPlayer.gameData.honor -= ac.config.getInt("死亡扣除分数");
+			myPlayer.gameData.score -= ac.config.getInt("死亡扣除荣耀");
+			ac.setPlayers(player, myPlayer);
+		}
 	}
 
 	/**

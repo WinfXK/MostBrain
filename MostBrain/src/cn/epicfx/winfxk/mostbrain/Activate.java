@@ -137,7 +137,8 @@ public class Activate {
 	}
 
 	public void setPlayers(String player, MyPlayer myPlayer) {
-		Players.put(player, myPlayer);
+		if (!isPlayers(player))
+			Players.put(player, myPlayer);
 	}
 
 	public MyPlayer getPlayers(String player) {

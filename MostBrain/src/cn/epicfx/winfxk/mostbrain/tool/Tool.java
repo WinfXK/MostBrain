@@ -17,7 +17,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -169,9 +168,9 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	 * 
 	 * @return
 	 */
-	public static Map<Integer, Item> loadInventory(List<Map<String, Object>> list) {
+	public static Map<Integer, Item> loadInventory(Map<Integer, Map<String, Object>> list) {
 		Map<Integer, Item> Contents = new HashMap<>();
-		for (int i = 0; i < list.size(); i++) {
+		for (Integer i : list.keySet()) {
 			Map<String, Object> map = list.get(i);
 			Item item = new Item((int) map.get("ID"), (int) map.get("Damage"), (int) map.get("Count"),
 					(String) map.get("Name"));
@@ -187,8 +186,8 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	 * @param player 要保存背包的玩家对象
 	 * @return
 	 */
-	public static List<Map<String, Object>> saveInventory(Player player) {
-		List<Map<String, Object>> list = new ArrayList<>();
+	public static Map<Integer, Map<String, Object>> saveInventory(Player player) {
+		Map<Integer, Map<String, Object>> list = new HashMap<>();
 		Map<Integer, Item> Contents = player.getInventory().getContents();
 		for (Integer i : Contents.keySet()) {
 			Item item = Contents.get(i);
@@ -198,7 +197,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 			map.put("Damage", item.getDamage());
 			map.put("Name", item.getName());
 			map.put("Count", item.getCount());
-			list.add(map);
+			list.put(i, map);
 		}
 		return list;
 	}
@@ -1035,8 +1034,8 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 将Map按数据升序排列
 	 * 
-	 * @param <K>
-	 * @param <V>
+	 * @param     <K>
+	 * @param     <V>
 	 * @param map
 	 * @return
 	 */
@@ -1058,8 +1057,8 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 将Map降序排序
 	 * 
-	 * @param <K>
-	 * @param <V>
+	 * @param     <K>
+	 * @param     <V>
 	 * @param map
 	 * @return
 	 */

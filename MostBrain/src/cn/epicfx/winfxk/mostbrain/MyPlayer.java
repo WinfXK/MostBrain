@@ -1,10 +1,12 @@
 package cn.epicfx.winfxk.mostbrain;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
+import cn.epicfx.winfxk.mostbrain.game.GameData;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -16,6 +18,7 @@ import cn.nukkit.utils.Config;
 /**
  * @author Winfxk
  */
+@SuppressWarnings("unchecked")
 public class MyPlayer {
 	private Activate ac;
 	public Config config;
@@ -23,6 +26,7 @@ public class MyPlayer {
 	public boolean GameModel = false;
 	public boolean ReadyModel = false;
 	public boolean SettingModel = false;
+	public GameData gameData;
 	/**
 	 * 玩家的游戏特效
 	 */
@@ -50,8 +54,8 @@ public class MyPlayer {
 	 * @return
 	 */
 	public MyPlayer addScore(int score) {
-		long h = config.getLong("score");
-		config.set("score", h + score);
+		long h = config.getLong("得分");
+		config.set("得分", h + score);
 		config.save();
 		return this;
 	}
@@ -63,8 +67,8 @@ public class MyPlayer {
 	 * @return
 	 */
 	public MyPlayer addHonor(int honor) {
-		long h = config.getLong("honor");
-		config.set("honor", h + honor);
+		long h = config.getLong("荣耀");
+		config.set("荣耀", h + honor);
 		config.save();
 		return this;
 	}
@@ -79,33 +83,22 @@ public class MyPlayer {
 	}
 
 	/**
-	 * 将玩家存在配置文件的背包数据设置到玩家
-	 * 
-	 * @return
-	 */
-	public MyPlayer setInventory() {
-		if (!config.exists("Inventory"))
-			return this;
-		Map<Integer, Item> map = loadInventory();
-		if (map != null && map.size() > 0)
-			player.getInventory().setContents(map);
-		config.remove("Inventory");
-		config.save();
-		return this;
-	}
-
-	/**
 	 * 加载玩家的背包
 	 * 
 	 * @return
 	 */
-	public Map<Integer, Item> loadInventory() {
-		List<Map<String, Object>> list = config.getList("Inventory");
-		if (list == null || list.size() < 1)
-			return null;
+	public MyPlayer loadInventory() {
+		Object obj = config.get("Inventory");
+		Map<Integer, Map<String, Object>> map = (obj == null || !(obj instanceof Map)) ? new HashMap<>()
+				: (HashMap<Integer, Map<String, Object>>) obj;
 		config.remove("Inventory");
 		config.save();
-		return Tool.loadInventory(list);
+		Map<Integer, Item> map2 = Tool.loadInventory(map);
+		if (map2 != null && map2.size() > 0)
+			player.getInventory().setContents(map2);
+		else
+			player.getInventory().clearAll();
+		return this;
 	}
 
 	/**
@@ -114,7 +107,8 @@ public class MyPlayer {
 	 * @return
 	 */
 	public MyPlayer saveInventory() {
-		config.set("Inventory", Tool.saveInventory(player));
+		Map<Integer, Map<String, Object>> map = Tool.saveInventory(player);
+		config.set("Inventory", map);
 		config.save();
 		return this;
 	}

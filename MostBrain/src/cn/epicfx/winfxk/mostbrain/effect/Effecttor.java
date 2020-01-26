@@ -1,5 +1,9 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
@@ -13,14 +17,33 @@ import cn.nukkit.nbt.tag.CompoundTag;
  * @author Winfxk
  */
 public class Effecttor {
-
-	private EffectItem[] list;
+	private List<EffectItem> list;
 	private Activate ac;
+	private List<EffectItem> usEffectItems = new ArrayList<>();
 	public static final int[] Ak = { 268, 272, 276, 283, 267, 258, 271, 275, 279, 286 };
 	public static final int[] AkEn = { 9, 12, 13, 29 };
+	private static final EffectItem[] defEffect = { new Accumulation(), new Beggar(), new Brambles(), new Combustion(),
+			new Deathgodson(), new Dieattack(), new Dodging(), new Eternalife(), new Expedite(), new Ferocity(),
+			new Firegod(), new Flying(), new Formatting(), new Healthgod(), new Highlytoxic(), new Meteors(),
+			new Philanthropist(), new Protection(), new Suckblood(), new Burst(), new Satiate(), new Slowness(),
+			new Theft(), new Vertigo(), new Stamp() };
 
-	public EffectItem[] getList() {
+	public List<EffectItem> getList() {
+		list = list == null ? Arrays.asList(defEffect) : list;
 		return list;
+	}
+
+	/**
+	 * 添加新的特效
+	 * 
+	 * @param item
+	 * @return
+	 */
+	public Effecttor makeEffecttor(EffectItem item) {
+		if (list.contains(item) || usEffectItems.contains(item))
+			return this;
+		usEffectItems.add(item);
+		return this;
 	}
 
 	public Effecttor(GameHandle gameHandle) {
@@ -49,7 +72,7 @@ public class Effecttor {
 		nbt.putInt("Ak", aks * abs);
 		item.setCompoundTag(nbt);
 		item.setLore(ac.getMessage().getSon("Game", "武器介绍", new String[] { "{Rate}", "{Damage}", "{MaxDamage}" },
-				new Object[] { aks, abs, item.getDamage() }));
+				new Object[] { aks, abs, aks * abs }));
 		return item;
 	}
 
@@ -63,15 +86,14 @@ public class Effecttor {
 		nbt.putString(ac.getMostBrain().getName(), ac.getMostBrain().getName());
 		nbt.putString("Name", item.getName());
 		item2.setCompoundTag(nbt);
+		item2.setCount(Tool.getRand(1, item.MaxStack()));
 		return item2;
 	}
 
 	protected void load() {
-		list = new EffectItem[] { new Accumulation(), new Beggar(), new Brambles(), new Combustion(), new Deathgodson(),
-				new Dieattack(), new Dodging(), new Eternalife(), new Expedite(), new Ferocity(), new Firegod(),
-				new Flying(), new Formatting(), new Healthgod(), new Highlytoxic(), new Meteors(), new Philanthropist(),
-				new Protection(), new Suckblood(), new Burst(), new Satiate(), new Slowness(), new Theft(),
-				new Vertigo(), new Stamp() };
+		list = Arrays.asList(defEffect);
+		for (EffectItem item : usEffectItems)
+			list.add(item);
 	}
 
 	/**

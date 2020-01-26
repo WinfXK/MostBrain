@@ -111,8 +111,11 @@ Command:
    AdminCommand:
       setMsg: '{RandColor}开始设置{PluginName}'
       delMsg: '{RandColor}删除所有{PluginName}设置'
+      stopMsg: "{RandColor}终止正在进行的游戏"
       已有玩家正在设置: §4当前已经有一个玩家正在设置游戏！Player：{ByPlayer}
       正在设置: §4您当前已经在设置游戏！
+      游戏未开始: §4未开始游戏！
+      终止成功: '{RandColor}发送终止命令成功！'
       游戏已设置完毕: §4游戏已设置！若要重新设置请输入/Admin{PluginName} del
       StartGame: §4你正在开始设置游戏！请使用游戏设置工具点击一个木牌以标记开始点
       停止设置: §4您已经停止设置游戏。
@@ -146,10 +149,17 @@ Game:
    游戏即将结束: '{RandColor}游戏即将结束！剩余时间：{GameTime}'
    游戏结束: '{RandColor}游戏结束！§e本次得分：{RandColor}{Score}§e，获得荣耀：{RandColor}{Honor}'
    已加入: §4您已加入游戏！
+   金钱不足: §4您的{MoneyName}不足！无法开始游戏！
    武器介绍: '{RandColor}伤害加成：{RandColor}{Rate}{n}{RandColor}初始伤害：{RandColor}{Damage}{n}{RandColor}总伤害：{RandColor}{MaxDamage}'
    使用道具: '{RandColor}你获得了Buff：{RandColor}{Buff}'
    即将发送补给: '{RandColor}{SleepTime}{RandColor}秒后发送补给'
    正在发送补给: '{RandColor}正在发送补给'
+   游戏终止: "§4因玩家数量不足，游戏终止！"
+   管理员终止游戏: "§4{Admin}终止了游戏"
+   结束奖励: "{RandColor}本局游戏共获得{RandColor}{Money}{RandColor}{MoneyName}"
+   结束惩罚: "{RandColor}本局游戏分数过低！扣除{RandColor}{Money}{RandColor}{MoneyName}"
+   扣除费用: "{RandColor}扣除游戏费用：{RandColor}{Money}"
+   退出惩罚: "{RandColor}未完成本局游戏！扣除{RandColor}{Money}{RandColor}{MoneyName}"
    加入准备:
    - '{RandColor}欢迎来到{PluginName}'
    - '{RandColor}当前人数：{RandColor}{Count}{RandColor}，将在达到{RandColor}{MinCount}{RandColor}后开始游戏！'

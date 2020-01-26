@@ -59,14 +59,19 @@ public class PCommand extends Command {
 		case "sco":
 		case "查询":
 		case "score":
+		case "s":
 			player.sendMessage(msg.getSun("Command", "PlayerCommand", "您的游戏数据",
-					new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" },
-					new Object[] { player.getName(), myPlayer.getMoney(), myPlayer.getConfig().get("score"),
-							myPlayer.getConfig().get("honor") }));
+					new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" }, new Object[] { player.getName(),
+							myPlayer.getMoney(), myPlayer.getConfig().get("得分"), myPlayer.getConfig().get("荣耀") }));
 			break;
 		case "tra":
 		case "传送":
 		case "transfer":
+		case "t":
+			if (!ac.isGameSettingUp) {
+				player.sendMessage(msg.getMessage("游戏未设置", player));
+				return true;
+			}
 			level = Server.getInstance().getLevelByName(ac.getMostConfig().Level);
 			if (level == null) {
 				player.sendMessage(getMessage("无法传送", player));
@@ -77,6 +82,7 @@ public class PCommand extends Command {
 			break;
 		case "join":
 		case "进入":
+		case "j":
 			if (!ac.isGameSettingUp) {
 				player.sendMessage(msg.getMessage("游戏未设置", player));
 				return true;
@@ -91,11 +97,12 @@ public class PCommand extends Command {
 			break;
 		case "退出":
 		case "quit":
+		case "q":
 			if (!ac.isGameSettingUp) {
 				player.sendMessage(msg.getMessage("游戏未设置", player));
 				return true;
 			}
-			if (!ac.isStartGame || !myPlayer.GameModel || !myPlayer.ReadyModel) {
+			if (!ac.isStartGame || (!myPlayer.GameModel && !myPlayer.ReadyModel)) {
 				player.sendMessage(getMessage("未加入游戏", player));
 				return true;
 			}

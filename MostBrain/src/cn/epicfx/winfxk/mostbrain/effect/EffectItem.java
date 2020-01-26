@@ -40,6 +40,15 @@ public abstract class EffectItem {
 		myPlayer = ac.getPlayers(player.getName());
 		gameData = new GameData();
 	}
+	
+	/**
+	 * 返回物品的最大堆叠数量
+	 * 
+	 * @return
+	 */
+	public int MaxStack() {
+		return 1;
+	}
 
 	/**
 	 * 是否加入玩家特效列表
@@ -125,22 +134,31 @@ public abstract class EffectItem {
 	 */
 	public static void receiveDamage(EntityDamageEvent e) {
 		Entity entity = e.getEntity();
+		boolean KillB = false;
 		MyPlayer myPlayer;
 		if (entity instanceof Player) {
 			myPlayer = Activate.getActivate().getPlayers(entity.getName());
-			if (myPlayer.GameModel || myPlayer.ReadyModel)
-				if (myPlayer.items.size() > 0)
+			if (myPlayer != null && (myPlayer.GameModel || myPlayer.ReadyModel))
+				if (myPlayer.items != null && myPlayer.items.size() > 0) {
+					e.setDamage(e.getDamage() * Activate.getActivate().getConfig().getInt("倍率加成"));
+					KillB = true;
 					for (EffectItem item : myPlayer.items)
 						item.allotDamageEvent(e);
+				}
 		}
 		if (e instanceof EntityDamageByEntityEvent) {
 			entity = ((EntityDamageByEntityEvent) e).getDamager();
 			if (entity instanceof Player) {
 				myPlayer = Activate.getActivate().getPlayers(entity.getName());
-				if (myPlayer.GameModel || myPlayer.ReadyModel)
-					if (myPlayer.items.size() > 0)
+				if (myPlayer != null && (myPlayer.GameModel || myPlayer.ReadyModel))
+					if (myPlayer.items != null && myPlayer.items.size() > 0) {
+						if (!KillB) {
+							e.setDamage(e.getDamage() * Activate.getActivate().getConfig().getInt("倍率加成"));
+							KillB = true;
+						}
 						for (EffectItem item : myPlayer.items)
 							item.allotDamageEvent(e);
+					}
 			}
 		}
 	}
@@ -151,16 +169,18 @@ public abstract class EffectItem {
 	 * @param e
 	 */
 	public void allotDamageEvent(EntityDamageEvent e) {
-		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
-		if (e instanceof EntityDamageByEntityEvent && isPlayer(entity)) {
-			Item item = ((Player) entity).getInventory().getItemInHand();
-			CompoundTag nbt = item.getNamedTag();
-			nbt = nbt == null ? new CompoundTag() : nbt;
-			if (nbt.getString(ac.getMostBrain().getName()) != null) {
-				int ak = nbt.getInt("Ak");
-				e.setDamage(ak >= 0 ? e.getDamage() : ak);
+		if (e instanceof EntityDamageByEntityEvent) {
+			Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
+			if (isPlayer(entity)) {
+				Item item = ((Player) entity).getInventory().getItemInHand();
+				CompoundTag nbt = item.getNamedTag();
+				nbt = nbt == null ? new CompoundTag() : nbt;
+				if (nbt.getString(ac.getMostBrain().getName()) != null) {
+					int ak = nbt.getInt("Ak");
+					e.setDamage(ak >= 0 ? e.getDamage() : ak);
+				}
+				onDamage(e);
 			}
-			onDamage(e);
 		}
 		if (isPlayer(e.getEntity()))
 			onBeingDamage(e);
