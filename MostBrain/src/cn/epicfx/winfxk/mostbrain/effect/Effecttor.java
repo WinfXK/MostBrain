@@ -26,16 +26,24 @@ public class Effecttor {
 			new Deathgodson(), new Dieattack(), new Dodging(), new Eternalife(), new Expedite(), new Ferocity(),
 			new Firegod(), new Flying(), new Formatting(), new Healthgod(), new Highlytoxic(), new Meteors(),
 			new Philanthropist(), new Protection(), new Suckblood(), new Burst(), new Satiate(), new Slowness(),
-			new Theft(), new Vertigo(), new Stamp() };
+			new Theft(), new Rebirth(), new Noregretslife(), new Afterfactory(), new SplashShake(),
+			new Combustionblood(), new Frightened(), new Wrathrebirth(), new Pilfering(), new AQspirit(), new Vertigo(),
+			new Stamp() };
+	private static final String[] Sk = { "{Count}" };
 
+	/**
+	 * 获取已经支持了的Buff列表
+	 *
+	 * @return
+	 */
 	public List<EffectItem> getList() {
 		list = list == null ? Arrays.asList(defEffect) : list;
-		return list;
+		return new ArrayList<>(list);
 	}
 
 	/**
 	 * 添加新的特效
-	 * 
+	 *
 	 * @param item
 	 * @return
 	 */
@@ -46,14 +54,20 @@ public class Effecttor {
 		return this;
 	}
 
+	/**
+	 * Buff相关的构建项目
+	 *
+	 * @param gameHandle
+	 */
 	public Effecttor(GameHandle gameHandle) {
 		load();
 		ac = Activate.getActivate();
+		ac.getMostBrain().getLogger().info(ac.getMessage().getMessage("Buff列表", Sk, new Object[] { list.size() }));
 	}
 
 	/**
 	 * 给玩家随机一个武器
-	 * 
+	 *
 	 * @return
 	 */
 	public Item getAK() {
@@ -76,6 +90,12 @@ public class Effecttor {
 		return item;
 	}
 
+	/**
+	 * 根据一个Buff获取一个物品
+	 *
+	 * @param item
+	 * @return
+	 */
 	public Item getItem(EffectItem item) {
 		Item item2 = new Item(item.getID(), item.getDamage() < 0 ? 0 : item.getDamage(), 1);
 		item2.setCustomName(Tool.getRandColor() + item.getName());
@@ -90,15 +110,23 @@ public class Effecttor {
 		return item2;
 	}
 
+	/**
+	 * 此操作在系统拥有大量Buff时将会消耗很多资源！请慎用.
+	 */
 	protected void load() {
 		list = Arrays.asList(defEffect);
 		for (EffectItem item : usEffectItems)
 			list.add(item);
+		List<EffectItem> l = new ArrayList<>();
+		for (EffectItem item : list)
+			if (!l.contains(item))
+				l.add(item);
+		list = new ArrayList<>(l);
 	}
 
 	/**
 	 * 当玩家使用了一个物品，判断是否是游戏物品
-	 * 
+	 *
 	 * @param player
 	 * @param item
 	 * @return
@@ -111,14 +139,14 @@ public class Effecttor {
 			return this;
 		for (EffectItem effectItem : list)
 			if (effectItem.getID() == item.getId()
-					&& (effectItem.getDamage() < 0 || effectItem.getDamage() == item.getDamage()))
+			&& (effectItem.getDamage() < 0 || effectItem.getDamage() == item.getDamage()))
 				putBuff(player, effectItem);
 		return this;
 	}
 
 	/**
 	 * 给玩家创建Buff
-	 * 
+	 *
 	 * @param player
 	 * @param item
 	 * @return

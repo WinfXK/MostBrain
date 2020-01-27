@@ -17,12 +17,17 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.player.PlayerDeathEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
+import cn.nukkit.event.player.PlayerFormRespondedEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
 import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.event.player.PlayerRespawnEvent;
+import cn.nukkit.form.response.FormResponse;
+import cn.nukkit.form.response.FormResponseCustom;
+import cn.nukkit.form.response.FormResponseModal;
+import cn.nukkit.form.response.FormResponseSimple;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
@@ -38,7 +43,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 监听玩家事件
-	 * 
+	 *
 	 * @param ac
 	 */
 	public PlayerEvent(Activate ac) {
@@ -46,9 +51,23 @@ public class PlayerEvent implements Listener {
 		msg = ac.getMessage();
 	}
 
+	@EventHandler
+	public void onFormResponded(PlayerFormRespondedEvent e) {
+		FormResponse data = e.getResponse();
+		int ID = e.getFormID();
+		FormID f = ac.getFormID();
+		Player player = e.getPlayer();
+		if (player == null || e.wasClosed() || e.getResponse() == null
+				|| (!(e.getResponse() instanceof FormResponseCustom) && !(e.getResponse() instanceof FormResponseSimple)
+						&& !(e.getResponse() instanceof FormResponseModal)))
+			return;
+		if (f.getID(0) == ID)
+			ac.makeForm.disMain(player, (FormResponseSimple) data);
+	}
+
 	/**
 	 * 背包点击事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -75,7 +94,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 玩家丢东西事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -91,7 +110,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 监听玩家进服事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -139,7 +158,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 监听都比重生事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -167,7 +186,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 玩家传送事件延迟
-	 * 
+	 *
 	 * @author Winfxk
 	 */
 	private class RespawnThread extends Thread {
@@ -192,7 +211,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 监听玩家退服事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -217,7 +236,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 监听玩家死亡事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -238,7 +257,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 监听玩家付香商骇事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -259,7 +278,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 监听玩家点击交互事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -283,7 +302,7 @@ public class PlayerEvent implements Listener {
 			}
 			if (ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation())) {
+					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation())) {
 				e.setCancelled();
 				return;
 			}
@@ -294,7 +313,7 @@ public class PlayerEvent implements Listener {
 				Location location = block.getLocation();
 				if (location.level.getFolderName().equals(config.Level))
 					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
-							&& location.z == config.Start.get("Z"))
+					&& location.z == config.Start.get("Z"))
 						ac.gameEvent.Start(e);
 				EffectItem.receiveItemConsume(new PlayerItemConsumeEvent(player, e.getItem()));
 				if (ac.getMostConfig().isNotBreakBlock(block))
@@ -304,7 +323,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 方块放置事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -324,7 +343,7 @@ public class PlayerEvent implements Listener {
 			}
 			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
 					&& !player.getName().equals(ac.setPlayer.getName())) {
 				e.setCancelled();
 				return;
@@ -339,7 +358,7 @@ public class PlayerEvent implements Listener {
 
 	/**
 	 * 玩家破坏方块事件
-	 * 
+	 *
 	 * @param e
 	 */
 	@EventHandler
@@ -360,7 +379,7 @@ public class PlayerEvent implements Listener {
 			}
 			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
 					&& !player.getName().equals(ac.setPlayer.getName())) {
 				e.setCancelled();
 				return;
@@ -372,7 +391,7 @@ public class PlayerEvent implements Listener {
 				Location location = block.getLocation();
 				if (location.level.getFolderName().equals(config.Level))
 					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
-							&& location.z == config.Start.get("Z"))
+					&& location.z == config.Start.get("Z"))
 						ac.gameEvent.Start(e);
 				if (ac.getMostConfig().isNotBreakBlock(block))
 					e.setCancelled();

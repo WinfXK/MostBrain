@@ -1,0 +1,231 @@
+#各种可以自定义的内容
+#注：若是可以使用变量，变量一律用{}包围，如{ServerName}
+#注：变量对大小写敏感！
+#注意！！！！
+#注意！！！！#注意！！！！#注意！！！！
+#注意！！！！#注意！！！！#注意！！！！#注意！！！！#注意！！！！
+#大阔海开头的值请一律用'包围！如以下，若不是大括号开头，则可以不限
+#FF_SB: '{true}'
+#Winfxk: 是{帅逼}
+#注：当前已有全局变量包括：n：换行、ServerName：服务器名称、PluginName：插件名称、RandColor：随机颜色、服务器货币名称：{MoneyName}
+# 进服若是检测没有快捷菜单将提示的内容，可用变量：Player：玩家名
+lang: eng-English
+游戏未设置: §4{PluginName} is not set
+权限不足: §4You have no permission to do this!
+金币不足: §4Your {RandColor}{MoneyName}§4 is insufficient!
+插件启动: '{RGBTextStart}{PluginName}Starting...{RGBTextEnd}        §6Welcome {RGBTextStart}to {PluginName}{RGBTextEnd}§f(*￣︶￣)'
+无法初始化配置: '§4Unable to initialize configuration file: {FileName}, check!'
+无法效验语言文件: §4Unable to validate the language file! Please check!
+请在游戏内自行命令: §4Please execute this command in the game!
+插件关闭: '{RGBTextStart}{PluginName} closed!Thanks for using!{RGBTextEnd}{RandColor}If economy allows, hope can sponsor!Alipay: 2508543202@qq.com'
+Buff列表: '{RandColor}Currently {RandColor}{Count}{RandColor} kinds of buffs are supported'
+数据加载错误: §4Unable to read game data!Please delete all data and try to recreate!
+无法获取已支持的语言列表: §4Unable to get list of supported languages!
+EffectItem:
+   Noregretslife:
+      Name: Bloodthirsty killing
+      Hint: Players who are given this power will absorb the opponent's rage to increase their own health when they hit the ground. If they reach the health limit, they will increase their health limit. Buffs that increase their health limit after death will lose their health (including other BUff increases)!
+   Frightened:
+      Name: Can't impulse
+      Hint: The first three attacks of a player who has been given this power will have a greater chance of evading the enemy's attack and switching sides
+   Wrathrebirth:
+      Name: Cycle of wrath
+      Hint: The first three attacks of a player who is given this power after death and resurrection will receive an attack bonus
+   Pilfering:
+      Name: Easy to pull funny than
+      Hint: When a player endowed with this power dies, he or she will take a random player away from the scene. If there are no more players present, his or her health will be increased
+      Text: '{RandColor}You were taken away by {RandColor}{Player}！'
+   AQspirit:
+      Name: Ah Q spirit
+      Hint: The player who is given this power will have a character above his head when attacked
+      Text: "{RandColor}Don't hit me|{RandColor}CNM don't hit me|{RandColor}That's it, right?|{RandColor}Please don't bully me|{RandColor}I was too difficult|{RandColor}I'm really High|{RandColor}Come on. I can't do this|{RandColor}It really doesn't hurt"
+   Rebirth:
+      Name: Rebirth
+      Hint: The player who is given this power will experience a decrease in health and then increase in health, both defense and attack will increase when health is decreased, and damage will be doubled when health is increased, but it will also receive a stun Buff
+   Afterfactory:
+      Name: women
+      Hint: Are endowed with the power players in attack probability of trigger, trigger if successful, the random gain a Buff, the other party if the other party without Buff, disappear is itself a Buff disease attack players, Buff, if both parties are random one death, not death of one party to obtain a random Buff, if the attacker has to join the game, the attacker immediate death!
+      Text: '{RandColor}§l§nYou§e§l§n fucking§f§l§n！'
+   Combustionblood:
+      Name: Combustion of blood
+      Hint: Players who are given this power will receive random attack bonuses when they attack, but these bonuses are achieved by burning their own blood
+   SplashShake:
+      Name: Space transmission
+      Hint: The player who is given this power has the probability to switch places with the attacker when attacking
+   Burst:
+      Name: Nuclear explosion
+      Hint: The player who is given this power has a chance to trigger an explosion while attacking
+   Suckblood:
+      Name: The blood elves
+      Hint: Players who are given this power have a chance to trigger the bloodsucking effect while attacking
+   Stamp:
+      Name: The much-anticipated
+      Hint: Players who are given this power are marked by attackers when they attack
+      Text: "{RandColor}I'm stupid!{n}{RandColor}Hit{RandColor} me"
+   Vertigo:
+      Name: Crotonic warrior
+      Hint: Players who are given this power will receive a queasy Buff on their first attack
+   Theft:
+      Name: The god of reproduction
+      Hint: Players who are given this power will receive all buffs from their opponents on their first attack
+   Slowness:
+      Name: Extreme killer
+      Hint: Players who are given this power will be attacked with a speed Buff
+   Satiate:
+      Name: Happiness well-off
+      Hint: Players endowed with this power will not be hungry during the game
+   Protection:
+      Name: Copper sheet iron skin
+      Hint: Players who are given this power will receive a buffed 50% of their damage when they attack
+   Philanthropist:
+      Name: Gauss ultraman
+      Hint: Players who receive this Buff have a chance to recover the health of their players when they are attacked
+   Meteors:
+      Name: Lucky angel
+      Hint: Two buffs will be randomly assigned after use
+   Highlytoxic:
+      Name: Super powers poison division
+      Hint: Players who have been given this power will now attack with a deadly poison effect
+   Healthgod:
+      Name: Over my life
+      Hint: Players who are granted this power will have their health caps increased
+   Formatting:
+      Name: God scavenger
+      Hint: The first attack by a player who is given this power clears all buffs
+   Flying:
+      Name: The body as light as yan
+      Hint: Players who are given this power receive a floating Buff every once in a while
+   Firegod:
+      Name: Fire control almighty
+      Hint: The player who is given this power has a probability of burning the enemy when attacked
+   Ferocity:
+      Name: Rage,
+      Hint: Players who are given this power gain 0.5 times their attack power
+   Expedite:
+      Name: runner
+      Hint: Players who are granted this power will continue to receive a sprint Buff
+   Eternalife:
+      Name: Life controller
+      Hint: Players who are given this power can recover a small amount of health every once in a while
+   Dodging:
+      Name: Quickly dodge
+      Hint: The player who is given this power will be able to dodge when attacked
+   Dieattack:
+      Name: The god of hell
+      Hint: Hells who are given this power will now directly kill the attacker on their first attack
+   Deathgodson:
+      Name: The son of the god of death
+      Hint: Players who are given this power will be able to escape a mortal attack
+   Combustion:
+      Name: The sacred flame
+      Hint: Players who are given this power will now have a burning effect attached to their attacks
+   Brambles:
+      Name: Thorns
+      Hint: Players who are given this power do some damage to the attacker when attacked
+   Beggar:
+      Name: Hunger fanatics
+      Hint: The first three attacks of a player endowed with this power will cause the victim's satiety to go to zero
+   Accumulation:
+      Name: Bloody sickle
+      Hint: The first three attacks of a player who has been given this power will cause the target's health to be cut in half
+UI:
+   Secondary:
+      Title: '{RandColor}{PluginName}'
+      Content: '{RandColor}Name： {RandColor}{Name}{n}{n}{n}{RandColor}Hint： {RandColor}{Hint}'
+   Main:
+      Title: '{RandColor}{PluginName}'
+      Content: '{RandColor}The following is a list of buffs supported by{RandColor}{PluginName}'
+      无法解析Buff数量: §4Unable to build Buff list!
+Command:
+   PlayerCommand:
+      List: '{RandColor}Query for supported functionality'
+      OpenList: '{RandColor}The Buff list has been opened for you'
+      ReferScore: '{RandColor}Query score'
+      TraGame: '{RandColor}Teleport to the game area'
+      QuitGame: '{RandColor}Quit the game'
+      JoinGame: '{RandColor}To join the game'
+      未加入游戏: §4You are not currently playing any games
+      中途退出: §4Because you quit the game!No bonus and honor reduced!
+      无法加入游戏: §4Unable to join the game!Please contact the administrator!
+      无法传送: §4Unable to teleport to game!Please contact the administrator!
+      传送成功: §4You must teleport to the beginning of the game!
+      您的游戏数据: '{RandColor}Total score of your game: {RandColor}{Score}'
+   AdminCommand:
+      Langs: '{RandColor}See the list of supported languages for{RandColor} {PluginName}'
+      setLang: '{RandColorSet the default language for{RandColor} {PluginName}'
+      setMsg: '{RandColor}Start setting{PluginName}'
+      delMsg: '{RandColor}Remove all {PluginName} Settings'
+      stopMsg: '{RandColor}Terminate the ongoing game'
+      暂无已支持的语言: §4No more language support!
+      当前已支持以下语言: '{RandColor}The following languages are currently supported'
+      已有玩家正在设置: §4One player is currently setting up the game！Player：{ByPlayer}
+      请输入想要设置的语言: §4Please enter the language Key you want to set
+      请输入正确的语言Key: Please enter the correct language Key{Error}
+      正在设置: §4You are currently setting up the game!
+      语言设置成功: '{RandColor}Successfully set the language: {RandColor}{Language}'
+      游戏未开始: §4Game not started!
+      语言设置失败: '{RandColor}Failed to set language!'
+      终止成功: '{RandColor}Send termination command successfully!'
+      游戏已设置完毕: §4Game set!To reset, please enter:/Admin{PluginName} del
+      StartGame: §4You are starting to set up the game!Please use the game Settings tool to click on a wooden board to mark the start point
+      停止设置: §4You have stopped setting up the game.Click on a board to mark the start point
+      删除游戏: §fYou have successfully removed the original game Settings!
+      管理员删除游戏: §4{Player}The original game Settings have been removed
+      已开始游戏: §4Already the player begins the game!Please try again later!
+      Tool: '{RandColor}Game creator'
+Event:
+   PlayerJoin:
+      Tip: §eWelcome to §1{ServerName}§e!This service supports {RGBTextStart} maximum brain {RGBTextEnd}§e small game!Come and experience it！
+      OpTip: §4{PluginName} not set!Quickly enter §f/Admin{PluginName} set §4 to set!
+   Death:
+      Tip: §4Oh oh!You have failed!Please don't be discouraged, come on next time!
+      得分: "§eScore: §5{Goal}"
+SettingGame:
+   点击木牌: §6Successfully set the start board!Click on the corner of a rectangular area to set the §5 game area
+   点击第一个角: §6Successfully set the corner of the zone!Please click another box in the same world to determine the game area!
+   设置错误: §4Setting error!Please delete all game data and try again!
+   不同世界设置区域: §4The game area cannot be set across worlds!
+   游戏区域过小: §4The play area should be at least five squares long and three squares high
+   正在生成游戏区域: §4Generating game zone!Please later...
+   设置完成: §6Setup complete!Generating game zone!
+   生成完成: §6Game zone set!Come and play the game
+   管理员退出: §4Setting the game administrator ({Player}) exit!All outstanding Settings will be undone!
+Game:
+   游戏已开始: §4The game is on!Please wait.
+   开始游戏: '{RandColor}Game on!'
+   游戏出现错误: §4There was an error in the game!Please check or contact the author！
+   即将开始: '{RandColor}The game is about to begin!Remaining waiting time:{RandColor}{ReadyTime}'
+   人数不足: '{RandColor}Waiting time: game about to start!Remaining waiting time:{RandColor}{ReadyTime}！人数持续不足！'
+   游戏即将结束: '{RandColor}The game is over!Remaining time:{GameTime}'
+   游戏结束: '{RandColor}Game over!§e Score: {RandColor}{Score}§e, get Honor: {RandColor}{Honor}'
+   已加入: §4You have joined the game!
+   金钱不足: §4Your {MoneyName} is insufficient!Unable to start the game!
+   武器介绍: '{RandColor}Damage bonus: {RandColor}{Rate}{n}{RandColor} initial Damage: {RandColor}{Damage}{n}{RandColor} total Damage: {RandColor}{MaxDamage}'
+   使用道具: '{RandColor}You got a Buff:{RandColor}{Buff}'
+   即将发送补给: '{RandColor}Resupply will be sent in {RandColor}{SleepTime}{RandColor} seconds'
+   正在发送补给: '{RandColor}Sending supplies'
+   游戏终止: §4Due to insufficient players, the game is terminated!
+   未获得奖励: §4The game did not win {RandColor}{MoneyName}§4 reward!
+   管理员终止游戏: §4{Admin} End the game
+   结束奖励: '{RandColor}Total game wins {RandColor}{Money}{RandColor}{MoneyName}'
+   结束惩罚: '{RandColor}The game score is too low!Deduction {RandColor}{Money}{RandColor}{MoneyName}'
+   扣除费用: '{RandColor}Deduct game expenses：{RandColor}{Money}'
+   退出惩罚: '{RandColor}Incomplete game!To deduct {RandColor}{Money}{RandColor}{MoneyName}'
+   加入准备:
+   - '{RandColor}Welcome to {PluginName}'
+   - '{RandColor}Current number: {RandColor}{Count}{RandColor}，will start the game after {RandColor}{MinCount}{RandColor}！'
+   NotStartSign:
+   - ' '
+   - '{RandColor}{PluginName}'
+   - '{RandColor}Click start game'
+   - ' '
+   StartGameSign:
+   - ' '
+   - §e§i§lIn the game
+   - '{RandColor}Number of players:{RandColor}{Count}'
+   - ' '
+   ReadyisGameSign:
+   - ' '
+   - '{RandColor}In the preparation'
+   - '{RandColor}{Count} bit player added'
+   - '{IsCount}'

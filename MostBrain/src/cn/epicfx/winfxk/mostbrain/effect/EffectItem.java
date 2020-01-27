@@ -30,7 +30,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 分配玩家对象
-	 * 
+	 *
 	 * @param player
 	 */
 	public void setPlayer(Player player) {
@@ -40,10 +40,10 @@ public abstract class EffectItem {
 		myPlayer = ac.getPlayers(player.getName());
 		gameData = new GameData();
 	}
-	
+
 	/**
 	 * 返回物品的最大堆叠数量
-	 * 
+	 *
 	 * @return
 	 */
 	public int MaxStack() {
@@ -52,7 +52,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 是否加入玩家特效列表
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean Affiliate() {
@@ -61,7 +61,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 是否允许重复
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isReDo() {
@@ -70,7 +70,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 分配玩家物品使用处理事件
-	 * 
+	 *
 	 * @param e
 	 */
 	public static void receiveItemConsume(PlayerItemConsumeEvent e) {
@@ -84,9 +84,9 @@ public abstract class EffectItem {
 			CompoundTag nbt = item2.getNamedTag();
 			nbt = nbt == null ? new CompoundTag() : nbt;
 			if (nbt.getString(Activate.getActivate().getMostBrain().getName()) != null) {
-				for (EffectItem item3 : Activate.getActivate().getEffecttor().getList()) {
+				for (EffectItem item3 : Activate.getActivate().getEffecttor().getList())
 					if (item2.getId() == item3.getID()
-							&& (item3.getDamage() < 0 || item3.getDamage() == item2.getDamage())) {
+					&& (item3.getDamage() < 0 || item3.getDamage() == item2.getDamage()))
 						try {
 							EffectItem item4 = item3.getClass().newInstance();
 							myPlayer.items = myPlayer.items == null ? new ArrayList<>() : myPlayer.items;
@@ -117,8 +117,6 @@ public abstract class EffectItem {
 						} catch (InstantiationException | IllegalAccessException e1) {
 							e1.printStackTrace();
 						}
-					}
-				}
 				return;
 			}
 			if (!isOK && myPlayer.items.size() > 0)
@@ -129,7 +127,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 发回处理
-	 * 
+	 *
 	 * @param e
 	 */
 	public static void receiveDamage(EntityDamageEvent e) {
@@ -165,7 +163,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 分配伤害事件
-	 * 
+	 *
 	 * @param e
 	 */
 	public void allotDamageEvent(EntityDamageEvent e) {
@@ -188,7 +186,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 是否是游戏内的玩家触发的事件
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 */
@@ -205,7 +203,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 道具的功能介绍
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFunction() {
@@ -217,12 +215,12 @@ public abstract class EffectItem {
 	 */
 	public void onConsume() {
 		gameData.honor++;
-		gameData.score += 5;
+		gameData.score += 5 + Tool.getRand(0, getID());
 	}
 
 	/**
 	 * 道具的名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getName() {
@@ -231,7 +229,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 返回附属文本
-	 * 
+	 *
 	 * @return
 	 */
 	public String getText() {
@@ -244,14 +242,14 @@ public abstract class EffectItem {
 
 	/**
 	 * 对应物品的ID
-	 * 
+	 *
 	 * @return
 	 */
 	public abstract int getID();
 
 	/***
 	 * 对应物品的特殊值，小于零时忽略
-	 * 
+	 *
 	 * @return
 	 */
 	public int getDamage() {
@@ -260,7 +258,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 项目消耗事件
-	 * 
+	 *
 	 * @param e
 	 */
 	public void onItemConsume(PlayerItemConsumeEvent e) {
@@ -269,26 +267,36 @@ public abstract class EffectItem {
 
 	/**
 	 * 实体损伤事件<自己造成伤害>
-	 * 
+	 *
 	 * @param e
 	 */
 	public void onDamage(EntityDamageEvent e) {
 		gameData.honor++;
-		gameData.score += e.getDamage() / 2;
+		Entity entity = e.getEntity();
+		if (entity.getHealth() <= e.getDamage()) {
+			gameData.honor++;
+			gameData.score += e.getDamage() + entity.getHealth();
+		} else
+			gameData.score += e.getDamage() / 2;
 	}
 
 	/**
 	 * 实体损伤事件<自己被伤害>
-	 * 
+	 *
 	 * @param e
 	 */
 	public void onBeingDamage(EntityDamageEvent e) {
 		gameData.honor -= 2;
+		if (player.getHealth() <= e.getDamage()) {
+			gameData.honor -= 2;
+			gameData.score -= e.getDamage() * 4 + player.getHealth();
+			return;
+		}
 		gameData.score -= e.getDamage() * 2;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 */
@@ -297,7 +305,7 @@ public abstract class EffectItem {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @param player
 	 * @return
@@ -307,7 +315,7 @@ public abstract class EffectItem {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param Key
 	 * @param Sun
 	 * @return
@@ -317,7 +325,7 @@ public abstract class EffectItem {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param Key
 	 * @param Sun
 	 * @param player
@@ -330,7 +338,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 获取到类名
-	 * 
+	 *
 	 * @return
 	 */
 	public String getEffectName() {
@@ -339,7 +347,7 @@ public abstract class EffectItem {
 
 	/**
 	 * 返回一个物品附魔
-	 * 
+	 *
 	 * @return
 	 */
 	public Enchantment getEnchantment() {

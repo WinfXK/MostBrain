@@ -24,7 +24,7 @@ public class Message {
 
 	/**
 	 * 文本变量快速插入♂
-	 * 
+	 *
 	 * @param ac
 	 */
 	public Message(Activate ac) {
@@ -33,7 +33,7 @@ public class Message {
 
 	/**
 	 * 文本变量快速插入♂
-	 * 
+	 *
 	 * @param ac
 	 */
 	public Message(Activate ac, boolean isLog) {
@@ -41,6 +41,12 @@ public class Message {
 		Message = new Config(getFile(), 2);
 		if (isLog)
 			ac.getMostBrain().getLogger().info("§6Load the language: §e" + Message.getString("lang"));
+		load();
+	}
+
+	public void reload() {
+		Message = new Config(getFile(), 2);
+		ac.getMostBrain().getLogger().info("§6Load the language: §e" + Message.getString("lang"));
 		load();
 	}
 
@@ -58,7 +64,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取三级默认文本并插入数据
-	 * 
+	 *
 	 * @param t   一级Key
 	 * @param Son 二级Key
 	 * @param Sun 三级Key
@@ -70,7 +76,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取三级默认文本并插入数据
-	 * 
+	 *
 	 * @param t   一级Key
 	 * @param Son 二级Key
 	 * @param Sun 三级Key
@@ -92,7 +98,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取三级默认文本并插入数据
-	 * 
+	 *
 	 * @param t      一级Key
 	 * @param Son    二级Key
 	 * @param Sun    三级Key
@@ -100,13 +106,14 @@ public class Message {
 	 * @return
 	 */
 	public String getSun(String t, String Son, String Sun, Player player) {
-		return getSun(t, Son, Sun, new String[] { "{Player}", "{Money}" },
-				new Object[] { player.getName(), MyPlayer.getMoney(player.getName()) });
+		return player == null ? getSun(t, Son, Sun)
+				: getSun(t, Son, Sun, new String[] { "{Player}", "{Money}" },
+						new Object[] { player.getName(), MyPlayer.getMoney(player.getName()) });
 	}
 
 	/**
 	 * 从配置文件中获取三级默认文本并插入数据
-	 * 
+	 *
 	 * @param t        一级Key
 	 * @param Son      二级Key
 	 * @param Sun      三级Key
@@ -120,7 +127,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取二级默认文本并插入数据
-	 * 
+	 *
 	 * @param t   一级Key
 	 * @param Son 二级Key
 	 * @return
@@ -131,7 +138,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取二级默认文本并插入数据
-	 * 
+	 *
 	 * @param t      一级Key
 	 * @param Son    二级Key
 	 * @param player 默认处理的玩家数据对象
@@ -144,7 +151,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取二级默认文本并插入数据
-	 * 
+	 *
 	 * @param t        一级Key
 	 * @param Son      二级Key
 	 * @param myPlayer 默认处理的玩家数据对象
@@ -157,7 +164,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取二级默认文本并插入数据
-	 * 
+	 *
 	 * @param t   一级Key
 	 * @param Son 二级Key
 	 * @param k   要插入的对应变量
@@ -175,7 +182,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取一级默认文本并插入数据
-	 * 
+	 *
 	 * @param t 一级Key
 	 * @return
 	 */
@@ -185,19 +192,20 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取一级默认文本并插入数据
-	 * 
+	 *
 	 * @param t      一级Key
 	 * @param player 默认处理的玩家数据对象
 	 * @return
 	 */
 	public String getMessage(String t, Player player) {
-		return getMessage(t, new String[] { "{Player}", "{Money}" },
-				new Object[] { player.getName(), MyPlayer.getMoney(player.getName()) });
+		return player == null ? getMessage(t)
+				: getMessage(t, new String[] { "{Player}", "{Money}" },
+						new Object[] { player.getName(), MyPlayer.getMoney(player.getName()) });
 	}
 
 	/**
 	 * 从配置文件中获取一级默认文本并插入数据
-	 * 
+	 *
 	 * @param t        一级Key
 	 * @param myPlayer 默认处理的玩家数据对象
 	 * @return
@@ -209,7 +217,7 @@ public class Message {
 
 	/**
 	 * 从配置文件中获取一级默认文本并插入数据
-	 * 
+	 *
 	 * @param t 一级Key
 	 * @param k 要插入的对应变量
 	 * @param d 要插入的数据
@@ -223,7 +231,7 @@ public class Message {
 
 	/**
 	 * 将数据插入文本中
-	 * 
+	 *
 	 * @param tex 要插入修改的文本
 	 * @return
 	 */
@@ -234,7 +242,7 @@ public class Message {
 
 	/**
 	 * 将数据插入文本中
-	 * 
+	 *
 	 * @param tex 要插入修改的文本
 	 * @return
 	 */
@@ -245,7 +253,7 @@ public class Message {
 
 	/**
 	 * 将数据插入文本中
-	 * 
+	 *
 	 * @param tex 要插入修改的文本
 	 * @return
 	 */
@@ -255,7 +263,7 @@ public class Message {
 
 	/**
 	 * 将数据插入文本中
-	 * 
+	 *
 	 * @param tex 要插入修改的文本
 	 * @param k   对应的变量
 	 * @param d   对应的数据

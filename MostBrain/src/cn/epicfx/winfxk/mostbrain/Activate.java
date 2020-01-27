@@ -1,6 +1,7 @@
 package cn.epicfx.winfxk.mostbrain;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -14,14 +15,17 @@ import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.epicfx.winfxk.mostbrain.money.EconomyAPI;
 import cn.epicfx.winfxk.mostbrain.money.EconomyManage;
 import cn.epicfx.winfxk.mostbrain.money.MyEconomy;
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.utils.Config;
 
 /**
  * @author Winfxk
  */
+@SuppressWarnings("unchecked")
 public class Activate {
 	public Player setPlayer;
+	public MakeForm makeForm;
 	public GameEvent gameEvent;
 	public GameHandle gameHandle;
 	public SettingGame settingGame;
@@ -29,10 +33,11 @@ public class Activate {
 	public boolean isStartGame = false;
 	public boolean SettingModel = false;
 	public boolean isGameSettingUp = false;
-	public final static String[] FormIDs = {};
+	public List<String> langs = new ArrayList<>();
+	public final static String[] FormIDs = { /* 0 */"主页", /* 1 */"副页" };
 	public final static String MessageFileName = "Message.yml", ConfigFileName = "Config.yml",
 			CommandFileName = "Command.yml", EconomyListConfigName = "EconomyList.yml", FormIDFileName = "FormID.yml",
-			GameConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players";
+			GameConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players", LanguageDirName = "language";
 	private MostBrain mis;
 	private MyEconomy economy;
 	private Effecttor effecttor;
@@ -42,14 +47,14 @@ public class Activate {
 	private LinkedHashMap<String, MyPlayer> Players;
 	protected FormID FormID;
 	protected Message message;
-	protected ResCheck resCheck;
+	public ResCheck resCheck;
 	protected Config config, CommandConfig, GameConfig;
 	protected static final String[] loadFile = { ConfigFileName, CommandFileName };
 	protected static final String[] defaultFile = { ConfigFileName, CommandFileName, MessageFileName };
 
 	/**
 	 * 插件数据的集合类
-	 * 
+	 *
 	 * @param kis
 	 */
 	public Activate(MostBrain kis) {
@@ -68,6 +73,7 @@ public class Activate {
 			kis.getLogger().warning(message.getMessage("游戏未设置"));
 		else
 			reloadMostConfig();
+		makeForm = new MakeForm(this);
 		kis.getServer().getCommandMap().register(getName(), new ACommand(this));
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
@@ -87,8 +93,6 @@ public class Activate {
 	}
 
 	public MostConfig getMostConfig() {
-		if (mostConfig == null)
-			mostConfig = new MostConfig(this);
 		return mostConfig;
 	}
 
@@ -103,15 +107,15 @@ public class Activate {
 
 	/**
 	 * 获取自定义命令内容
-	 * 
+	 *
 	 * @param string
 	 * @return
 	 */
 	public String[] getCommands(String string) {
-		List<String> list = CommandConfig.getList(string);
+		List<Object> list = CommandConfig.getList(string);
 		String[] s = new String[list.size()];
 		for (int i = 0; i < list.size(); i++)
-			s[i] = list.get(i);
+			s[i] = Tool.objToString(list.get(i));
 		return s;
 	}
 
@@ -160,7 +164,7 @@ public class Activate {
 	/**
 	 * 返回经济支持管理器</br>
 	 * Return to the economic support manager
-	 * 
+	 *
 	 * @return
 	 */
 	public EconomyManage getEconomyManage() {
@@ -185,7 +189,7 @@ public class Activate {
 
 	/**
 	 * 返回EconomyAPI货币的名称
-	 * 
+	 *
 	 * @return
 	 */
 	public String getMoneyName() {

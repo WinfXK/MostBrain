@@ -41,6 +41,8 @@ import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.blockentity.BlockEntitySign;
+import cn.nukkit.command.Command;
+import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
@@ -54,8 +56,38 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	private static String randString = "-+abcdefghijklmnopqrstuvwxyz_";
 
 	/**
+	 * 自动生成一个Command对象的Help文本
+	 *
+	 * @param command
+	 * @return
+	 */
+	public static String getCommandHelp(Command command) {
+		String string = "";
+		for (CommandParameter[] cp : command.getCommandParameters().values())
+			string += getCommandHelp(command, cp) + "\n";
+		return string;
+	}
+
+	/**
+	 * 自动生成一个Command对象的Help文本
+	 *
+	 * @param command
+	 * @return
+	 */
+	public static String getCommandHelp(Command command, CommandParameter[] cp) {
+		String string = "";
+		if (cp.length > 0) {
+			string += "§f/" + command.getName() + " §b";
+			for (int i = 0; i < cp.length; i++)
+				string += (i == 0 ? cp[i].enumData.getValues().get(0) : "§6 " + cp[i].name);
+			string += "§f： §9" + cp[0].name;
+		}
+		return string;
+	}
+
+	/**
 	 * 写入木牌内容
-	 * 
+	 *
 	 * @param Level
 	 * @param x
 	 * @param y
@@ -71,7 +103,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 写入木牌内容
-	 * 
+	 *
 	 * @param location
 	 * @param list
 	 */
@@ -81,7 +113,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 写入木牌内容
-	 * 
+	 *
 	 * @param Level
 	 * @param vector3
 	 * @param list
@@ -95,7 +127,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 写入木牌内容
-	 * 
+	 *
 	 * @param level
 	 * @param vector3
 	 * @param list
@@ -106,7 +138,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 写入木牌内容
-	 * 
+	 *
 	 * @param block
 	 * @param list
 	 */
@@ -128,7 +160,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个数据物品化
-	 * 
+	 *
 	 * @param map
 	 * @param file
 	 * @return
@@ -148,7 +180,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个物品数据化
-	 * 
+	 *
 	 * @param item
 	 * @return
 	 */
@@ -165,7 +197,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 将保存起来的玩家背包读取到一个对象 </br>
 	 * <b>player.getInventory().setContents(取得的对象);</b>
-	 * 
+	 *
 	 * @return
 	 */
 	public static Map<Integer, Item> loadInventory(Map<Integer, Map<String, Object>> list) {
@@ -182,7 +214,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个玩家的背包保存到文件
-	 * 
+	 *
 	 * @param player 要保存背包的玩家对象
 	 * @return
 	 */
@@ -204,7 +236,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 获取服务器当前的语言
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getLanguage() {
@@ -213,7 +245,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 返回对应语言的简写
-	 * 
+	 *
 	 * @return
 	 */
 	public static Map<String, String> getLanguages() {
@@ -239,7 +271,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个不知道什么玩意转换为Long
-	 * 
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -249,7 +281,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个不知道什么玩意转换为Long
-	 * 
+	 *
 	 * @param obj
 	 * @param d
 	 * @return
@@ -268,7 +300,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个不知道什么玩意转换为双精
-	 * 
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -278,7 +310,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个不知道什么玩意转换为双精
-	 * 
+	 *
 	 * @param obj
 	 * @param d
 	 * @return
@@ -297,7 +329,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个不知道什么玩意转换为双精
-	 * 
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -307,7 +339,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一个不知道什么玩意转换为双精
-	 * 
+	 *
 	 * @param obj
 	 * @param d
 	 * @return
@@ -326,7 +358,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 求最大公约数
-	 * 
+	 *
 	 * @param num1
 	 * @param num2
 	 * @return
@@ -344,7 +376,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 获取小数长度
-	 * 
+	 *
 	 * @param f
 	 * @return
 	 */
@@ -357,7 +389,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 小数转分数
-	 * 
+	 *
 	 * @param f int[分子,分母]
 	 * @return
 	 */
@@ -384,7 +416,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * Object对象转换为String
-	 * 
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -394,7 +426,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * Object对象转换为String
-	 * 
+	 *
 	 * @param obj
 	 * @param string
 	 * @return
@@ -407,7 +439,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将秒长度转换为日期长度
-	 * 
+	 *
 	 * @param time 秒长度
 	 * @return
 	 */
@@ -426,7 +458,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 判断两个ID是否匹配，x忽略匹配
-	 * 
+	 *
 	 * @param ID1 第一个ID
 	 * @param ID2 第二个ID
 	 * @return
@@ -451,7 +483,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 获取当前时间
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getTime() {
@@ -461,7 +493,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 返回当前时间 <年-月-日>
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getDate() {
@@ -471,7 +503,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 自动检查ID是否包含特殊值，若不包含则默认特殊值为0后返回数组
-	 * 
+	 *
 	 * @param ID 要检查分解的ID
 	 * @return int[]{ID, Damage}
 	 */
@@ -481,7 +513,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 自动检查ID是否包含特殊值，若不包含则设置特殊值为用户定义值后返回数组
-	 * 
+	 *
 	 * @param ID     要检查的ID
 	 * @param Damage 要默认设置的特殊值
 	 * @return int[]{ID, Damage}
@@ -502,7 +534,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 获取随机数
-	 * 
+	 *
 	 * @param min 随机数的最小值
 	 * @param max 随机数的最大值
 	 * @return
@@ -513,7 +545,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 获取随机数
-	 * 
+	 *
 	 * @return
 	 */
 	public static int getRand() {
@@ -522,7 +554,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 返回一个随机颜色代码
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getRandColor() {
@@ -531,7 +563,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 返回一个随机颜色代码
-	 * 
+	 *
 	 * @param ColorFont 可以随机到的颜色代码
 	 * @return
 	 */
@@ -542,7 +574,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将字符串染上随机颜色
-	 * 
+	 *
 	 * @param Font 要染色的字符串
 	 * @return
 	 */
@@ -552,7 +584,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 返回一个随机字符
-	 * 
+	 *
 	 * @return 随机字符
 	 */
 	public static String getRandString() {
@@ -561,7 +593,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 返回一个随机字符
-	 * 
+	 *
 	 * @param string 要随机字符的范围
 	 * @return 随机字符
 	 */
@@ -572,7 +604,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将字符串染上随机颜色
-	 * 
+	 *
 	 * @param Font      要染色的字符串
 	 * @param ColorFont 随机染色的颜色代码
 	 * @return
@@ -588,7 +620,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 判断字符串是否是整数型
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -603,7 +635,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 判断一段字符串中是否只为纯数字
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -614,7 +646,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 字符串转换Unicode
-	 * 
+	 *
 	 * @param string 要转换的字符串
 	 * @return
 	 */
@@ -627,7 +659,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * unicode 转字符串
-	 * 
+	 *
 	 * @param unicode 全为 Unicode 的字符串
 	 * @return
 	 */
@@ -642,7 +674,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 设置小数长度</br>
 	 * 默认保留两位小数</br>
-	 * 
+	 *
 	 * @param d 要设置的数值
 	 * @return
 	 */
@@ -652,7 +684,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 设置小数长度</br>
-	 * 
+	 *
 	 * @param d      要设置的数
 	 * @param length 要保留的小数的长度
 	 * @return
@@ -669,7 +701,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 发送HTTP请求
-	 * 
+	 *
 	 * @param httpUrl 请求地址
 	 * @param param   请求的内容
 	 * @return
@@ -681,7 +713,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 发送HTTP请求
-	 * 
+	 *
 	 * @param httpUrl 请求地址
 	 * @param param   请求的内容
 	 * @return
@@ -693,7 +725,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 发送HTTP请求
-	 * 
+	 *
 	 * @param httpUrl 请求地址
 	 * @param Type    请求的方式
 	 * @param param   请求的内容
@@ -741,7 +773,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 从一段字符内截取另一段字符
-	 * 
+	 *
 	 * @param Context 要截取字符的原文
 	 * @param text1   要截取的第一段文字
 	 * @param text2   要截取的第二段文字
@@ -757,7 +789,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 下载文件
-	 * 
+	 *
 	 * @param urlStr   要下载的文件的连接
 	 * @param fileName 下载后文件的名字
 	 * @param savePath 要保存的位置
@@ -783,7 +815,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 保存字节流
-	 * 
+	 *
 	 * @param inputStream 文件流
 	 * @return
 	 * @throws IOException
@@ -800,7 +832,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将一段不知道什么玩意转化为纯整数
-	 * 
+	 *
 	 * @param object
 	 * @return
 	 */
@@ -810,7 +842,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 讲一段不知道什么玩意转化为纯数字
-	 * 
+	 *
 	 * @param object
 	 * @param i      若不是纯数字将默认转化的值
 	 * @return
@@ -826,7 +858,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 一个Object值转换为bool值，转化失败返回false
-	 * 
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -836,7 +868,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 一个Object值转换为bool值，转化失败返回false
-	 * 
+	 *
 	 * @param obj
 	 * @param Del
 	 * @return
@@ -853,7 +885,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 发送Https请求
-	 * 
+	 *
 	 * @param requestUrl 请求的地址
 	 * @return
 	 * @throws KeyManagementException
@@ -868,7 +900,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 发送Https请求
-	 * 
+	 *
 	 * @param requestUrl 请求的地址
 	 * @param outputStr  请求的参数值
 	 * @return
@@ -884,7 +916,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 发送Https请求
-	 * 
+	 *
 	 * @param requestUrl    请求的地址
 	 * @param requestMethod 请求的方式
 	 * @param outputStr     请求的参数值
@@ -926,7 +958,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 替换掉字符中的html标签
-	 * 
+	 *
 	 * @param string
 	 * @return
 	 */
@@ -949,7 +981,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * Https下载文件
-	 * 
+	 *
 	 * @param urlStr   要下载的文件链接
 	 * @param fileName 要保存的文件的名字
 	 * @param savePath 文件的保存位置
@@ -1000,7 +1032,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将未知参数转换为小数
-	 * 
+	 *
 	 * @param obj
 	 * @param double1
 	 * @return
@@ -1011,7 +1043,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将未知参数转换为小数
-	 * 
+	 *
 	 * @param obj
 	 * @param double1
 	 * @return
@@ -1033,7 +1065,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将Map按数据升序排列
-	 * 
+	 *
 	 * @param     <K>
 	 * @param     <V>
 	 * @param map
@@ -1056,7 +1088,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 将Map降序排序
-	 * 
+	 *
 	 * @param     <K>
 	 * @param     <V>
 	 * @param map

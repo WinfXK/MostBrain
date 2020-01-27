@@ -16,11 +16,6 @@ public class Accumulation extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
 		if (i++ > 3)
 			return;

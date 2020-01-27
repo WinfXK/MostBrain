@@ -1,6 +1,11 @@
 package cn.epicfx.winfxk.mostbrain.cmd;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
@@ -20,6 +25,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Config;
+import cn.nukkit.utils.Utils;
 
 /**
  * @author Winfxk
@@ -43,8 +49,14 @@ public class ACommand extends Command {
 				new CommandParameter(getMessage("delMsg"), false, new String[] { "del", "删除" }) });
 		commandParameters.put(getMessage("stopMsg"), new CommandParameter[] {
 				new CommandParameter(getMessage("stopMsg"), false, new String[] { "stop", "停止" }) });
+		commandParameters.put(getMessage("setLang"), new CommandParameter[] {
+				new CommandParameter(getMessage("setLang"), false, new String[] { "lang", "语言", "language" }) });
+		commandParameters.put(getMessage("Langs"), new CommandParameter[] { new CommandParameter(getMessage("Langs"),
+				false, new String[] { "langs", "语言列表", "languages", "ll" }) });
+
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!ac.getMostBrain().isEnabled())
@@ -53,9 +65,84 @@ public class ACommand extends Command {
 			sender.sendMessage(msg.getMessage("权限不足", (Player) sender));
 			return true;
 		}
-		if (args == null || args.length == 0)
-			return false;
+		if (args == null || args.length == 0) {
+			sender.sendMessage(Tool.getCommandHelp(this));
+			return true;
+		}
 		switch (args[0].toLowerCase()) {
+		case "lang":
+		case "语言":
+		case "language":
+			if (args.length < 2) {
+				sender.sendMessage(getMessage("请输入想要设置的语言", sender.isPlayer() ? (Player) sender : null));
+				return true;
+			}
+			String l;
+			String[] sk = { "{Player}", "{Money}", "{Error}" };
+			if (Tool.isInteger(args[1])) {
+				int Is = Tool.ObjectToInt(args[1]);
+				if (Is >= ac.langs.size()) {
+					sender.sendMessage(msg.getSun("Command", "AdminCommand", "请输入正确的语言Key", sk,
+							new Object[] { sender.getName(),
+									sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
+											"0-" + (ac.langs.size() - 1) + "或" + ac.langs }));
+					return true;
+				}
+				l = ac.langs.get(Is);
+			} else {
+				if (!ac.langs.contains(args[1]) && !ac.langs.contains(args[1] + ".yml")) {
+					sender.sendMessage(msg.getSun("Command", "AdminCommand", "请输入正确的语言Key", sk,
+							new Object[] { sender.getName(),
+									sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
+											"0-" + (ac.langs.size() - 1) + "或" + ac.langs }));
+					return true;
+				}
+				l = ac.langs.contains(args[1]) ? args[1] : args[1] + ".yml";
+			}
+			try {
+				Utils.writeFile(Message.getFile(), Utils.readFile(getClass().getResourceAsStream("/language/" + l)));
+				msg.reload();
+				sender.sendMessage(msg.getSun("Command", "AdminCommand", "语言设置成功",
+						new String[] { "{Player}", "{Money}", "{Language}" },
+						new Object[] { sender.getName(), sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
+								msg.getConfig().getString("lang") }));
+			} catch (IOException e) {
+				e.printStackTrace();
+				sender.sendMessage(getMessage("语言设置失败"));
+			}
+			return true;
+		case "langs":
+		case "语言列表":
+		case "languages":
+		case "ll":
+			if (ac.langs.size() < 1) {
+				sender.sendMessage(msg.getMessage("暂无已支持的语言", sender.isPlayer() ? (Player) sender : null));
+				return true;
+			}
+			String s = "", t;
+			String[] ss;
+			sender.sendMessage(getMessage("当前已支持以下语言", sender.isPlayer() ? (Player) sender : null));
+			Map<String, Object> map;
+			DumperOptions dumperOptions = new DumperOptions();
+			dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+			Yaml yaml = new Yaml(dumperOptions);
+			for (String string : ac.langs)
+				if (string.contains(".")) {
+					ss = string.split("\\.");
+					s = "";
+					for (int i = 0; i < ss.length - 1; i++)
+						s += (s.isEmpty() ? "" : ".") + ss[i];
+					if (s != null && getClass().getResource("/language/" + s + ".yml") != null)
+						try {
+							t = Utils.readFile(getClass().getResourceAsStream("/language/" + s + ".yml"));
+							map = yaml.loadAs(t, Map.class);
+							sender.sendMessage(Tool.getRandColor() + s + Tool.getRandColor() + ": "
+									+ ac.getMessage().getText(map.get("lang")));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+				}
+			return true;
 		case "stop":
 		case "停止":
 		case "终止":
@@ -64,7 +151,7 @@ public class ACommand extends Command {
 				return true;
 			}
 			if (!ac.isStartGame || (!ac.gameHandle.ReadyisModel() && !ac.gameHandle.StartGame())) {
-				sender.sendMessage(msg.getMessage("游戏未开始"));
+				sender.sendMessage(getMessage("游戏未开始"));
 				return true;
 			}
 			ac.gameHandle.setCommandSender(sender).setAdminStopGame(true);
@@ -116,12 +203,11 @@ public class ACommand extends Command {
 						String StartLevelName = config2.Level;
 						Level signLevel = Server.getInstance().getLevelByName(SignLevelName);
 						Level startLevel = Server.getInstance().getLevelByName(StartLevelName);
-						if (startLevel != null) {
+						if (startLevel != null)
 							for (double i = config2.MinX; i < config2.MaxX + 1; i++)
 								for (double j = config2.MinY; j < config2.MaxY + 1; j++)
 									for (double k = config2.MinZ; k < config2.MaxZ + 1; k++)
 										startLevel.setBlock(new Vector3(i, j, k), Block.get(0, 0));
-						}
 						if (signLevel != null)
 							Tool.setSign(signLevel.getBlock(config2.getStart()), " ");
 					}
@@ -144,9 +230,9 @@ public class ACommand extends Command {
 			if (ac.SettingModel) {
 				player.sendMessage(ac.setPlayer.getName().equals(player.getName())
 						? msg.getSun(MainKey, SunKey, "正在设置", player)
-						: msg.getSun(MainKey, SunKey, "已有玩家正在设置", new String[] { "{Player}", "{Money}", "{ByPlayer}" },
-								new Object[] { player.getName(), ac.getPlayers(player.getName()).getMoney(),
-										ac.setPlayer.getName() }));
+								: msg.getSun(MainKey, SunKey, "已有玩家正在设置", new String[] { "{Player}", "{Money}", "{ByPlayer}" },
+										new Object[] { player.getName(), ac.getPlayers(player.getName()).getMoney(),
+												ac.setPlayer.getName() }));
 				return true;
 			}
 			ac.SettingModel = true;
@@ -168,6 +254,8 @@ public class ACommand extends Command {
 			player.getInventory().setItem(0, item);
 			player.sendMessage(msg.getSun(MainKey, SunKey, "StartGame", player));
 			break;
+		default:
+			player.sendMessage(Tool.getCommandHelp(this));
 		}
 		return true;
 	}

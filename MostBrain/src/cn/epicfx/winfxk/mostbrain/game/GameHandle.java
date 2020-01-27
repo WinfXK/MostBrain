@@ -24,7 +24,7 @@ import cn.nukkit.math.Vector3;
 public class GameHandle {
 	private Activate ac;
 	private boolean ReadyisModel = false;
-	private GameMainThread gameMainThread;
+	protected GameMainThread gameMainThread;
 	private ReadyiingThread readyiingThread;
 	private int GameMinCount;
 	/**
@@ -96,7 +96,7 @@ public class GameHandle {
 
 	/**
 	 * 增加参与游戏的玩家数量
-	 * 
+	 *
 	 * @param player
 	 */
 	public void addPlayer(Player player) {
@@ -111,9 +111,8 @@ public class GameHandle {
 							new Object[] { player.getName(), ac.getConfig().getDouble("游戏费用"), myPlayer.getMoney() }));
 			return;
 		}
-		player.sendMessage(
-				ac.getMessage().getSon("Game", "扣除费用", new String[] { "{Player}", "{Money}", "{MyMoney}" },
-						new Object[] { player.getName(), ac.getConfig().getDouble("游戏费用"), myPlayer.getMoney() }));
+		player.sendMessage(ac.getMessage().getSon("Game", "扣除费用", new String[] { "{Player}", "{Money}", "{MyMoney}" },
+				new Object[] { player.getName(), ac.getConfig().getDouble("游戏费用"), myPlayer.getMoney() }));
 		ac.getEconomy().reduceMoney(player, ac.getConfig().getDouble("游戏费用"));
 		if (!ReadyisModel) {
 			ReadyisModel = true;
@@ -142,13 +141,13 @@ public class GameHandle {
 					new Object[] { player.getName(), myPlayer.getMoney() + gamePlayers.size(), GameMinCount,
 							gamePlayers.size() >= GameMinCount ? " "
 									: Tool.getRandColor() + gamePlayers.size() + Tool.getRandColor() + "/"
-											+ Tool.getRandColor() + GameMinCount });
+									+ Tool.getRandColor() + GameMinCount });
 		player.sendTitle(list[0], list.length > 1 ? list[1] : null);
 	}
 
 	/**
 	 * 游戏准备线程
-	 * 
+	 *
 	 * @author Winfxk
 	 */
 	private class ReadyiingThread extends Thread {
@@ -180,11 +179,11 @@ public class GameHandle {
 						ReadyTime--;
 					for (Player player : gamePlayers)
 						if (gamePlayers.size() >= GameMinCount
-								&& ((ReadyTime >= 5 && ReadyTime % 5 == 0) || ReadyTime <= 3)) {
+						&& ((ReadyTime >= 5 && ReadyTime % 5 == 0) || ReadyTime <= 3))
 							player.sendMessage(ac.getMessage().getSon("Game", "即将开始",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime }));
-						} else if (ReadyisTime > 120)
+						else if (ReadyisTime > 120)
 							player.sendMessage(ac.getMessage().getSon("Game", "人数不足",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" }, new Object[] {
 											player.getName(), MyPlayer.getMoney(player.getName()), ReadyisTime }));
@@ -195,7 +194,7 @@ public class GameHandle {
 								new Object[] { gamePlayers.size(), GameMinCount,
 										gamePlayers.size() >= GameMinCount ? " "
 												: Tool.getRandColor() + gamePlayers.size() + Tool.getRandColor() + "/"
-														+ Tool.getRandColor() + GameMinCount });
+												+ Tool.getRandColor() + GameMinCount });
 					Tool.setSign(mostConfig.Level, mostConfig.Start.get("X"), mostConfig.Start.get("Y"),
 							mostConfig.Start.get("Z"), list);
 					if (ReadyTime <= 0) {
@@ -255,7 +254,7 @@ public class GameHandle {
 
 	/**
 	 * 玩家退出游戏的处理
-	 * 
+	 *
 	 * @param player
 	 */
 	public void QuitGame(Player player, boolean isQuitServer, boolean isRemove, boolean isMsg) {
@@ -283,40 +282,46 @@ public class GameHandle {
 			myPlayer.ReadyModel = false;
 			myPlayer.gameData = null;
 			ac.setPlayers(player, myPlayer);
-			if (!AdminStopGame) {
-				int bs = ac.getConfig().getInt("给予倍率");
-				boolean sb = ac.getConfig().getBoolean("给予惩罚");
+			int bs = ac.getConfig().getInt("给予倍率");
+			boolean sb = ac.getConfig().getBoolean("给予惩罚");
+			double Money = score / bs + honor;
+			if (!AdminStopGame)
 				if (!isQuitServer) {
-					if (score >= bs) {
-						ac.getEconomy().addMoney(player, (double) score / bs);
-						player.sendMessage(ac.getMessage().getSon("Game", "结束奖励",
-								new String[] { "{Player}", "{Money}", "{MyMoney}" },
-								new Object[] { player.getName(), (double) score / bs, myPlayer.getMoney() }));
-					} else if (score > 0 && score / bs < 0 && sb) {
-						ac.getEconomy().reduceMoney(player, (double) score / bs);
+					if (Money >= 0) {
+						if (Money != 0) {
+							ac.getEconomy().addMoney(player, Money);
+							player.sendMessage(ac.getMessage().getSon("Game", "结束奖励",
+									new String[] { "{Player}", "{Money}", "{MyMoney}" },
+									new Object[] { player.getName(), Money, myPlayer.getMoney() }));
+						} else
+							player.sendMessage(ac.getMessage().getSon("Game", "未获得奖励",
+									new String[] { "{Player}", "{Money}", "{MyMoney}" },
+									new Object[] { player.getName(), Money, myPlayer.getMoney() }));
+					} else if (sb) {
+						ac.getEconomy().reduceMoney(player, Money);
 						player.sendMessage(ac.getMessage().getSon("Game", "结束惩罚",
 								new String[] { "{Player}", "{Money}", "{MyMoney}" },
-								new Object[] { player.getName(), (double) score / bs, myPlayer.getMoney() }));
+								new Object[] { player.getName(), Money, myPlayer.getMoney() }));
 					}
 				} else {
-					double sbsbsbs = score <= ac.getConfig().getDouble("游戏费用") ? ac.getConfig().getDouble("游戏费用")
-							: score;
+					double sbsbsbs = Money <= ac.getConfig().getDouble("游戏费用") ? ac.getConfig().getDouble("游戏费用")
+							: Money;
 					ac.getEconomy().reduceMoney(player, sbsbsbs);
 					player.sendMessage(
 							ac.getMessage().getSon("Game", "退出惩罚", new String[] { "{Player}", "{Money}", "{MyMoney}" },
 									new Object[] { player.getName(), sbsbsbs, myPlayer.getMoney() }));
 				}
-			}
 			if (isMsg)
 				player.sendMessage(ac.getMessage().getSon("Game", "游戏结束",
 						new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" },
 						new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), score, honor }));
 		}
+		player.setNameTag(" ");
 	}
 
 	/**
 	 * 游戏主线程
-	 * 
+	 *
 	 * @author Winfxk
 	 */
 	private class GameMainThread extends Thread {
@@ -385,11 +390,10 @@ public class GameHandle {
 					}
 					Timesleep--;
 					for (Player player : gamePlayers) {
-						if (Timesleep < 5 && Timesleep > 0) {
+						if (Timesleep < 5 && Timesleep > 0)
 							player.sendMessage(ac.getMessage().getSon("Game", "即将发送补给",
 									new String[] { "{Player}", "{Money}", "{SleepTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), Timesleep }));
-						}
 						if (Timesleep == 0) {
 							player.sendMessage(ac.getMessage().getSon("Game", "正在发送补给", player));
 							for (int sb = 0; sb < BjBl; sb++)
@@ -415,18 +419,10 @@ public class GameHandle {
 				QuitGame();
 			} catch (
 
-			InterruptedException e) {
+					InterruptedException e) {
 				e.printStackTrace();
 			}
 			super.run();
-		}
-
-		public Item getItem() {
-			List<EffectItem> effectItems = ac.getEffecttor().getList();
-			EffectItem effectItem = effectItems.get(Tool.getRand(0, effectItems.size() - 1));
-			Item item = ac.getEffecttor().getItem(effectItem);
-			item.setCount(Tool.getRand(1, 3));
-			return item;
 		}
 
 		private class BuffThread extends Thread {
@@ -463,7 +459,7 @@ public class GameHandle {
 
 	/**
 	 * 随机给予玩家一个Buff
-	 * 
+	 *
 	 * @param player
 	 * @param effectItem
 	 */
@@ -477,7 +473,7 @@ public class GameHandle {
 
 	/**
 	 * 给予玩家一个Buff
-	 * 
+	 *
 	 * @param player
 	 * @param effectItem
 	 */
@@ -490,7 +486,7 @@ public class GameHandle {
 
 	/**
 	 * 返回玩家持有的效果数量
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -503,7 +499,7 @@ public class GameHandle {
 
 	/**
 	 * 清空一个玩家的Buff
-	 * 
+	 *
 	 * @param player
 	 */
 	public GameHandle clearBuffs(Player player) {
@@ -517,7 +513,7 @@ public class GameHandle {
 
 	/**
 	 * 删除一个玩家的Buff
-	 * 
+	 *
 	 * @param player
 	 * @param Name
 	 */
@@ -533,7 +529,7 @@ public class GameHandle {
 
 	/**
 	 * 获取玩家的所有Buff
-	 * 
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -556,4 +552,11 @@ public class GameHandle {
 		return strings;
 	}
 
+	public Item getItem() {
+		List<EffectItem> effectItems = ac.getEffecttor().getList();
+		EffectItem effectItem = effectItems.get(Tool.getRand(0, effectItems.size() - 1));
+		Item item = ac.getEffecttor().getItem(effectItem);
+		item.setCount(Tool.getRand(1, 3));
+		return item;
+	}
 }

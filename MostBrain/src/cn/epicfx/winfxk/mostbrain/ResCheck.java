@@ -2,17 +2,20 @@ package cn.epicfx.winfxk.mostbrain;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.Utils;
-
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author Winfxk
@@ -41,8 +44,8 @@ public class ResCheck {
 	protected ResCheck start() {
 		File file = Message.getFile();
 		String lang = Tool.getLanguage();
-		if (!file.exists()) {
-			if (lang != null && getClass().getResource("/language/" + lang + ".yml") != null) {
+		if (!file.exists())
+			if (lang != null && getClass().getResource("/language/" + lang + ".yml") != null)
 				try {
 					log.info("Writing to the default language:" + lang);
 					Utils.writeFile(Message.getFile(),
@@ -60,7 +63,7 @@ public class ResCheck {
 						return null;
 					}
 				}
-			} else
+			else
 				try {
 					Utils.writeFile(Message.getFile(),
 							Utils.readFile(getClass().getResourceAsStream("/resources/Message.yml")));
@@ -70,7 +73,6 @@ public class ResCheck {
 					kis.setEnabled(false);
 					return null;
 				}
-		}
 		for (String s : Activate.defaultFile) {
 			file = new File(kis.getDataFolder(), s);
 			if (!file.exists())
@@ -84,7 +86,7 @@ public class ResCheck {
 				}
 		}
 		file = new File(kis.getDataFolder(), Activate.ConfigFileName);
-		if (!file.exists()) {
+		if (!file.exists())
 			try {
 				Utils.writeFile(file,
 						Utils.readFile(getClass().getResourceAsStream("/resources/" + Activate.ConfigFileName)));
@@ -94,9 +96,27 @@ public class ResCheck {
 				kis.setEnabled(false);
 				return null;
 			}
-		}
 		ac.config = new Config(new File(kis.getDataFolder(), Activate.ConfigFileName), Config.YAML);
 		ac.message = new Message(ac, false);
+		file = new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName);
+		if (!file.exists())
+			file.mkdirs();
+		JarFile localJarFile;
+		try {
+			localJarFile = new JarFile(
+					new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile()));
+			Enumeration<JarEntry> entries = localJarFile.entries();
+			File Jf;
+			while (entries.hasMoreElements()) {
+				JarEntry jarEntry = entries.nextElement();
+				Jf = new File(jarEntry.getName());
+				if (Jf.getParent() != null && Jf.getParent().equals("language"))
+					ac.langs.add(Jf.getName());
+			}
+		} catch (IOException e2) {
+			e2.printStackTrace();
+			ac.getMostBrain().getLogger().warning(ac.getMessage().getMessage("无法获取已支持的语言列表"));
+		}
 		Config config;
 		DumperOptions dumperOptions = new DumperOptions();
 		dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -139,13 +159,24 @@ public class ResCheck {
 		return this;
 	}
 
+	public String getPath() {
+		String path = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+		if (System.getProperty("os.name").contains("dows"))
+			path = path.substring(1, path.length());
+		if (path.contains("jar")) {
+			path = path.substring(0, path.lastIndexOf("."));
+			return path.substring(0, path.lastIndexOf("/"));
+		}
+		return path.replace("target/classes/", "");
+	}
+
 	/**
 	 * 获取完全态的Message文件数据
-	 * 
+	 *
 	 * @param map
 	 * @return
 	 */
-	private LinkedHashMap<String, Object> FullMessage(LinkedHashMap<String, Object> map) {
+	public LinkedHashMap<String, Object> FullMessage(LinkedHashMap<String, Object> map) {
 		DumperOptions dumperOptions = new DumperOptions();
 		dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 		Yaml yaml = new Yaml(dumperOptions);
@@ -161,7 +192,7 @@ public class ResCheck {
 
 	/**
 	 * 获取对应的语言文件
-	 * 
+	 *
 	 * @param lang
 	 * @return
 	 * @throws IOException
@@ -174,12 +205,12 @@ public class ResCheck {
 
 	/**
 	 * 效验配置文件是否匹配
-	 * 
+	 *
 	 * @param map1
 	 * @param map2
 	 * @return
 	 */
-	private LinkedHashMap<String, Object> getMap(Map<String, Object> map1, Map<String, Object> map2) {
+	public LinkedHashMap<String, Object> getMap(Map<String, Object> map1, Map<String, Object> map2) {
 		if (map1.equals(map2))
 			return (LinkedHashMap<String, Object>) map1;
 		Map<String, Object> m1, m2;
@@ -193,9 +224,9 @@ public class ResCheck {
 					map1.put(Key, obj);
 					continue;
 				}
-				if (obj.getClass().getName().equals(obj2.getClass().getName()) && !(obj instanceof Map)) {
+				if (obj.getClass().getName().equals(obj2.getClass().getName()) && !(obj instanceof Map))
 					continue;
-				} else if ((obj instanceof Map) && (obj2 instanceof Map)) {
+				else if ((obj instanceof Map) && (obj2 instanceof Map)) {
 					m1 = (Map<String, Object>) obj2;
 					m2 = (Map<String, Object>) obj;
 					if (m1.equals(m2))

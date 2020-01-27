@@ -3,6 +3,7 @@ package cn.epicfx.winfxk.mostbrain.cmd;
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
@@ -35,13 +36,18 @@ public class PCommand extends Command {
 				new CommandParameter(getMessage("TraGame"), false, new String[] { "tra", "传送", "transfer" }) });
 		commandParameters.put(getMessage("ReferScore"), new CommandParameter[] {
 				new CommandParameter(getMessage("ReferScore"), false, new String[] { "sco", "查询", "score" }) });
-
+		commandParameters.put(getMessage("List"), new CommandParameter[] {
+				new CommandParameter(getMessage("List"), false, new String[] { "list", "列表", "l" }) });
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!ac.getMostBrain().isEnabled())
 			return true;
+		if (args == null || args.length == 0) {
+			sender.sendMessage(Tool.getCommandHelp(this));
+			return true;
+		}
 		if (!sender.isPlayer()) {
 			sender.sendMessage(msg.getMessage("请在游戏内自行命令"));
 			return true;
@@ -51,11 +57,14 @@ public class PCommand extends Command {
 			return true;
 		}
 		Player player = (Player) sender;
-		if (args.length < 1)
-			return false;
 		Level level;
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
 		switch (args[0].toLowerCase()) {
+		case "l":
+		case "list":
+		case "列表":
+			player.sendMessage(getMessage("OpenList", player));
+			return ac.makeForm.MakeMain(player);
 		case "sco":
 		case "查询":
 		case "score":
@@ -109,6 +118,8 @@ public class PCommand extends Command {
 			ac.gameEvent.QuitGame(new PlayerQuitEvent(player, ""));
 			player.sendMessage(getMessage("中途退出", player));
 			break;
+		default:
+			player.sendMessage(Tool.getCommandHelp(this));
 		}
 		return true;
 	}
