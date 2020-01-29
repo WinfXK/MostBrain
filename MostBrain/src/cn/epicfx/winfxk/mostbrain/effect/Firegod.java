@@ -19,17 +19,12 @@ public class Firegod extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		if (!(e instanceof EntityDamageByEntityEvent) || Tool.getRand(0, 3) != 1)
 			return;
 		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
-		entity.setOnFire(2);
-		gameData.honor++;
-		gameData.score += 2;
+		entity.setOnFire(5);
+		gameData.honor += Tool.getRand(1, 2);
+		gameData.score += entity.getHealth();
 	}
 }

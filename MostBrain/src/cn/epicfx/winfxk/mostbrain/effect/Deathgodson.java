@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.event.entity.EntityDamageEvent;
 
 /**
@@ -15,16 +16,11 @@ public class Deathgodson extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		if (i++ < 2 && ((int) (player.getHealth() - e.getDamage())) <= 0) {
 			e.setCancelled();
 			player.setHealth(player.getMaxHealth() / 2);
-			gameData.honor++;
+			gameData.honor += Tool.getRand(1, 10);
 			gameData.score *= 2;
 		}
 	}

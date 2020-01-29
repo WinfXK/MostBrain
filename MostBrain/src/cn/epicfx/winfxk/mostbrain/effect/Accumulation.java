@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
 
@@ -21,7 +22,7 @@ public class Accumulation extends EffectItem {
 			return;
 		Entity entity = e.getEntity();
 		entity.setHealth(entity.getHealth() / 2);
-		gameData.honor++;
-		gameData.score += entity.getHealth() / 2;
+		gameData.honor += Tool.getRand(1, 2);
+		gameData.score += entity.getHealth() * 2;
 	}
 }

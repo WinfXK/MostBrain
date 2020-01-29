@@ -25,7 +25,7 @@ public class Wrathrebirth extends EffectItem {
 		float d = e.getDamage();
 		e.setDamage(d * (Tool.getRand(5, 9) / 10));
 		gameData.honor++;
-		gameData.score += d - e.getDamage();
+		gameData.score += d + e.getDamage();
 	}
 
 	@Override
@@ -34,6 +34,5 @@ public class Wrathrebirth extends EffectItem {
 			return;
 		isSB = true;
 		SB = 3;
-		super.onBeingDamage(e);
 	}
 }

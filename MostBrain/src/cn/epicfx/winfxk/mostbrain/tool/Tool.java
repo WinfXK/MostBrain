@@ -388,6 +388,25 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	}
 
 	/**
+	 * 获取字符真实长度
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static int String_length(String value) {
+		int valueLength = 0;
+		String chinese = "[\u4e00-\u9fa5]";
+		for (int i = 0; i < value.length(); i++) {
+			String temp = value.substring(i, i + 1);
+			if (temp.matches(chinese)) {
+				valueLength += 2;
+			} else
+				valueLength += 1;
+		}
+		return valueLength;
+	}
+
+	/**
 	 * 小数转分数
 	 *
 	 * @param f int[分子,分母]
@@ -686,7 +705,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	 * 设置小数长度</br>
 	 *
 	 * @param d      要设置的数
-	 * @param length 要保留的小数的长度
+	 * @param length 要保留的小数的
 	 * @return
 	 */
 	public static double Double2(double d, int length) {
@@ -1066,8 +1085,8 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 将Map按数据升序排列
 	 *
-	 * @param     <K>
-	 * @param     <V>
+	 * @param <K>
+	 * @param <V>
 	 * @param map
 	 * @return
 	 */
@@ -1089,8 +1108,8 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 将Map降序排序
 	 *
-	 * @param     <K>
-	 * @param     <V>
+	 * @param <K>
+	 * @param <V>
 	 * @param map
 	 * @return
 	 */

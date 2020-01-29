@@ -17,18 +17,13 @@ public class Flying extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public boolean isReDo() {
 		return false;
 	}
 
 	@Override
 	public void Wake() {
-		if (i++ < 10)
+		if (i++ < 25)
 			return;
 		i = 0;
 		Effect effect = Effect.getEffect(24);
@@ -36,6 +31,6 @@ public class Flying extends EffectItem {
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
 		player.addEffect(effect);
 		gameData.score++;
-		gameData.honor--;
+		gameData.honor++;
 	}
 }

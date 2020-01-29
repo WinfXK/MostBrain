@@ -11,6 +11,7 @@ import cn.epicfx.winfxk.mostbrain.effect.Effecttor;
 import cn.epicfx.winfxk.mostbrain.game.GameEvent;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.game.MostConfig;
+import cn.epicfx.winfxk.mostbrain.game.MostEvent;
 import cn.epicfx.winfxk.mostbrain.game.SettingGame;
 import cn.epicfx.winfxk.mostbrain.money.EconomyAPI;
 import cn.epicfx.winfxk.mostbrain.money.EconomyManage;
@@ -22,10 +23,10 @@ import cn.nukkit.utils.Config;
 /**
  * @author Winfxk
  */
-@SuppressWarnings("unchecked")
 public class Activate {
 	public Player setPlayer;
 	public MakeForm makeForm;
+	public ResCheck resCheck;
 	public GameEvent gameEvent;
 	public GameHandle gameHandle;
 	public SettingGame settingGame;
@@ -47,7 +48,7 @@ public class Activate {
 	private LinkedHashMap<String, MyPlayer> Players;
 	protected FormID FormID;
 	protected Message message;
-	public ResCheck resCheck;
+	protected List<MostEvent> mostEvents;
 	protected Config config, CommandConfig, GameConfig;
 	protected static final String[] loadFile = { ConfigFileName, CommandFileName };
 	protected static final String[] defaultFile = { ConfigFileName, CommandFileName, MessageFileName };
@@ -58,6 +59,7 @@ public class Activate {
 	 * @param kis
 	 */
 	public Activate(MostBrain kis) {
+		mostEvents = new ArrayList<>();
 		activate = this;
 		mis = kis;
 		FormID = new FormID();
@@ -78,6 +80,16 @@ public class Activate {
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
 		kis.getLogger().info(message.getMessage("插件启动"));
+	}
+
+	public List<MostEvent> getMostEvents() {
+		return mostEvents;
+	}
+
+	public Activate addGameEvent(MostEvent event) {
+		if (!mostEvents.contains(event))
+			mostEvents.add(event);
+		return this;
 	}
 
 	public Effecttor getEffecttor() {
@@ -141,8 +153,7 @@ public class Activate {
 	}
 
 	public void setPlayers(String player, MyPlayer myPlayer) {
-		if (!isPlayers(player))
-			Players.put(player, myPlayer);
+		Players.put(player, myPlayer);
 	}
 
 	public MyPlayer getPlayers(String player) {

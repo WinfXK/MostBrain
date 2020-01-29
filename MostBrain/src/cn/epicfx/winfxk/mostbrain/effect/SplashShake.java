@@ -37,12 +37,13 @@ public class SplashShake extends EffectItem {
 		Location l1 = entity1.getLocation();
 		Location l2 = entity2.getLocation();
 		double xZ = Math.abs(l1.x - l2.x) + Math.abs(l1.y - l2.y) + Math.abs(l1.z - l2.z);
-		gameData.score += xZ;
+		gameData.score += xZ * 2;
 		if (entity2 instanceof Player) {
 			MyPlayer myPlayer = ac.getPlayers(entity2.getName());
 			if (myPlayer != null && myPlayer.GameModel && myPlayer.gameData != null) {
 				myPlayer.gameData.score -= xZ;
-				myPlayer.gameData.honor--;
+				if (Tool.getRand(1, 3) == 1)
+					myPlayer.gameData.honor--;
 			}
 		}
 		entity1.teleport(l2);

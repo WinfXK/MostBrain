@@ -19,11 +19,6 @@ public class Philanthropist extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		if (!(e instanceof EntityDamageByEntityEvent))
 			return;
@@ -34,7 +29,8 @@ public class Philanthropist extends EffectItem {
 			return;
 		h += (h / 5) <= 1 ? mh : Tool.getRand(1, (int) (h / 5));
 		entity.setHealth(h > mh ? mh : h);
-		gameData.honor -= 5;
-		gameData.score -= h;
+		if (Tool.getRand(1, 3) == 1)
+			gameData.honor--;
+		gameData.score += h;
 	}
 }

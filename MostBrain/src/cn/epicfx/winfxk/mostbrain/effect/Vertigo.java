@@ -18,11 +18,6 @@ public class Vertigo extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public boolean isReDo() {
 		return false;
 	}
@@ -34,6 +29,6 @@ public class Vertigo extends EffectItem {
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
 		e.getEntity().addEffect(effect);
 		gameData.honor++;
-		gameData.score += 5;
+		gameData.score += Tool.getRand(1, getID());
 	}
 }

@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
@@ -118,8 +119,7 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
-		MyPlayer myPlayer = new MyPlayer(player);
-		ac.setPlayers(player, myPlayer);
+		ac.setPlayers(player, new MyPlayer(player));
 		String string = msg.getSun("Event", "PlayerJoin", "Tip", player);
 		if (string != null && !string.isEmpty())
 			if (!player.isOp() && ac.isGameSettingUp)
@@ -128,7 +128,6 @@ public class PlayerEvent implements Listener {
 		if (string != null && !string.isEmpty())
 			if (player.isOp() && !ac.isGameSettingUp)
 				player.sendMessage(string);
-		myPlayer.loadInventory();
 		MostConfig mc = ac.getMostConfig();
 		if (ac.isGameSettingUp && mc != null) {
 			double x = player.getX(), y = player.getY(), z = player.getZ();
@@ -140,20 +139,23 @@ public class PlayerEvent implements Listener {
 					new RespawnThread(player, new Location(v.x, v.y, v.z, level)).start();
 			}
 		}
-		Map<Integer, Item> map = player.getInventory().getContents();
-		for (Integer i : map.keySet()) {
-			Item item = map.get(i);
-			if (item == null || item.getId() == 0)
-				continue;
-			CompoundTag nbt = item.getNamedTag();
-			if (nbt == null)
-				continue;
-			if (nbt.getString(ac.getMostBrain().getName()) != null) {
-				item = new Item(0, 0);
-				map.put(i, item);
+		if (ac.config.getBoolean("物品防御")) {
+			Map<Integer, Item> map = player.getInventory().getContents();
+			Map<Integer, Item> map1 = new HashMap<>();
+			if (map != null) {
+				for (Integer i : map.keySet()) {
+					Item item = map.get(i);
+					if (item == null || item.getId() == 0)
+						continue;
+					CompoundTag nbt = item.getNamedTag();
+					if (nbt == null)
+						continue;
+					if (nbt.getString(ac.getMostBrain().getName()) == null)
+						map1.put(i, item);
+				}
+				player.getInventory().setContents(map);
 			}
 		}
-		player.getInventory().setContents(map);
 	}
 
 	/**
@@ -167,15 +169,29 @@ public class PlayerEvent implements Listener {
 			return;
 		Player player = e.getPlayer();
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
-
+		if (player.getHealth() <= 0 || player.getMaxHealth() <= 0) {
+			player.setMaxHealth(20);
+			player.setHealth(20);
+		}
 		if (myPlayer != null && ac.isStartGame) {
+			int Mh = ac.config.getInt("游戏最大血量");
+			int h = ac.config.getInt("游戏血量");
 			if (myPlayer.ReadyModel) {
+				if (player.getHealth() <= 0 || player.getMaxHealth() <= 0) {
+					player.setMaxHealth(Mh);
+					player.setHealth(h);
+				}
 				Vector3 v = ac.getMostConfig().getStart();
 				Level level = Server.getInstance().getLevelByName(ac.getMostConfig().Level);
 				if (level != null)
 					new RespawnThread(player, new Location(v.x, v.y, v.z, level)).start();
+
 			}
 			if (myPlayer.GameModel) {
+				if (player.getHealth() <= 0 || player.getMaxHealth() <= 0) {
+					player.setMaxHealth(Mh);
+					player.setHealth(h);
+				}
 				Vector3 v = ac.getMostConfig().getSpawn();
 				Level level = Server.getInstance().getLevelByName(ac.getMostConfig().StartLevel);
 				if (level != null)
@@ -302,7 +318,7 @@ public class PlayerEvent implements Listener {
 			}
 			if (ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation())) {
+							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation())) {
 				e.setCancelled();
 				return;
 			}
@@ -313,7 +329,7 @@ public class PlayerEvent implements Listener {
 				Location location = block.getLocation();
 				if (location.level.getFolderName().equals(config.Level))
 					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
-					&& location.z == config.Start.get("Z"))
+							&& location.z == config.Start.get("Z"))
 						ac.gameEvent.Start(e);
 				EffectItem.receiveItemConsume(new PlayerItemConsumeEvent(player, e.getItem()));
 				if (ac.getMostConfig().isNotBreakBlock(block))
@@ -327,7 +343,7 @@ public class PlayerEvent implements Listener {
 	 * @param e
 	 */
 	@EventHandler
-	public void on(BlockPlaceEvent e) {
+	public void onBlockPlace(BlockPlaceEvent e) {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
@@ -343,7 +359,7 @@ public class PlayerEvent implements Listener {
 			}
 			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
 					&& !player.getName().equals(ac.setPlayer.getName())) {
 				e.setCancelled();
 				return;
@@ -379,7 +395,7 @@ public class PlayerEvent implements Listener {
 			}
 			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
 					&& !player.getName().equals(ac.setPlayer.getName())) {
 				e.setCancelled();
 				return;
@@ -391,7 +407,7 @@ public class PlayerEvent implements Listener {
 				Location location = block.getLocation();
 				if (location.level.getFolderName().equals(config.Level))
 					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
-					&& location.z == config.Start.get("Z"))
+							&& location.z == config.Start.get("Z"))
 						ac.gameEvent.Start(e);
 				if (ac.getMostConfig().isNotBreakBlock(block))
 					e.setCancelled();

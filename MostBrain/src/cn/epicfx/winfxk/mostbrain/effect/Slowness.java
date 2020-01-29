@@ -18,11 +18,6 @@ public class Slowness extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public boolean isReDo() {
 		return false;
 	}
@@ -34,6 +29,6 @@ public class Slowness extends EffectItem {
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
 		e.getEntity().addEffect(effect);
 		gameData.honor++;
-		gameData.score++;
+		gameData.score += Tool.getRand(1, getID());
 	}
 }

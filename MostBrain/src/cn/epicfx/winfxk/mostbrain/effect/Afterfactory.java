@@ -41,9 +41,10 @@ public class Afterfactory extends EffectItem {
 			player.sendMessage(getText());
 			player.getLevel().addSound(player.getLocation(), Sound.MOB_ZOMBIE_DEATH);
 			player.kill();
-			gameData.honor--;
+			if (Tool.getRand(1, 5) == 1)
+				gameData.honor--;
 			gameData.score -= player2.getHealth() + player.getHealth();
-			if (myPlayer.gameData != null) {
+			if (myPlayer != null && myPlayer.gameData != null) {
 				myPlayer.gameData.honor++;
 				myPlayer.gameData.score += player2.getHealth() + player.getHealth();
 			}
@@ -54,7 +55,8 @@ public class Afterfactory extends EffectItem {
 			if (Tool.getRand(1, 2) == 1) {
 				player.sendMessage(getText());
 				player.kill();
-				gameData.honor--;
+				if (Tool.getRand(1, 5) == 1)
+					gameData.honor--;
 				gameData.score -= player2.getHealth() + player.getHealth();
 				if (myPlayer.gameData != null) {
 					myPlayer.gameData.honor++;
@@ -67,10 +69,11 @@ public class Afterfactory extends EffectItem {
 				player2.sendMessage(getText());
 				player2.kill();
 				if (myPlayer.gameData != null) {
-					myPlayer.gameData.honor--;
+					if (Tool.getRand(1, 5) == 1)
+						myPlayer.gameData.honor--;
 					myPlayer.gameData.score -= player2.getHealth() + player.getHealth();
 				}
-				gameData.honor++;
+				gameData.honor += Tool.getRand(1, 2);
 				gameData.score += player2.getHealth();
 				player2.getLevel().addSound(player2.getLocation(), Sound.MOB_ZOMBIE_DEATH);
 				player.getInventory().addItem(ac.gameHandle.getItem());
@@ -83,12 +86,13 @@ public class Afterfactory extends EffectItem {
 			this.myPlayer.items.remove(Ik);
 			ac.setPlayers(this.myPlayer.getPlayer(), this.myPlayer);
 			player.sendMessage(getText());
-			gameData.honor--;
+			if (Tool.getRand(1, 5) == 1)
+				gameData.honor--;
 			gameData.score -= player2.getHealth() + myPlayer.items.size();
 			player.getLevel().addSound(player.getLocation(), Sound.MOB_VILLAGER_DEATH);
 			return;
 		}
-		gameData.honor++;
+		gameData.honor += Tool.getRand(1, 2);
 		gameData.score += player2.getHealth();
 		player2.sendMessage(getText());
 		player2.getLevel().addSound(player2.getLocation(), Sound.MOB_VILLAGER_DEATH);

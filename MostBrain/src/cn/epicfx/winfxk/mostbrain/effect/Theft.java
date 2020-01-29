@@ -25,14 +25,11 @@ public class Theft extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
-		if (i++ > 1)
+		if (i++ > 1) {
+			remove();
 			return;
+		}
 		Entity entity = e.getEntity();
 		if (!(entity instanceof Player))
 			return;

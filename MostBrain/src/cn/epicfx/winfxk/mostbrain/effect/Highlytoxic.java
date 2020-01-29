@@ -18,11 +18,6 @@ public class Highlytoxic extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public boolean isReDo() {
 		return false;
 	}
@@ -34,7 +29,7 @@ public class Highlytoxic extends EffectItem {
 		effect.setDuration(60);
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
 		e.getEntity().addEffect(effect);
-		gameData.honor++;
-		gameData.score++;
+		gameData.honor += Tool.getRand(1, 2);
+		gameData.score += e.getEntity().getHealth();
 	}
 }

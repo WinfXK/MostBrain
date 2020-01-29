@@ -36,10 +36,9 @@ public class Frightened extends EffectItem {
 			return;
 		}
 		if (!isSB || !(e instanceof EntityDamageByEntityEvent) || e.isCancelled() || Tool.getRand(1, 3) == 3
-				|| JJLength-- < 0) {
-			super.onBeingDamage(e);
+				|| JJLength-- < 0)
 			return;
-		}
+		isSB = false;
 		e.setDamage(0.001f);
 		Entity entity = ((EntityDamageByEntityEvent) e).getDamager();
 		Location l1 = entity.getLocation();

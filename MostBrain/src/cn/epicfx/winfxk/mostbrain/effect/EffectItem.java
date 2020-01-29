@@ -42,6 +42,15 @@ public abstract class EffectItem {
 	}
 
 	/**
+	 * 在玩家特效中删除本特效
+	 */
+	public void remove() {
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		myPlayer.items.remove(this);
+		ac.setPlayers(player, myPlayer);
+	}
+
+	/**
 	 * 返回物品的最大堆叠数量
 	 *
 	 * @return
@@ -86,7 +95,7 @@ public abstract class EffectItem {
 			if (nbt.getString(Activate.getActivate().getMostBrain().getName()) != null) {
 				for (EffectItem item3 : Activate.getActivate().getEffecttor().getList())
 					if (item2.getId() == item3.getID()
-					&& (item3.getDamage() < 0 || item3.getDamage() == item2.getDamage()))
+							&& (item3.getDamage() < 0 || item3.getDamage() == item2.getDamage()))
 						try {
 							EffectItem item4 = item3.getClass().newInstance();
 							myPlayer.items = myPlayer.items == null ? new ArrayList<>() : myPlayer.items;
@@ -154,8 +163,8 @@ public abstract class EffectItem {
 							e.setDamage(e.getDamage() * Activate.getActivate().getConfig().getInt("倍率加成"));
 							KillB = true;
 						}
-						for (EffectItem item : myPlayer.items)
-							item.allotDamageEvent(e);
+						for (int i = 0; i < myPlayer.items.size(); i++)
+							myPlayer.items.get(i).allotDamageEvent(e);
 					}
 			}
 		}
@@ -177,10 +186,11 @@ public abstract class EffectItem {
 					int ak = nbt.getInt("Ak");
 					e.setDamage(ak >= 0 ? e.getDamage() : ak);
 				}
-				onDamage(e);
+				if (!e.isCancelled())
+					onDamage(e);
 			}
 		}
-		if (isPlayer(e.getEntity()))
+		if (isPlayer(e.getEntity()) && !e.isCancelled())
 			onBeingDamage(e);
 	}
 
@@ -207,7 +217,23 @@ public abstract class EffectItem {
 	 * @return
 	 */
 	public String getFunction() {
-		return getMeaage("Hint", player);
+		String s = getMeaage("Hint", player);
+		if (Tool.String_length(s) > 15)
+			s = getString("", s);
+		return s;
+	}
+
+	public String getString(String Max, String s) {
+		if (Tool.String_length(s) > 15) {
+			String string = s.substring(0, 15);
+			String ss = "xxx1&^%$" + s;
+			String sss = "xxx1&^%$" + string;
+			s = ss.replace(sss, "");
+			Max += (Max.isEmpty() ? "" : "\n") + string;
+			return getString(Max, s);
+		} else {
+			return Max += (Max.isEmpty() ? "" : "\n") + s;
+		}
 	}
 
 	/**
@@ -215,7 +241,7 @@ public abstract class EffectItem {
 	 */
 	public void onConsume() {
 		gameData.honor++;
-		gameData.score += 5 + Tool.getRand(0, getID());
+		gameData.score += 5 + Tool.getRand(1, getID()) * 2;
 	}
 
 	/**
@@ -237,7 +263,7 @@ public abstract class EffectItem {
 	}
 
 	public void Wake() {
-		gameData.score++;
+		gameData.score += Tool.getRand(1, ac.gameHandle.getGamePlayers().size());
 	}
 
 	/**
@@ -262,7 +288,7 @@ public abstract class EffectItem {
 	 * @param e
 	 */
 	public void onItemConsume(PlayerItemConsumeEvent e) {
-		gameData.score++;
+		gameData.score += e.getItem().getId();
 	}
 
 	/**
@@ -275,9 +301,9 @@ public abstract class EffectItem {
 		Entity entity = e.getEntity();
 		if (entity.getHealth() <= e.getDamage()) {
 			gameData.honor++;
-			gameData.score += e.getDamage() + entity.getHealth();
+			gameData.score += e.getDamage() * ac.gameHandle.getGamePlayers().size() + entity.getHealth();
 		} else
-			gameData.score += e.getDamage() / 2;
+			gameData.score += e.getDamage() + ac.gameHandle.getGamePlayers().size();
 	}
 
 	/**
@@ -286,13 +312,15 @@ public abstract class EffectItem {
 	 * @param e
 	 */
 	public void onBeingDamage(EntityDamageEvent e) {
-		gameData.honor -= 2;
+		gameData.honor--;
 		if (player.getHealth() <= e.getDamage()) {
-			gameData.honor -= 2;
-			gameData.score -= e.getDamage() * 4 + player.getHealth();
+			if (Tool.getRand(1, 10) == 1)
+				gameData.honor -= 1;
+			gameData.score -= Tool.getRand(0, Tool.ObjectToInt(e.getDamage(), 1));
 			return;
 		}
-		gameData.score -= e.getDamage() * 2;
+		if (Tool.getRand(1, 3) == 1)
+			gameData.score -= e.getDamage() / 2;
 	}
 
 	/**

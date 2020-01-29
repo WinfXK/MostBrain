@@ -1,11 +1,11 @@
 package cn.epicfx.winfxk.mostbrain.cmd;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
@@ -26,6 +26,9 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.Utils;
+
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author Winfxk
@@ -56,7 +59,6 @@ public class ACommand extends Command {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!ac.getMostBrain().isEnabled())
@@ -69,6 +71,7 @@ public class ACommand extends Command {
 			sender.sendMessage(Tool.getCommandHelp(this));
 			return true;
 		}
+		File file;
 		switch (args[0].toLowerCase()) {
 		case "lang":
 		case "语言":
@@ -78,29 +81,31 @@ public class ACommand extends Command {
 				return true;
 			}
 			String l;
+			file = new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName);
 			String[] sk = { "{Player}", "{Money}", "{Error}" };
+			List<String> Files = Arrays.asList(file.list());
 			if (Tool.isInteger(args[1])) {
 				int Is = Tool.ObjectToInt(args[1]);
-				if (Is >= ac.langs.size()) {
+				if (Is >= Files.size()) {
 					sender.sendMessage(msg.getSun("Command", "AdminCommand", "请输入正确的语言Key", sk,
 							new Object[] { sender.getName(),
 									sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
-											"0-" + (ac.langs.size() - 1) + "或" + ac.langs }));
+									"0-" + (ac.langs.size() - 1) + "或" + Arrays.asList(Files) }));
 					return true;
 				}
-				l = ac.langs.get(Is);
+				l = Files.get(Is);
 			} else {
-				if (!ac.langs.contains(args[1]) && !ac.langs.contains(args[1] + ".yml")) {
+				if (!Files.contains(args[1]) && !Files.contains(args[1] + ".yml")) {
 					sender.sendMessage(msg.getSun("Command", "AdminCommand", "请输入正确的语言Key", sk,
 							new Object[] { sender.getName(),
 									sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
-											"0-" + (ac.langs.size() - 1) + "或" + ac.langs }));
+									"0-" + (Files.size() - 1) + "或" + Files }));
 					return true;
 				}
-				l = ac.langs.contains(args[1]) ? args[1] : args[1] + ".yml";
+				l = Files.contains(args[1]) ? args[1] : args[1] + ".yml";
 			}
 			try {
-				Utils.writeFile(Message.getFile(), Utils.readFile(getClass().getResourceAsStream("/language/" + l)));
+				Utils.writeFile(Message.getFile(), Utils.readFile(new File(file, l)));
 				msg.reload();
 				sender.sendMessage(msg.getSun("Command", "AdminCommand", "语言设置成功",
 						new String[] { "{Player}", "{Money}", "{Language}" },
@@ -126,21 +131,21 @@ public class ACommand extends Command {
 			DumperOptions dumperOptions = new DumperOptions();
 			dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 			Yaml yaml = new Yaml(dumperOptions);
-			for (String string : ac.langs)
-				if (string.contains(".")) {
+			file = new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName);
+			for (String string : file.list())
+				if (string != null && string.contains(".")) {
 					ss = string.split("\\.");
 					s = "";
 					for (int i = 0; i < ss.length - 1; i++)
 						s += (s.isEmpty() ? "" : ".") + ss[i];
-					if (s != null && getClass().getResource("/language/" + s + ".yml") != null)
-						try {
-							t = Utils.readFile(getClass().getResourceAsStream("/language/" + s + ".yml"));
-							map = yaml.loadAs(t, Map.class);
-							sender.sendMessage(Tool.getRandColor() + s + Tool.getRandColor() + ": "
-									+ ac.getMessage().getText(map.get("lang")));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+					try {
+						t = Utils.readFile(new File(file, string));
+						map = yaml.loadAs(t, Map.class);
+						sender.sendMessage(Tool.getRandColor() + s + Tool.getRandColor() + ": "
+								+ ac.getMessage().getText(map.get("lang")));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			return true;
 		case "stop":
@@ -155,7 +160,7 @@ public class ACommand extends Command {
 				return true;
 			}
 			ac.gameHandle.setCommandSender(sender).setAdminStopGame(true);
-			sender.sendMessage(msg.getMessage("终止成功"));
+			sender.sendMessage(getMessage("终止成功"));
 			return true;
 		}
 		if (!sender.isPlayer()) {
@@ -230,9 +235,9 @@ public class ACommand extends Command {
 			if (ac.SettingModel) {
 				player.sendMessage(ac.setPlayer.getName().equals(player.getName())
 						? msg.getSun(MainKey, SunKey, "正在设置", player)
-								: msg.getSun(MainKey, SunKey, "已有玩家正在设置", new String[] { "{Player}", "{Money}", "{ByPlayer}" },
-										new Object[] { player.getName(), ac.getPlayers(player.getName()).getMoney(),
-												ac.setPlayer.getName() }));
+						: msg.getSun(MainKey, SunKey, "已有玩家正在设置", new String[] { "{Player}", "{Money}", "{ByPlayer}" },
+								new Object[] { player.getName(), ac.getPlayers(player.getName()).getMoney(),
+										ac.setPlayer.getName() }));
 				return true;
 			}
 			ac.SettingModel = true;

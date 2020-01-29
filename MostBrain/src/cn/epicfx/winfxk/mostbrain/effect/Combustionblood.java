@@ -33,7 +33,7 @@ public class Combustionblood extends EffectItem {
 			return;
 		e.setDamage(Tool.objToFloat(damge + (damge * bl), e.getDamage()));
 		player.setHealth(Tool.objToFloat(health - jH, health));
-		gameData.honor++;
+		gameData.honor += Tool.getRand(1, 2);
 		gameData.score += jH;
 		entity.getLevel().addSound(entity.getLocation(), Sound.DAMAGE_FALLBIG);
 	}

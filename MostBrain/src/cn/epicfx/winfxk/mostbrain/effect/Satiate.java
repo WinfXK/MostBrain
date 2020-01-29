@@ -17,11 +17,6 @@ public class Satiate extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onConsume() {
 		food = player.getFoodData();
 		gameData.honor++;
@@ -34,6 +29,7 @@ public class Satiate extends EffectItem {
 
 	@Override
 	public void Wake() {
+		gameData.score++;
 		food.setLevel(food.getLevel() < 1 ? 1 : food.getLevel(),
 				food.getFoodSaturationLevel() < 1 ? 1 : food.getFoodSaturationLevel());
 	}

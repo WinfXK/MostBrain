@@ -17,13 +17,14 @@ public class Expedite extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
+	public boolean isReDo() {
+		return false;
 	}
 
 	@Override
-	public boolean isReDo() {
-		return false;
+	public void onConsume() {
+		super.onConsume();
+		i = 10;
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class Expedite extends EffectItem {
 		i = 0;
 		Effect effect = Effect.getEffect(1);
 		effect.setDuration(280);
-		gameData.score++;
+		gameData.score += Tool.getRand(1, getID());
 		effect.setColor(Tool.getRand(1, 255), Tool.getRand(1, 255), Tool.getRand(1, 255));
 		player.addEffect(effect);
 	}

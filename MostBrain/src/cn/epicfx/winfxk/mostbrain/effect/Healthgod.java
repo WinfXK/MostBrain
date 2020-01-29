@@ -13,7 +13,7 @@ public class Healthgod extends EffectItem {
 		float Health = player.getMaxHealth() / player.getHealth();
 		player.setMaxHealth(MaxHealth + 10);
 		player.setHealth(player.getMaxHealth() / Health);
-		gameData.honor++;
+		gameData.honor += 1 + player.getMaxHealth() / player.getHealth();
 		gameData.score += player.getMaxHealth();
 	}
 
@@ -25,10 +25,5 @@ public class Healthgod extends EffectItem {
 	@Override
 	public int getID() {
 		return 466;
-	}
-
-	@Override
-	public int getDamage() {
-		return -1;
 	}
 }

@@ -14,11 +14,6 @@ public class Suckblood extends EffectItem {
 
 	@Override
 	public int getID() {
-		return -1;
-	}
-
-	@Override
-	public int getDamage() {
 		return 375;
 	}
 
@@ -28,7 +23,9 @@ public class Suckblood extends EffectItem {
 		if (player.getHealth() >= player.getMaxHealth() || Tool.getRand(1, 5) != 1
 				|| entity.getHealth() <= e.getDamage() || entity.getHealth() / 10 <= 1)
 			return;
+		gameData.honor++;
 		int h = Tool.getRand(1, (int) (entity.getHealth() / 10));
+		gameData.score += h * 2;
 		entity.setHealth(entity.getHealth() - h);
 		if (h + player.getHealth() < player.getMaxHealth())
 			player.setHealth(h + player.getHealth());

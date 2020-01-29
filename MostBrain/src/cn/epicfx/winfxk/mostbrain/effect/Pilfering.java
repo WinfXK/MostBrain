@@ -42,8 +42,8 @@ public class Pilfering extends EffectItem {
 		M = ac.getConfig().getInt("递归深度");
 		Player player2 = getSB(ac.gameHandle.getGamePlayers(), 0);
 		if (player2.equals(player) || player2.getName().equals(player.getName())) {
-			e.setDamage(0.01f);
-			gameData.score += player.getMaxHealth() - player.getHealth();
+			e.setCancelled();
+			gameData.score += player.getMaxHealth() + player.getHealth();
 			player.setHealth(player.getMaxHealth());
 			return;
 		}

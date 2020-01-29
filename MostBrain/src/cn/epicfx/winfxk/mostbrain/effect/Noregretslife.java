@@ -1,6 +1,7 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;
@@ -23,7 +24,7 @@ public class Noregretslife extends EffectItem {
 			return;
 		int is = ac.getConfig().getInt("游戏最大血量");
 		player.setMaxHealth(is);
-		gameData.honor -= myPlayer.items.size();
+		gameData.honor--;
 		gameData.score -= is;
 	}
 
@@ -36,12 +37,13 @@ public class Noregretslife extends EffectItem {
 			MyPlayer myPlayer = ac.getPlayers(entity.getName());
 			if (myPlayer != null && myPlayer.GameModel && myPlayer.gameData != null) {
 				myPlayer.gameData.score -= player.getMaxHealth() + e.getDamage();
-				myPlayer.gameData.honor--;
+				if (Tool.getRand(1, 3) == 1)
+					myPlayer.gameData.honor--;
 			}
 		}
 		if (player.getHealth() >= player.getMaxHealth()) {
 			player.setMaxHealth(player.getMaxHealth() + 1);
-			gameData.honor++;
+			gameData.honor += Tool.getRand(1, 2);
 			gameData.score += player.getMaxHealth();
 			return;
 		}

@@ -18,24 +18,21 @@ public class Formatting extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public boolean isReDo() {
 		return false;
 	}
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-		if (i++ > 1)
+		if (i++ > 1) {
+			remove();
 			return;
+		}
 		Entity entity = e.getEntity();
 		if (!(entity instanceof Player))
 			return;
 		Player player = (Player) entity;
-		gameData.honor++;
+		gameData.honor += ac.gameHandle.getEffects(player);
 		gameData.score += 2 * ac.gameHandle.getEffects(player);
 		ac.gameHandle.clearBuffs(player);
 	}

@@ -14,11 +14,6 @@ public class Meteors extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public boolean Affiliate() {
 		return false;
 	}
@@ -27,7 +22,7 @@ public class Meteors extends EffectItem {
 	public void onConsume() {
 		super.onConsume();
 		handle.giveBuffs(player).giveBuffs(player);
-		gameData.honor += 2;
+		gameData.honor += gameData.honor / 2;
 		gameData.score += gameData.score / 2;
 	}
 }

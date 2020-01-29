@@ -18,17 +18,12 @@ public class Brambles extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		if (!(e instanceof EntityDamageByEntityEvent))
 			return;
 		Entity en = ((EntityDamageByEntityEvent) e).getDamager();
 		en.setHealth(en.getHealth() - 1);
 		gameData.honor++;
-		gameData.score++;
+		gameData.score += en.getHealth();
 	}
 }

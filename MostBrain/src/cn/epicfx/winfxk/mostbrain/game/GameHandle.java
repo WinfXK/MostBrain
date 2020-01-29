@@ -1,6 +1,7 @@
 package cn.epicfx.winfxk.mostbrain.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,9 +106,14 @@ public class GameHandle {
 		if (StartGame)
 			return;
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		if (myPlayer == null) {
+			player.sendMessage(ac.getMessage().getSon("Game", "数据错误", new String[] { "{Player}", "{Money}" },
+					new Object[] { player.getName(), MyPlayer.getMoney(player.getName()) }));
+			return;
+		}
 		if (myPlayer.getMoney() < ac.getConfig().getDouble("游戏费用")) {
 			player.sendMessage(
-					ac.getMessage().getSon("Game", "结束惩罚", new String[] { "{Player}", "{Money}", "{MyMoney}" },
+					ac.getMessage().getSon("Game", "金钱不足", new String[] { "{Player}", "{Money}", "{MyMoney}" },
 							new Object[] { player.getName(), ac.getConfig().getDouble("游戏费用"), myPlayer.getMoney() }));
 			return;
 		}
@@ -132,7 +138,7 @@ public class GameHandle {
 		player.setHealth(h);
 		player.setGamemode(0);
 		player.removeAllEffects();
-		myPlayer.items = new ArrayList<>();
+		myPlayer.items = Collections.synchronizedList(new ArrayList<>());
 		myPlayer.gameData = new GameData();
 		ac.setPlayers(player, myPlayer);
 		for (int i = 0; i < list.length; i++)
@@ -141,7 +147,7 @@ public class GameHandle {
 					new Object[] { player.getName(), myPlayer.getMoney() + gamePlayers.size(), GameMinCount,
 							gamePlayers.size() >= GameMinCount ? " "
 									: Tool.getRandColor() + gamePlayers.size() + Tool.getRandColor() + "/"
-									+ Tool.getRandColor() + GameMinCount });
+											+ Tool.getRandColor() + GameMinCount });
 		player.sendTitle(list[0], list.length > 1 ? list[1] : null);
 	}
 
@@ -154,6 +160,9 @@ public class GameHandle {
 		@Override
 		public void run() {
 			try {
+				for (Player player : gamePlayers)
+					for (MostEvent event : ac.getMostEvents())
+						event.onReadyis(player);
 				ReadyTime = ac.getConfig().getInt("等待时间");
 				while (ReadyisModel) {
 					if (AdminStopGame) {
@@ -179,7 +188,7 @@ public class GameHandle {
 						ReadyTime--;
 					for (Player player : gamePlayers)
 						if (gamePlayers.size() >= GameMinCount
-						&& ((ReadyTime >= 5 && ReadyTime % 5 == 0) || ReadyTime <= 3))
+								&& ((ReadyTime >= 5 && ReadyTime % 5 == 0) || ReadyTime <= 3))
 							player.sendMessage(ac.getMessage().getSon("Game", "即将开始",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime }));
@@ -194,7 +203,7 @@ public class GameHandle {
 								new Object[] { gamePlayers.size(), GameMinCount,
 										gamePlayers.size() >= GameMinCount ? " "
 												: Tool.getRandColor() + gamePlayers.size() + Tool.getRandColor() + "/"
-												+ Tool.getRandColor() + GameMinCount });
+														+ Tool.getRandColor() + GameMinCount });
 					Tool.setSign(mostConfig.Level, mostConfig.Start.get("X"), mostConfig.Start.get("Y"),
 							mostConfig.Start.get("Z"), list);
 					if (ReadyTime <= 0) {
@@ -260,6 +269,8 @@ public class GameHandle {
 	public void QuitGame(Player player, boolean isQuitServer, boolean isRemove, boolean isMsg) {
 		if (!ac.isStartGame)
 			return;
+		for (MostEvent event : ac.getMostEvents())
+			event.onQuit(player, isQuitServer);
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
 		if (myPlayer.GameModel || myPlayer.ReadyModel) {
 			int honor = 0, score = 0;
@@ -342,6 +353,8 @@ public class GameHandle {
 			for (Player player : gamePlayers) {
 				if (player == null)
 					continue;
+				for (MostEvent event : ac.getMostEvents())
+					event.onStart(player);
 				myPlayer = ac.getPlayers(player.getName());
 				if (myPlayer == null)
 					continue;
@@ -419,7 +432,7 @@ public class GameHandle {
 				QuitGame();
 			} catch (
 
-					InterruptedException e) {
+			InterruptedException e) {
 				e.printStackTrace();
 			}
 			super.run();
@@ -432,6 +445,8 @@ public class GameHandle {
 					MyPlayer myPlayer;
 					while (StartGame) {
 						for (Player player : gamePlayers) {
+							for (MostEvent event : ac.getMostEvents())
+								event.Wake(player);
 							myPlayer = ac.getPlayers(player.getName());
 							if (myPlayer != null && myPlayer.items != null)
 								for (EffectItem item : myPlayer.items)

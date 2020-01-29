@@ -14,11 +14,6 @@ import cn.nukkit.potion.Effect;
 public class Stamp extends EffectItem {
 	@Override
 	public int getID() {
-		return -1;
-	}
-
-	@Override
-	public int getDamage() {
 		return 421;
 	}
 
@@ -30,8 +25,8 @@ public class Stamp extends EffectItem {
 	@Override
 	public void onDamage(EntityDamageEvent e) {
 		gameData.honor++;
-		gameData.score++;
 		Entity en = e.getEntity();
+		gameData.score += en.getHealth();
 		en.setNameTag(getText());
 		Effect effect = Effect.getEffect(15);
 		effect.setDuration(600);

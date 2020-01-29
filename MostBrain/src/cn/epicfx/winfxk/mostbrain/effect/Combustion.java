@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.event.entity.EntityDamageEvent;
 
 /**
@@ -21,14 +22,9 @@ public class Combustion extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
-		e.getEntity().setOnFire(3);
-		gameData.honor++;
-		gameData.score++;
+		e.getEntity().setOnFire(Tool.getRand(3, 8));
+		gameData.honor += Tool.getRand(1, 2);
+		gameData.score += Tool.getRand(1, 20);
 	}
 }

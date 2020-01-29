@@ -8,14 +8,14 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.Utils;
+
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author Winfxk
@@ -25,6 +25,7 @@ public class ResCheck {
 	private Activate ac;
 	private MostBrain kis;
 	private PluginLogger log;
+	private final static String[] s = { "得分", "造成伤害", "受到损伤", "答题数", "正确数", "杀敌数", "恢复生命", "恶意度", "荣誉" };
 
 	public ResCheck(Activate activate) {
 		this.ac = activate;
@@ -33,9 +34,10 @@ public class ResCheck {
 	}
 
 	public Config Check(Config config) {
-		String[] s = { "得分", "造成伤害", "受到损伤", "答题数", "正确数", "杀敌数", "恢复生命", "恶意度", "荣誉" };
+		if (config == null)
+			return config;
 		for (String string : s)
-			if (!config.exists(string))
+			if (config.get(Tool.objToString(string)) == null)
 				config.set(string, 0);
 		config.save();
 		return config;
@@ -106,12 +108,18 @@ public class ResCheck {
 			localJarFile = new JarFile(
 					new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile()));
 			Enumeration<JarEntry> entries = localJarFile.entries();
-			File Jf;
+			File Jf, JFB;
+			String JN;
 			while (entries.hasMoreElements()) {
 				JarEntry jarEntry = entries.nextElement();
 				Jf = new File(jarEntry.getName());
-				if (Jf.getParent() != null && Jf.getParent().equals("language"))
-					ac.langs.add(Jf.getName());
+				if (Jf.getParent() != null && Jf.getParent().equals("language")) {
+					JN = Jf.getName();
+					ac.langs.add(JN);
+					JFB = new File(new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName), JN);
+					if (!JFB.exists())
+						Utils.writeFile(JFB, Utils.readFile(getClass().getResourceAsStream("/language/" + JN)));
+				}
 			}
 		} catch (IOException e2) {
 			e2.printStackTrace();
@@ -159,6 +167,11 @@ public class ResCheck {
 		return this;
 	}
 
+	/**
+	 * 返回Jar包所在的位置
+	 * 
+	 * @return
+	 */
 	public String getPath() {
 		String path = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
 		if (System.getProperty("os.name").contains("dows"))

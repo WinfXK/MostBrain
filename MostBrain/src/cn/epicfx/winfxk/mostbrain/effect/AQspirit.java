@@ -22,12 +22,9 @@ public class AQspirit extends EffectItem {
 	}
 
 	@Override
-	public void onDamage(EntityDamageEvent e) {
-	}
-
-	@Override
 	public void onBeingDamage(EntityDamageEvent e) {
 		player.setNameTag(Ts[Tool.getRand(0, Ts.length - 1)]);
+		gameData.score += Ts[Tool.getRand(0, Ts.length - 1)].length();
 	}
 
 	@Override

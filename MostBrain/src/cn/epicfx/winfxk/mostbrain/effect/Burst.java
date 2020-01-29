@@ -27,14 +27,15 @@ public class Burst extends EffectItem {
 
 	@Override
 	public void onDamage(EntityDamageEvent e) {
-		gameData.honor++;
-		gameData.score++;
+		gameData.honor += Tool.getRand(1, 2);
 		Entity entity = e.getEntity();
 		Level level = entity.getLevel();
 		level.addParticle(new ExplodeParticle(entity.getLocation()));
 		level.addSound(entity, Sound.RANDOM_EXPLODE);
 		int as = (int) entity.getHealth() / 10;
 		as = as <= 1 ? 1 : as;
+		float aa = entity.getHealth();
 		entity.setHealth(entity.getHealth() - Tool.getRand(1, as));
+		gameData.score += aa - entity.getHealth();
 	}
 }

@@ -16,14 +16,9 @@ public class Ferocity extends EffectItem {
 	}
 
 	@Override
-	public int getDamage() {
-		return -1;
-	}
-
-	@Override
 	public void onDamage(EntityDamageEvent e) {
 		e.setDamage((float) (e.getDamage() * 1.5));
 		gameData.honor++;
-		gameData.score += e.getDamage() * 0.5;
+		gameData.score += e.getDamage();
 	}
 }
