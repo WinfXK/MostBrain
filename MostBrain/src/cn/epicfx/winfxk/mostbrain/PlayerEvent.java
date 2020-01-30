@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -169,10 +170,6 @@ public class PlayerEvent implements Listener {
 			return;
 		Player player = e.getPlayer();
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
-		if (player.getHealth() <= 0 || player.getMaxHealth() <= 0) {
-			player.setMaxHealth(20);
-			player.setHealth(20);
-		}
 		if (myPlayer != null && ac.isStartGame) {
 			int Mh = ac.config.getInt("游戏最大血量");
 			int h = ac.config.getInt("游戏血量");
@@ -188,6 +185,8 @@ public class PlayerEvent implements Listener {
 
 			}
 			if (myPlayer.GameModel) {
+				myPlayer.RespawnTime = Instant.now();
+				ac.setPlayers(player.getName(), myPlayer);
 				if (player.getHealth() <= 0 || player.getMaxHealth() <= 0) {
 					player.setMaxHealth(Mh);
 					player.setHealth(h);
@@ -197,6 +196,10 @@ public class PlayerEvent implements Listener {
 				if (level != null)
 					new RespawnThread(player, new Location(v.x, v.y, v.z, level)).start();
 			}
+		}
+		if (player.getHealth() <= 0 || player.getMaxHealth() <= 0) {
+			player.setMaxHealth(20);
+			player.setHealth(20);
 		}
 	}
 
@@ -262,13 +265,6 @@ public class PlayerEvent implements Listener {
 		Player player = e.getEntity();
 		if (!player.isPlayer())
 			return;
-		MyPlayer myPlayer = ac.getPlayers(player.getName());
-		if (ac.isStartGame && (ac.gameHandle.ReadyisModel() || ac.gameHandle.StartGame())
-				&& myPlayer.gameData != null) {
-			myPlayer.gameData.honor -= ac.config.getInt("死亡扣除分数");
-			myPlayer.gameData.score -= ac.config.getInt("死亡扣除荣耀");
-			ac.setPlayers(player, myPlayer);
-		}
 	}
 
 	/**

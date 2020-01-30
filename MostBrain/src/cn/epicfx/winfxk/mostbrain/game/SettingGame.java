@@ -209,7 +209,7 @@ public class SettingGame {
 				player.getInventory().setItem(0, sbItem);
 				player.setGamemode(gameMode);
 				start.getLevel().setBlock(start.getLocation(), start);
-				ac.reloadMostConfig();
+				ac.reloadMostConfig(true);
 				ac.settingGame = null;
 				ac.getMostBrain().getServer().broadcastMessage(getMessage("生成完成"));
 				super.run();

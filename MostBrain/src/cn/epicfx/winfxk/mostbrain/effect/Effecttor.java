@@ -59,10 +59,11 @@ public class Effecttor {
 	 *
 	 * @param gameHandle
 	 */
-	public Effecttor(GameHandle gameHandle) {
+	public Effecttor(GameHandle gameHandle, boolean isMsg) {
 		load();
 		ac = Activate.getActivate();
-		ac.getMostBrain().getLogger().info(ac.getMessage().getMessage("Buff列表", Sk, new Object[] { list.size() }));
+		if (isMsg)
+			ac.getMostBrain().getLogger().info(ac.getMessage().getMessage("Buff列表", Sk, new Object[] { list.size() }));
 	}
 
 	/**
@@ -113,7 +114,7 @@ public class Effecttor {
 	/**
 	 * 此操作在系统拥有大量Buff时将会消耗很多资源！请慎用.
 	 */
-	protected void load() {
+	public void load() {
 		list = Arrays.asList(defEffect);
 		for (EffectItem item : usEffectItems)
 			list.add(item);
@@ -139,7 +140,7 @@ public class Effecttor {
 			return this;
 		for (EffectItem effectItem : list)
 			if (effectItem.getID() == item.getId()
-			&& (effectItem.getDamage() < 0 || effectItem.getDamage() == item.getDamage()))
+					&& (effectItem.getDamage() < 0 || effectItem.getDamage() == item.getDamage()))
 				putBuff(player, effectItem);
 		return this;
 	}

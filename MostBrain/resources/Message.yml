@@ -13,7 +13,7 @@ lang: chs-中文
 游戏未设置: §4{PluginName}未设置
 权限不足: §4你无权限执行此操作！
 金币不足: §4您的{MoneyName}不足！
-插件启动: '{RGBTextStart}{PluginName}启动...{RGBTextEnd}        §6欢迎{RGBTextStart}使用{PluginName}{RGBTextEnd}§f(*￣︶￣)'
+插件启动: '{RGBTextStart}{PluginName}启动(耗时: {loadTime})...{RGBTextEnd}        §6欢迎{RGBTextStart}使用{PluginName}{RGBTextEnd}§f(*￣︶￣)'
 无法初始化配置: §4无法初始化配置文件：{FileName}，请检查!
 无法效验语言文件: §4无法效验语言文件！请检查！
 请在游戏内自行命令: §4请在游戏内执行此命令！
@@ -156,6 +156,9 @@ Command:
       setMsg: '{RandColor}开始设置{PluginName}'
       delMsg: '{RandColor}删除所有{PluginName}设置'
       stopMsg: '{RandColor}终止正在进行的游戏'
+      reloadMsg: '{RandColor}重载{RandColor}{PluginName}'
+      reloadOK: '{RandColor}已重载{RandColor}{PluginName}'
+      管理员重载: '{RandColor}{Player}已重载{RandColor}{PluginName}'
       暂无已支持的语言: §4没有更多语言支持了！
       当前已支持以下语言: '{RandColor}当前已支持以下语言'
       已有玩家正在设置: §4当前已经有一个玩家正在设置游戏！Player：{ByPlayer}

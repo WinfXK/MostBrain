@@ -1,6 +1,8 @@
 package cn.epicfx.winfxk.mostbrain;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -74,12 +76,13 @@ public class Activate {
 		if (!isGameSettingUp)
 			kis.getLogger().warning(message.getMessage("游戏未设置"));
 		else
-			reloadMostConfig();
+			reloadMostConfig(true);
 		makeForm = new MakeForm(this);
 		kis.getServer().getCommandMap().register(getName(), new ACommand(this));
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
-		kis.getLogger().info(message.getMessage("插件启动"));
+		kis.getLogger().info(message.getMessage("插件启动", new String[] { "{loadTime}" },
+				new Object[] { ((float) Duration.between(mis.loadTime, Instant.now()).toMillis()) + "ms" }));
 	}
 
 	public List<MostEvent> getMostEvents() {
@@ -96,11 +99,11 @@ public class Activate {
 		return effecttor;
 	}
 
-	public MostConfig reloadMostConfig() {
+	public MostConfig reloadMostConfig(boolean isMsg) {
 		mostConfig = new MostConfig(this);
 		gameEvent = new GameEvent(this);
 		gameHandle = new GameHandle(this);
-		effecttor = new Effecttor(gameHandle);
+		effecttor = new Effecttor(gameHandle, isMsg);
 		return mostConfig;
 	}
 

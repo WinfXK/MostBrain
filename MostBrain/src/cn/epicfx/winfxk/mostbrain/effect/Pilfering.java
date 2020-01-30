@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
@@ -15,7 +16,6 @@ import cn.nukkit.event.entity.EntityDamageEvent;
  * @author Winfxk
  */
 public class Pilfering extends EffectItem {
-	private int M;
 	private String[] K = { "{ByPlayer}", "{ByMoney}" };
 
 	@Override
@@ -39,8 +39,9 @@ public class Pilfering extends EffectItem {
 			player.setHealth(player.getMaxHealth());
 			return;
 		}
-		M = ac.getConfig().getInt("递归深度");
-		Player player2 = getSB(ac.gameHandle.getGamePlayers(), 0);
+		List<Player> items = new ArrayList<>(ac.gameHandle.getGamePlayers());
+		items.remove(player);
+		Player player2 = ac.gameHandle.getGamePlayers().get(Tool.getRand(0, items.size() - 1));
 		if (player2.equals(player) || player2.getName().equals(player.getName())) {
 			e.setCancelled();
 			gameData.score += player.getMaxHealth() + player.getHealth();
@@ -50,22 +51,5 @@ public class Pilfering extends EffectItem {
 		gameData.score += player2.getHealth();
 		player2.sendMessage(ac.getMessage().getText(getText(), K,
 				new Object[] { player2.getName(), MyPlayer.getMoney(player2.getName()) }));
-	}
-
-	/**
-	 * 随机或区域一个不是自己的逗比玩家
-	 *
-	 * @param players
-	 * @param length  已经循环了的深度
-	 * @return
-	 */
-	public Player getSB(List<Player> players, int length) {
-		Player player2 = players.get(Tool.getRand(0, players.size() - 1));
-		if (player2.getName().equals(player2.getName()))
-			if (M <= length)
-				return player2;
-			else
-				player2 = getSB(players, length++);
-		return player2;
 	}
 }

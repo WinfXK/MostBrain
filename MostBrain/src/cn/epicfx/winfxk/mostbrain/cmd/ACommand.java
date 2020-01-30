@@ -56,7 +56,8 @@ public class ACommand extends Command {
 				new CommandParameter(getMessage("setLang"), false, new String[] { "lang", "语言", "language" }) });
 		commandParameters.put(getMessage("Langs"), new CommandParameter[] { new CommandParameter(getMessage("Langs"),
 				false, new String[] { "langs", "语言列表", "languages", "ll" }) });
-
+		commandParameters.put(getMessage("reloadMsg"), new CommandParameter[] {
+				new CommandParameter(getMessage("reloadMsg"), false, new String[] { "reload", "重载" }) });
 	}
 
 	@Override
@@ -73,6 +74,13 @@ public class ACommand extends Command {
 		}
 		File file;
 		switch (args[0].toLowerCase()) {
+		case "reload":
+		case "重载":
+			ac.reloadMostConfig(false);
+			sender.sendMessage(getMessage("reloadOK", sender.isPlayer() ? (Player) sender : null));
+			if (sender.isPlayer())
+				ac.getMostBrain().getLogger().warning(getMessage("管理员重载", (Player) sender));
+			break;
 		case "lang":
 		case "语言":
 		case "language":

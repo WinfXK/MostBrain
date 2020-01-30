@@ -1,15 +1,19 @@
 package cn.epicfx.winfxk.mostbrain;
 
+import java.time.Instant;
+
 import cn.nukkit.plugin.PluginBase;
 
 /**
  * @author Winfxk
  */
 public class MostBrain extends PluginBase {
+	public Instant loadTime;
 	private static Activate ac;
 
 	@Override
 	public void onEnable() {
+		loadTime = Instant.now();
 		ac = new Activate(this);
 		super.onEnable();
 	}

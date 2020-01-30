@@ -1,6 +1,7 @@
 package cn.epicfx.winfxk.mostbrain;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class MyPlayer {
 	public boolean GameModel = false;
 	public boolean ReadyModel = false;
 	public boolean SettingModel = false;
+	public Instant RespawnTime = Instant.now();
 	public GameData gameData;
 	/**
 	 * 玩家的游戏特效

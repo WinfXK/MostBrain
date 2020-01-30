@@ -1,6 +1,9 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
@@ -143,14 +146,33 @@ public abstract class EffectItem {
 		Entity entity = e.getEntity();
 		boolean KillB = false;
 		MyPlayer myPlayer;
+		List<EffectItem> items;
 		if (entity instanceof Player) {
 			myPlayer = Activate.getActivate().getPlayers(entity.getName());
 			if (myPlayer != null && (myPlayer.GameModel || myPlayer.ReadyModel))
-				if (myPlayer.items != null && myPlayer.items.size() > 0) {
+				if (myPlayer.items != null && myPlayer.items.size() >= 0) {
+					if (e instanceof EntityDamageByEntityEvent) {
+						entity = ((EntityDamageByEntityEvent) e).getDamager();
+						if (entity instanceof Player) {
+							MyPlayer myPlayer2 = Activate.getActivate().getPlayers(entity.getName());
+							if (myPlayer2 != null && (myPlayer2.GameModel || myPlayer2.ReadyModel))
+								if (myPlayer2.items != null && myPlayer2.items.size() >= 0) {
+									if (Duration.between(myPlayer2.RespawnTime, Instant.now()).toMillis() <= Activate
+											.getActivate().getConfig().getInt("无敌时间")) {
+										e.setCancelled();
+										return;
+									}
+								}
+						}
+					}
 					e.setDamage(e.getDamage() * Activate.getActivate().getConfig().getInt("倍率加成"));
 					KillB = true;
-					for (EffectItem item : myPlayer.items)
+					items = new ArrayList<>(myPlayer.items);
+					for (EffectItem item : items) {
+						if (e.isCancelled())
+							break;
 						item.allotDamageEvent(e);
+					}
 				}
 		}
 		if (e instanceof EntityDamageByEntityEvent) {
@@ -158,13 +180,22 @@ public abstract class EffectItem {
 			if (entity instanceof Player) {
 				myPlayer = Activate.getActivate().getPlayers(entity.getName());
 				if (myPlayer != null && (myPlayer.GameModel || myPlayer.ReadyModel))
-					if (myPlayer.items != null && myPlayer.items.size() > 0) {
+					if (myPlayer.items != null && myPlayer.items.size() >= 0) {
+						if (Duration.between(myPlayer.RespawnTime, Instant.now()).toMillis() <= Activate.getActivate()
+								.getConfig().getInt("无敌时间")) {
+							e.setCancelled();
+							return;
+						}
 						if (!KillB) {
 							e.setDamage(e.getDamage() * Activate.getActivate().getConfig().getInt("倍率加成"));
 							KillB = true;
 						}
-						for (int i = 0; i < myPlayer.items.size(); i++)
-							myPlayer.items.get(i).allotDamageEvent(e);
+						items = new ArrayList<>(myPlayer.items);
+						for (EffectItem item : items) {
+							if (e.isCancelled())
+								break;
+							item.allotDamageEvent(e);
+						}
 					}
 			}
 		}
@@ -218,14 +249,14 @@ public abstract class EffectItem {
 	 */
 	public String getFunction() {
 		String s = getMeaage("Hint", player);
-		if (Tool.String_length(s) > 15)
+		if (s.length() > 15)
 			s = getString("", s);
 		return s;
 	}
 
 	public String getString(String Max, String s) {
-		if (Tool.String_length(s) > 15) {
-			String string = s.substring(0, 15);
+		if (s.length() > 15) {
+			String string = s.substring(0, s.length() <= 15 ? s.length() - 1 : 14);
 			String ss = "xxx1&^%$" + s;
 			String sss = "xxx1&^%$" + string;
 			s = ss.replace(sss, "");
@@ -314,8 +345,6 @@ public abstract class EffectItem {
 	public void onBeingDamage(EntityDamageEvent e) {
 		gameData.honor--;
 		if (player.getHealth() <= e.getDamage()) {
-			if (Tool.getRand(1, 10) == 1)
-				gameData.honor -= 1;
 			gameData.score -= Tool.getRand(0, Tool.ObjectToInt(e.getDamage(), 1));
 			return;
 		}

@@ -177,11 +177,8 @@ public class GameHandle {
 					}
 					if (gamePlayers.size() <= 0) {
 						ac.getMostBrain().getLogger().info(getMessage("游戏终止"));
-						break;
-					}
-					if (gamePlayers.size() < 1) {
 						reload();
-						break;
+						return;
 					}
 					sleep(1000);
 					if (gamePlayers.size() >= GameMinCount)
@@ -242,9 +239,12 @@ public class GameHandle {
 					ac.getMessage().getText(Tool.objToString(list.get(1), "")),
 					ac.getMessage().getText(Tool.objToString(list.get(2), "")),
 					ac.getMessage().getText(Tool.objToString(list.get(3), "")));
+		gameMainThread = null;
+		readyiingThread = null;
 		ac.isStartGame = false;
 		StartGame = false;
 		ReadyisModel = false;
+		ac.reloadMostConfig(false);
 	}
 
 	/**
@@ -327,7 +327,7 @@ public class GameHandle {
 						new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" },
 						new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), score, honor }));
 		}
-		player.setNameTag(" ");
+		player.setNameTag(player.getName());
 	}
 
 	/**
@@ -359,6 +359,7 @@ public class GameHandle {
 				if (myPlayer == null)
 					continue;
 				myPlayer.GameModel = true;
+				ReadyisModel = false;
 				myPlayer.ReadyModel = false;
 				myPlayer.saveXYZ();
 				player.getInventory().addItem(ac.getEffecttor().getAK());
@@ -388,7 +389,8 @@ public class GameHandle {
 					}
 					if (gamePlayers.size() <= 0) {
 						ac.getMostBrain().getLogger().info(getMessage("游戏终止"));
-						break;
+						reload();
+						return;
 					}
 					GameMessage = (Map<String, Object>) ac.getMessage().getConfig().get("Game");
 					list = (List<?>) GameMessage.get("StartGameSign");
@@ -416,7 +418,7 @@ public class GameHandle {
 												mostConfig.MinZ + 2),
 										getItem(), null, true, 3);
 						}
-						if ((GameTime > 3 && GameTime < 10) || GameTime == 25 || GameTime == 30)
+						if ((GameTime > 3 && GameTime < 10) || (GameTime % 10 == 0 && GameTime <= 30))
 							player.sendTitle(ac.getMessage().getSon("Game", "游戏即将结束",
 									new String[] { "{Player}", "{Money}", "{GameTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), GameTime }));
