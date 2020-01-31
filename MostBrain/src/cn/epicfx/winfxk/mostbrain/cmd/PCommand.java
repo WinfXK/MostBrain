@@ -114,7 +114,7 @@ public class PCommand extends Command {
 				player.sendMessage(getMessage("未加入游戏", player));
 				return true;
 			}
-			ac.gameHandle.QuitGame(player, true, true, true);
+			ac.gameHandle.QuitGame(player, true, true, true, true);
 			player.sendMessage(getMessage("中途退出", player));
 			break;
 		default:

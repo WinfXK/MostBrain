@@ -70,6 +70,8 @@ public class PlayerEvent implements Listener {
 			return;
 		if (f.getID(0) == ID)
 			ac.makeForm.disMain(player, (FormResponseSimple) data);
+		else if (f.getID(2) == ID && ((FormResponseSimple) data).getClickedButtonId() == 0)
+			ac.gameHandle.QuitGame(player, false, true, false, false);
 	}
 
 	/**
@@ -258,7 +260,7 @@ public class PlayerEvent implements Listener {
 			ac.settingGame = null;
 		} else if (ac.gameEvent != null && ac.isStartGame)
 			if (myPlayer != null && (myPlayer.ReadyModel || myPlayer.GameModel))
-				ac.gameHandle.QuitGame(player, true, true, false);
+				ac.gameHandle.QuitGame(player, true, true, false, true);
 		if (ac.isPlayers(player))
 			ac.removePlayers(player);
 	}

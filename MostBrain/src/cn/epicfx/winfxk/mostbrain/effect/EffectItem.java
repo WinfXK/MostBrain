@@ -214,7 +214,7 @@ public abstract class EffectItem {
 				nbt = nbt == null ? new CompoundTag() : nbt;
 				if (nbt.getString(ac.getMostBrain().getName()) != null) {
 					int ak = nbt.getInt("Ak");
-					e.setDamage(ak >= 0 ? e.getDamage() : ak);
+					e.setDamage(ak <= 0 ? e.getDamage() : ak);
 				}
 				if (!e.isCancelled())
 					onDamage(e);
@@ -329,7 +329,7 @@ public abstract class EffectItem {
 		gameData.honor++;
 		Entity entity = e.getEntity();
 		if (entity.getHealth() <= e.getDamage()) {
-			gameData.honor++;
+			gameData.honor += 2;
 			gameData.score += e.getDamage() * ac.gameHandle.getGamePlayers().size() + entity.getHealth();
 		} else
 			gameData.score += e.getDamage() + ac.gameHandle.getGamePlayers().size();
@@ -341,13 +341,14 @@ public abstract class EffectItem {
 	 * @param e
 	 */
 	public void onBeingDamage(EntityDamageEvent e) {
-		gameData.honor--;
+		if (Tool.getRand(1, 3) == 1)
+			gameData.honor--;
 		if (player.getHealth() <= e.getDamage()) {
-			gameData.score -= Tool.getRand(0, Tool.ObjectToInt(e.getDamage(), 1));
+			gameData.score -= e.getDamage() + player.getMaxHealth();
 			return;
 		}
-		if (Tool.getRand(1, 3) == 1)
-			gameData.score -= e.getDamage() / 2;
+		if (Tool.getRand(1, 2) == 1)
+			gameData.score -= e.getDamage();
 	}
 
 	/**

@@ -2,6 +2,7 @@ package cn.epicfx.winfxk.mostbrain.effect;
 
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.level.Sound;
 
 /**
  * 被攻击时会呐喊 </br>
@@ -25,6 +26,8 @@ public class AQspirit extends EffectItem {
 	public void onBeingDamage(EntityDamageEvent e) {
 		player.setNameTag(Ts[Tool.getRand(0, Ts.length - 1)]);
 		gameData.score += Ts[Tool.getRand(0, Ts.length - 1)].length();
+		player.getLevel().addSound(player.getLocation(), Sound.MOB_VILLAGER_NO);
+		super.onBeingDamage(e);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import java.util.Map;
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
 import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
+import cn.epicfx.winfxk.mostbrain.tool.SimpleForm;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
@@ -17,6 +18,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.potion.Effect;
 
 /**
  * @author Winfxk
@@ -58,6 +60,10 @@ public class GameHandle {
 	 * 终止游戏的玩家对象
 	 */
 	protected CommandSender sender;
+	/**
+	 * 黑暗模式
+	 */
+	protected boolean DarkPattern = false;
 
 	public GameHandle(Activate ac) {
 		this.ac = ac;
@@ -185,7 +191,7 @@ public class GameHandle {
 						ReadyTime--;
 					for (Player player : gamePlayers)
 						if (gamePlayers.size() >= GameMinCount
-						&& ((ReadyTime >= 5 && ReadyTime % 5 == 0) || ReadyTime <= 3))
+						&& ((ReadyTime >= 10 && ReadyTime % 10 == 0) || (ReadyTime <= 3 && ReadyTime > 0)))
 							player.sendMessage(ac.getMessage().getSon("Game", "即将开始",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime }));
@@ -253,7 +259,7 @@ public class GameHandle {
 	public void QuitGame() {
 		for (Player player : gamePlayers)
 			try {
-				QuitGame(player, false, false, true);
+				QuitGame(player, false, false, true, true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -264,68 +270,75 @@ public class GameHandle {
 	/**
 	 * 玩家退出游戏的处理
 	 *
-	 * @param player
+	 * @param player       要退出游戏的玩家对象
+	 * @param isQuitServer 是否是非结束退出
+	 * @param isRemove     是否在玩家数据中删除该玩家
+	 * @param isMsg        是否发送游戏结算信息
+	 * @param isAwards     是否涉及奖励发放扣除
 	 */
-	public void QuitGame(Player player, boolean isQuitServer, boolean isRemove, boolean isMsg) {
+	public void QuitGame(Player player, boolean isQuitServer, boolean isRemove, boolean isMsg, boolean isAwards) {
 		if (!ac.isStartGame)
 			return;
 		for (MostEvent event : ac.getMostEvents())
 			event.onQuit(player, isQuitServer);
 		MyPlayer myPlayer = ac.getPlayers(player.getName());
 		if (myPlayer.GameModel || myPlayer.ReadyModel) {
-			int honor = 0, score = 0;
-			for (EffectItem item : myPlayer.items) {
-				honor += item.gameData.honor;
-				score += item.gameData.score;
+			if (isAwards) {
+				int honor = 0, score = 0;
+				for (EffectItem item : myPlayer.items) {
+					honor += item.gameData.honor;
+					score += item.gameData.score;
+				}
+				if (isQuitServer) {
+					honor = -10;
+					score = 0;
+				}
+				honor += myPlayer.gameData.honor;
+				score += myPlayer.gameData.score;
+				myPlayer.addHonor(honor).addScore(score);
+				int bs = ac.getConfig().getInt("给予倍率");
+				boolean sb = ac.getConfig().getBoolean("给予惩罚");
+				double Money = score / bs + honor;
+				if (!AdminStopGame || isQuitServer)
+					if (!isQuitServer) {
+						if (Money >= 0) {
+							if (Money != 0) {
+								ac.getEconomy().addMoney(player, Money);
+								player.sendMessage(ac.getMessage().getSon("Game", "结束奖励",
+										new String[] { "{Player}", "{Money}", "{MyMoney}" },
+										new Object[] { player.getName(), Money, myPlayer.getMoney() }));
+							} else
+								player.sendMessage(ac.getMessage().getSon("Game", "未获得奖励",
+										new String[] { "{Player}", "{Money}", "{MyMoney}" },
+										new Object[] { player.getName(), Money, myPlayer.getMoney() }));
+						} else if (sb) {
+							ac.getEconomy().reduceMoney(player, Money);
+							player.sendMessage(ac.getMessage().getSon("Game", "结束惩罚",
+									new String[] { "{Player}", "{Money}", "{MyMoney}" },
+									new Object[] { player.getName(), Money, myPlayer.getMoney() }));
+						}
+					} else {
+						double sbsbsbs = Money <= ac.getConfig().getDouble("游戏费用") ? ac.getConfig().getDouble("游戏费用")
+								: Money;
+						ac.getEconomy().reduceMoney(player, sbsbsbs);
+						player.sendMessage(ac.getMessage().getSon("Game", "退出惩罚",
+								new String[] { "{Player}", "{Money}", "{MyMoney}" },
+								new Object[] { player.getName(), sbsbsbs, myPlayer.getMoney() }));
+					}
+				if (isMsg)
+					player.sendMessage(ac.getMessage().getSon("Game", "游戏结束",
+							new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" },
+							new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), score, honor }));
 			}
-			if (isQuitServer) {
-				honor = -10;
-				score = 0;
-			}
-			honor += myPlayer.gameData.honor;
-			score += myPlayer.gameData.score;
 			if (isRemove)
 				gamePlayers.remove(player);
 			player.removeAllEffects();
-			myPlayer.addHonor(honor).addScore(score).loadInventory().loadXYZ().loadGameMode();
+			myPlayer.loadInventory().loadXYZ().loadGameMode();
 			myPlayer.items = new ArrayList<>();
 			myPlayer.GameModel = false;
 			myPlayer.ReadyModel = false;
 			myPlayer.gameData = null;
 			ac.setPlayers(player, myPlayer);
-			int bs = ac.getConfig().getInt("给予倍率");
-			boolean sb = ac.getConfig().getBoolean("给予惩罚");
-			double Money = score / bs + honor;
-			if (!AdminStopGame || isQuitServer)
-				if (!isQuitServer) {
-					if (Money >= 0) {
-						if (Money != 0) {
-							ac.getEconomy().addMoney(player, Money);
-							player.sendMessage(ac.getMessage().getSon("Game", "结束奖励",
-									new String[] { "{Player}", "{Money}", "{MyMoney}" },
-									new Object[] { player.getName(), Money, myPlayer.getMoney() }));
-						} else
-							player.sendMessage(ac.getMessage().getSon("Game", "未获得奖励",
-									new String[] { "{Player}", "{Money}", "{MyMoney}" },
-									new Object[] { player.getName(), Money, myPlayer.getMoney() }));
-					} else if (sb) {
-						ac.getEconomy().reduceMoney(player, Money);
-						player.sendMessage(ac.getMessage().getSon("Game", "结束惩罚",
-								new String[] { "{Player}", "{Money}", "{MyMoney}" },
-								new Object[] { player.getName(), Money, myPlayer.getMoney() }));
-					}
-				} else {
-					double sbsbsbs = Money <= ac.getConfig().getDouble("游戏费用") ? ac.getConfig().getDouble("游戏费用")
-							: Money;
-					ac.getEconomy().reduceMoney(player, sbsbsbs);
-					player.sendMessage(
-							ac.getMessage().getSon("Game", "退出惩罚", new String[] { "{Player}", "{Money}", "{MyMoney}" },
-									new Object[] { player.getName(), sbsbsbs, myPlayer.getMoney() }));
-				}
-			if (isMsg)
-				player.sendMessage(ac.getMessage().getSon("Game", "游戏结束",
-						new String[] { "{Player}", "{Money}", "{Score}", "{Honor}" },
-						new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), score, honor }));
 		}
 		player.setNameTag(player.getName());
 	}
@@ -344,7 +357,9 @@ public class GameHandle {
 
 		@Override
 		public void run() {
+			boolean isPlayersMax1 = false;
 			int BjBl = ac.getConfig().getInt("补给倍率");
+			DarkPattern = Tool.getRand(0, 10) > ac.getConfig().getInt("黑暗模式概率") && ac.getConfig().getBoolean("黑暗模式");
 			BjBl = BjBl <= 0 ? 1 : BjBl;
 			new BuffThread().start();
 			MyPlayer myPlayer;
@@ -365,7 +380,9 @@ public class GameHandle {
 				player.getInventory().addItem(ac.getEffecttor().getAK());
 				player.teleport(location);
 				ac.setPlayers(player, myPlayer);
-				player.sendTitle(getMessage("开始游戏", player));
+				player.sendTitle(getMessage("本局为黑暗模式", player));
+				if (DarkPattern)
+					player.sendTitle(getMessage("开始游戏", player));
 			}
 			Timesleep = ac.getConfig().getInt("掉落间隔");
 			int Ps = gamePlayers.size();
@@ -394,6 +411,15 @@ public class GameHandle {
 						reload();
 						return;
 					}
+					if (!isPlayersMax1 && gamePlayers.size() == 1) {
+						SimpleForm form = new SimpleForm(ac.getFormID().getID(2),
+								getMessage("仅剩自己的提示", gamePlayers.get(0)),
+								getMessage("仅剩自己", gamePlayers.get(0)) + "\n\n\n\n\n\n\n");
+						form.addButton("§6Yes");
+						form.addButton("§4No");
+						form.sendPlayer(gamePlayers.get(0));
+						isPlayersMax1 = true;
+					}
 					GameMessage = (Map<String, Object>) ac.getMessage().getConfig().get("Game");
 					list = (List<?>) GameMessage.get("StartGameSign");
 					signLevel = Server.getInstance().getLevelByName(mostConfig.Level);
@@ -405,13 +431,13 @@ public class GameHandle {
 								ac.getMessage().getText(Tool.objToString(list.get(2), ""), Key, D),
 								ac.getMessage().getText(Tool.objToString(list.get(3), ""), Key, D));
 					}
-					Timesleep--;
 					for (Player player : gamePlayers) {
-						if (Timesleep < 5 && Timesleep > 0)
+						if ((Timesleep <= 3 && Timesleep > 0) || (Timesleep >= 10 && Timesleep % 10 == 0))
 							player.sendMessage(ac.getMessage().getSon("Game", "即将发送补给",
 									new String[] { "{Player}", "{Money}", "{SleepTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), Timesleep }));
-						if (Timesleep == 0) {
+						if (Timesleep-- <= 0) {
+							Timesleep = ac.getConfig().getInt("掉落间隔");
 							player.sendMessage(ac.getMessage().getSon("Game", "正在发送补给", player));
 							for (int sb = 0; sb < BjBl; sb++)
 								location.level.dropItem(
@@ -420,14 +446,13 @@ public class GameHandle {
 												mostConfig.MinZ + 2),
 										getItem(), null, true, 3);
 						}
-						if ((GameTime > 3 && GameTime < 10) || (GameTime % 10 == 0 && GameTime <= 30))
+						if (GameTime == 5 || (GameTime % 10 == 0 && GameTime <= 30 && GameTime >= 10))
 							player.sendTitle(ac.getMessage().getSon("Game", "游戏即将结束",
 									new String[] { "{Player}", "{Money}", "{GameTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), GameTime }));
-						if (GameTime <= 3)
+						if (GameTime <= 3 && GameTime > 0)
 							player.sendTitle(Tool.getRandColor() + GameTime);
 					}
-					Timesleep = Timesleep <= 0 ? ac.getConfig().getInt("掉落间隔") : Timesleep;
 					GameTime--;
 					sleep(1000);
 					if (GameTime < 0)
@@ -447,15 +472,26 @@ public class GameHandle {
 			public void run() {
 				try {
 					MyPlayer myPlayer;
+					Effect effect;
+					int Back = 0;
 					while (StartGame) {
 						for (Player player : gamePlayers) {
 							for (MostEvent event : ac.getMostEvents())
 								event.Wake(player);
 							myPlayer = ac.getPlayers(player.getName());
-							if (myPlayer != null && myPlayer.items != null)
+							if (myPlayer != null && myPlayer.items != null) {
+								if (Back-- < 0 && DarkPattern) {
+									Back = 10;
+									effect = Effect.getEffect(15);
+									effect.setDuration(30);
+									effect.setAmplifier(4);
+									effect.setColor(Tool.getRand(0, 255), Tool.getRand(0, 255), Tool.getRand(0, 255));
+									player.addEffect(effect);
+								}
 								for (EffectItem item : myPlayer.items)
 									if (item != null)
 										item.Wake();
+							}
 						}
 						sleep(1000);
 					}

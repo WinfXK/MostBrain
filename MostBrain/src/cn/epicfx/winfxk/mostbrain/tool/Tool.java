@@ -1126,4 +1126,15 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 			result.put(entry.getKey(), entry.getValue());
 		return result;
 	}
+
+	/**
+	 * 返回一个随机数
+	 *
+	 * @param d
+	 * @param e
+	 * @return
+	 */
+	public static double getRand(double d, double e) {
+		return getRand(ObjectToInt(d), ObjectToInt(e));
+	}
 }

@@ -160,6 +160,7 @@ Command:
       reloadOK: '{RandColor}已重载{RandColor}{PluginName}'
       管理员重载: '{RandColor}{Player}已重载{RandColor}{PluginName}'
       暂无已支持的语言: §4没有更多语言支持了！
+      or: 或
       当前已支持以下语言: '{RandColor}当前已支持以下语言'
       已有玩家正在设置: §4当前已经有一个玩家正在设置游戏！Player：{ByPlayer}
       请输入想要设置的语言: §4请输入想要设置的语言Key
@@ -209,6 +210,9 @@ Game:
    即将发送补给: '{RandColor}{SleepTime}{RandColor}秒后发送补给'
    正在发送补给: '{RandColor}正在发送补给'
    游戏终止: §4因玩家数量不足，游戏终止！
+   本局为黑暗模式: '{RandColor}§l§n黑{RandColor}§l§n暗{RandColor}§l§n模{RandColor}§l§n式'
+   仅剩自己: §4当前游戏区域已无更多玩家！是否退出游戏？当前状态退出不扣除游戏积分。
+   仅剩自己的提示: "{RandColor}提示"
    未获得奖励: §4本局游戏未获得{RandColor}{MoneyName}§4奖励！
    管理员终止游戏: §4{Admin}终止了游戏
    结束奖励: '{RandColor}本局游戏共获得{RandColor}{Money}{RandColor}{MoneyName}'
@@ -233,3 +237,12 @@ Game:
    - '{RandColor}准备中'
    - 已加入{Count}位玩家
    - '{IsCount}'
+Update:
+   Start: §6检查更新中！若不想使用该功能或出现问题，请关闭该功能.
+   Update: §6已检测到更新！{Msg} §4相关数据以储存到§5{ConfigName}
+   Donwload: §6新版文件下载到§4{FileName}§6，正在尝试重启服务器
+   Downerror: §4自动下载新版文件以失败！请尝试手动下载！错误详情：{Error}
+   NotUpdate: §6暂无更新！
+   UpdateError: §4更新数据错误！
+   ErrorConnect: §4无法连接到更新服务器！
+   UpdateThreadError: §4更新出现错误！请检查！§f{Error}

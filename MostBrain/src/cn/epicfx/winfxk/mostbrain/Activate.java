@@ -38,7 +38,7 @@ public class Activate {
 	public boolean SettingModel = false;
 	public boolean isGameSettingUp = false;
 	public List<String> langs = new ArrayList<>();
-	public final static String[] FormIDs = { /* 0 */"主页", /* 1 */"副页" };
+	public final static String[] FormIDs = { /* 0 */"主页", /* 1 */"副页", /* 2 */"提示" };
 	public final static String MessageFileName = "Message.yml", ConfigFileName = "Config.yml",
 			CommandFileName = "Command.yml", EconomyListConfigName = "EconomyList.yml", FormIDFileName = "FormID.yml",
 			GameConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players", LanguageDirName = "language";

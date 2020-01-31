@@ -7,7 +7,7 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 /**
  * 打自己的人会受到伤害->荆棘 </br>
  * 仙人掌
- * 
+ *
  * @author Winfxk
  */
 public class Brambles extends EffectItem {
@@ -25,5 +25,6 @@ public class Brambles extends EffectItem {
 		en.setHealth(en.getHealth() - 1);
 		gameData.honor++;
 		gameData.score += en.getHealth();
+		super.onBeingDamage(e);
 	}
 }

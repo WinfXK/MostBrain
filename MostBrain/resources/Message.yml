@@ -210,6 +210,9 @@ Game:
    即将发送补给: '{RandColor}{SleepTime}{RandColor}秒后发送补给'
    正在发送补给: '{RandColor}正在发送补给'
    游戏终止: §4因玩家数量不足，游戏终止！
+   本局为黑暗模式: '{RandColor}§l§n黑{RandColor}§l§n暗{RandColor}§l§n模{RandColor}§l§n式'
+   仅剩自己: §4当前游戏区域已无更多玩家！是否退出游戏？当前状态退出不扣除游戏积分。
+   仅剩自己的提示: "{RandColor}提示"
    未获得奖励: §4本局游戏未获得{RandColor}{MoneyName}§4奖励！
    管理员终止游戏: §4{Admin}终止了游戏
    结束奖励: '{RandColor}本局游戏共获得{RandColor}{Money}{RandColor}{MoneyName}'
