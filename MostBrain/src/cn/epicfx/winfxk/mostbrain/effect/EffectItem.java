@@ -98,7 +98,7 @@ public abstract class EffectItem {
 			if (nbt.getString(Activate.getActivate().getMostBrain().getName()) != null) {
 				for (EffectItem item3 : Activate.getActivate().getEffecttor().getList())
 					if (item2.getId() == item3.getID()
-							&& (item3.getDamage() < 0 || item3.getDamage() == item2.getDamage()))
+					&& (item3.getDamage() < 0 || item3.getDamage() == item2.getDamage()))
 						try {
 							EffectItem item4 = item3.getClass().newInstance();
 							myPlayer.items = myPlayer.items == null ? new ArrayList<>() : myPlayer.items;
@@ -156,13 +156,12 @@ public abstract class EffectItem {
 						if (entity instanceof Player) {
 							MyPlayer myPlayer2 = Activate.getActivate().getPlayers(entity.getName());
 							if (myPlayer2 != null && (myPlayer2.GameModel || myPlayer2.ReadyModel))
-								if (myPlayer2.items != null && myPlayer2.items.size() >= 0) {
+								if (myPlayer2.items != null && myPlayer2.items.size() >= 0)
 									if (Duration.between(myPlayer2.RespawnTime, Instant.now()).toMillis() <= Activate
-											.getActivate().getConfig().getInt("无敌时间")) {
+									.getActivate().getConfig().getInt("无敌时间")) {
 										e.setCancelled();
 										return;
 									}
-								}
 						}
 					}
 					e.setDamage(e.getDamage() * Activate.getActivate().getConfig().getInt("倍率加成"));
@@ -262,9 +261,8 @@ public abstract class EffectItem {
 			s = ss.replace(sss, "");
 			Max += (Max.isEmpty() ? "" : "\n") + string;
 			return getString(Max, s);
-		} else {
-			return Max += (Max.isEmpty() ? "" : "\n") + s;
 		}
+		return Max += (Max.isEmpty() ? "" : "\n") + s;
 	}
 
 	/**

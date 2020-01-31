@@ -11,7 +11,6 @@ import cn.nukkit.utils.Config;
 /**
  * @author Winfxk
  */
-@SuppressWarnings("unchecked")
 public class Message {
 	private Activate ac;
 	private static final String[] Key = { "{n}", "{ServerName}", "{PluginName}", "{MoneyName}", "{Time}", "{Date}" };

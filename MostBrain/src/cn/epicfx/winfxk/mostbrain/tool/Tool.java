@@ -389,7 +389,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 
 	/**
 	 * 获取字符真实长度
-	 * 
+	 *
 	 * @param value
 	 * @return
 	 */
@@ -398,9 +398,9 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 		String chinese = "[\u4e00-\u9fa5]";
 		for (int i = 0; i < value.length(); i++) {
 			String temp = value.substring(i, i + 1);
-			if (temp.matches(chinese)) {
+			if (temp.matches(chinese))
 				valueLength += 2;
-			} else
+			else
 				valueLength += 1;
 		}
 		return valueLength;
@@ -491,13 +491,12 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 		if (!ID2.contains(":"))
 			ID2 += ":0";
 		String[] ID1s = ID1.split(":"), ID2s = ID2.split(":");
-		if (ID1s[0].equals("x") || ID2s[0].equals("x") || ID1s[0].equals(ID2s[0]))
+		if (ID1s[0].equals("x") || ID2s[0].equals("x") || ID1s[0].equals(ID2s[0])) {
 			if (ID1s[1].equals("x") || ID2s[1].equals("x") || ID2s[1].equals(ID1s[1]))
 				return true;
-			else
-				return false;
-		else
 			return false;
+		}
+		return false;
 	}
 
 	/**
@@ -1085,8 +1084,8 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 将Map按数据升序排列
 	 *
-	 * @param <K>
-	 * @param <V>
+	 * @param     <K>
+	 * @param     <V>
 	 * @param map
 	 * @return
 	 */
@@ -1108,8 +1107,8 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	/**
 	 * 将Map降序排序
 	 *
-	 * @param <K>
-	 * @param <V>
+	 * @param     <K>
+	 * @param     <V>
 	 * @param map
 	 * @return
 	 */

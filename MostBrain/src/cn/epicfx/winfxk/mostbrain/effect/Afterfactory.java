@@ -13,7 +13,7 @@ import cn.nukkit.level.Sound;
  * 则本身消失一个Buff病给予被攻击的玩家，若双方均无Buff，则随机一方死亡，</br>
  * 未死亡一方获得一个随机BUff，若被攻击者未加入游戏，攻击者即刻死亡！ </br>
  * 合成肽
- * 
+ *
  * @author Winfxk
  */
 public class Afterfactory extends EffectItem {
@@ -65,20 +65,19 @@ public class Afterfactory extends EffectItem {
 				player.getLevel().addSound(player.getLocation(), Sound.MOB_ZOMBIE_DEATH);
 				player2.getInventory().addItem(ac.gameHandle.getItem());
 				return;
-			} else {
-				player2.sendMessage(getText());
-				player2.kill();
-				if (myPlayer.gameData != null) {
-					if (Tool.getRand(1, 5) == 1)
-						myPlayer.gameData.honor--;
-					myPlayer.gameData.score -= player2.getHealth() + player.getHealth();
-				}
-				gameData.honor += Tool.getRand(1, 2);
-				gameData.score += player2.getHealth();
-				player2.getLevel().addSound(player2.getLocation(), Sound.MOB_ZOMBIE_DEATH);
-				player.getInventory().addItem(ac.gameHandle.getItem());
-				return;
 			}
+			player2.sendMessage(getText());
+			player2.kill();
+			if (myPlayer.gameData != null) {
+				if (Tool.getRand(1, 5) == 1)
+					myPlayer.gameData.honor--;
+				myPlayer.gameData.score -= player2.getHealth() + player.getHealth();
+			}
+			gameData.honor += Tool.getRand(1, 2);
+			gameData.score += player2.getHealth();
+			player2.getLevel().addSound(player2.getLocation(), Sound.MOB_ZOMBIE_DEATH);
+			player.getInventory().addItem(ac.gameHandle.getItem());
+			return;
 		}
 		if (myPlayer.items.size() <= 0 && this.myPlayer.items.size() > 1) {
 			int Ik = Tool.getRand(0, this.myPlayer.items.size() - 1);
@@ -97,6 +96,6 @@ public class Afterfactory extends EffectItem {
 		player2.sendMessage(getText());
 		player2.getLevel().addSound(player2.getLocation(), Sound.MOB_VILLAGER_DEATH);
 		player.getInventory()
-				.addItem(ac.getEffecttor().getItem(myPlayer.items.get(Tool.getRand(0, myPlayer.items.size() - 1))));
+		.addItem(ac.getEffecttor().getItem(myPlayer.items.get(Tool.getRand(0, myPlayer.items.size() - 1))));
 	}
 }

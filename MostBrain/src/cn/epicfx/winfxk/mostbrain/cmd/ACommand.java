@@ -7,6 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
@@ -26,9 +29,6 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.Utils;
-
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author Winfxk
@@ -98,7 +98,9 @@ public class ACommand extends Command {
 					sender.sendMessage(msg.getSun("Command", "AdminCommand", "请输入正确的语言Key", sk,
 							new Object[] { sender.getName(),
 									sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
-									"0-" + (ac.langs.size() - 1) + "或" + Arrays.asList(Files) }));
+											"0-" + (ac.langs.size() - 1)
+											+ getMessage("or", sender.isPlayer() ? (Player) sender : null)
+											+ Arrays.asList(Files) }));
 					return true;
 				}
 				l = Files.get(Is);
@@ -107,7 +109,8 @@ public class ACommand extends Command {
 					sender.sendMessage(msg.getSun("Command", "AdminCommand", "请输入正确的语言Key", sk,
 							new Object[] { sender.getName(),
 									sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
-									"0-" + (Files.size() - 1) + "或" + Files }));
+											"0-" + (Files.size() - 1)
+											+ getMessage("or", sender.isPlayer() ? (Player) sender : null) + Files }));
 					return true;
 				}
 				l = Files.contains(args[1]) ? args[1] : args[1] + ".yml";
@@ -243,9 +246,9 @@ public class ACommand extends Command {
 			if (ac.SettingModel) {
 				player.sendMessage(ac.setPlayer.getName().equals(player.getName())
 						? msg.getSun(MainKey, SunKey, "正在设置", player)
-						: msg.getSun(MainKey, SunKey, "已有玩家正在设置", new String[] { "{Player}", "{Money}", "{ByPlayer}" },
-								new Object[] { player.getName(), ac.getPlayers(player.getName()).getMoney(),
-										ac.setPlayer.getName() }));
+								: msg.getSun(MainKey, SunKey, "已有玩家正在设置", new String[] { "{Player}", "{Money}", "{ByPlayer}" },
+										new Object[] { player.getName(), ac.getPlayers(player.getName()).getMoney(),
+												ac.setPlayer.getName() }));
 				return true;
 			}
 			ac.SettingModel = true;

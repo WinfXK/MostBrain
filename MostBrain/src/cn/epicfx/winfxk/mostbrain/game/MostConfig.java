@@ -11,7 +11,6 @@ import cn.nukkit.utils.Config;
 /**
  * @author Winfxk
  */
-@SuppressWarnings("unchecked")
 public class MostConfig {
 	public Config config;
 	/**
@@ -67,7 +66,7 @@ public class MostConfig {
 
 	/**
 	 * 得到创建游戏的玩家名
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCreator() {
@@ -76,7 +75,7 @@ public class MostConfig {
 
 	/**
 	 * 得到创建游戏的时间
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCreatorTime() {
@@ -85,7 +84,7 @@ public class MostConfig {
 
 	/**
 	 * 判断方块是否收到保护
-	 * 
+	 *
 	 * @param block
 	 * @return
 	 */
@@ -102,7 +101,7 @@ public class MostConfig {
 
 	/**
 	 * 判断方块是否收到保护
-	 * 
+	 *
 	 * @param v3
 	 * @return
 	 */
@@ -118,7 +117,7 @@ public class MostConfig {
 
 	/**
 	 * 判断方块是否收到保护
-	 * 
+	 *
 	 * @param level
 	 * @param vector3
 	 * @return
@@ -134,7 +133,7 @@ public class MostConfig {
 
 	/**
 	 * 得到出生点
-	 * 
+	 *
 	 * @return
 	 */
 	public Vector3 getSpawn() {
@@ -143,7 +142,7 @@ public class MostConfig {
 
 	/**
 	 * 得到木牌的位置
-	 * 
+	 *
 	 * @return
 	 */
 	public Vector3 getStart() {

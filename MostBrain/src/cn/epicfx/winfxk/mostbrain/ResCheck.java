@@ -8,19 +8,18 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import cn.nukkit.utils.Utils;
 
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-
 /**
  * @author Winfxk
  */
-@SuppressWarnings("unchecked")
 public class ResCheck {
 	private Activate ac;
 	private MostBrain kis;
@@ -169,7 +168,7 @@ public class ResCheck {
 
 	/**
 	 * 返回Jar包所在的位置
-	 * 
+	 *
 	 * @return
 	 */
 	public String getPath() {

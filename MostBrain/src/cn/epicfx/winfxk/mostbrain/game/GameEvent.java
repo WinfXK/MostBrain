@@ -1,11 +1,9 @@
 package cn.epicfx.winfxk.mostbrain.game;
 
 import cn.epicfx.winfxk.mostbrain.Activate;
-import cn.epicfx.winfxk.mostbrain.MyPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
-import cn.nukkit.event.player.PlayerQuitEvent;
 
 /**
  * @author Winfxk
@@ -18,20 +16,8 @@ public class GameEvent {
 	}
 
 	/**
-	 * 玩家在游戏内退出游戏事件
-	 * 
-	 * @param e
-	 */
-	public void QuitGame(PlayerQuitEvent e) {
-		Player player = e.getPlayer();
-		MyPlayer myPlayer = ac.getPlayers(player.getName());
-		if (myPlayer != null && (myPlayer.GameModel || myPlayer.ReadyModel))
-			ac.gameHandle.QuitGame(player, true, true, false);
-	}
-
-	/**
 	 * 点击开始木牌
-	 * 
+	 *
 	 * @param e
 	 */
 	public void Start(BlockBreakEvent e) {
@@ -40,7 +26,7 @@ public class GameEvent {
 
 	/**
 	 * 点击开始木牌
-	 * 
+	 *
 	 * @param e
 	 */
 	public void Start(PlayerInteractEvent e) {

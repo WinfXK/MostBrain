@@ -11,7 +11,6 @@ import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.event.player.PlayerInteractEvent;
-import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.level.Level;
 
 /**
@@ -115,7 +114,7 @@ public class PCommand extends Command {
 				player.sendMessage(getMessage("未加入游戏", player));
 				return true;
 			}
-			ac.gameEvent.QuitGame(new PlayerQuitEvent(player, ""));
+			ac.gameHandle.QuitGame(player, true, true, true);
 			player.sendMessage(getMessage("中途退出", player));
 			break;
 		default:

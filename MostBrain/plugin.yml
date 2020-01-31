@@ -2,7 +2,7 @@ name: MostBrain
 main: cn.epicfx.winfxk.mostbrain.MostBrain
 api:
 - 1.0.0
-version: 1.0.2
+version: 1.0.3-alpha
 load: POSTWORLD
 website: http://Winfxk.EpicFX.cn
 description: 一个傻不拉几的小游戏~

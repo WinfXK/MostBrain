@@ -2529,8 +2529,7 @@ public enum ItemIDSunName {
 	public static String UnknownToPath(String string) {
 		if (UnknownToID(string) != null)
 			return getIDByPath(UnknownToID(string));
-		else
-			return string;
+		return string;
 	}
 
 	/**

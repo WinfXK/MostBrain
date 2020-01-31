@@ -21,7 +21,6 @@ import cn.nukkit.math.Vector3;
 /**
  * @author Winfxk
  */
-@SuppressWarnings("unchecked")
 public class GameHandle {
 	private Activate ac;
 	private boolean ReadyisModel = false;
@@ -147,7 +146,7 @@ public class GameHandle {
 					new Object[] { player.getName(), myPlayer.getMoney() + gamePlayers.size(), GameMinCount,
 							gamePlayers.size() >= GameMinCount ? " "
 									: Tool.getRandColor() + gamePlayers.size() + Tool.getRandColor() + "/"
-											+ Tool.getRandColor() + GameMinCount });
+									+ Tool.getRandColor() + GameMinCount });
 		player.sendTitle(list[0], list.length > 1 ? list[1] : null);
 	}
 
@@ -173,7 +172,8 @@ public class GameHandle {
 							player.sendMessage(ac.getMessage().getSon("Game", "管理员终止游戏", Key2,
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()),
 											sender.getName(), gamePlayers.size() }));
-						break;
+						QuitGame();
+						return;
 					}
 					if (gamePlayers.size() <= 0) {
 						ac.getMostBrain().getLogger().info(getMessage("游戏终止"));
@@ -185,7 +185,7 @@ public class GameHandle {
 						ReadyTime--;
 					for (Player player : gamePlayers)
 						if (gamePlayers.size() >= GameMinCount
-								&& ((ReadyTime >= 5 && ReadyTime % 5 == 0) || ReadyTime <= 3))
+						&& ((ReadyTime >= 5 && ReadyTime % 5 == 0) || ReadyTime <= 3))
 							player.sendMessage(ac.getMessage().getSon("Game", "即将开始",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime }));
@@ -200,7 +200,7 @@ public class GameHandle {
 								new Object[] { gamePlayers.size(), GameMinCount,
 										gamePlayers.size() >= GameMinCount ? " "
 												: Tool.getRandColor() + gamePlayers.size() + Tool.getRandColor() + "/"
-														+ Tool.getRandColor() + GameMinCount });
+												+ Tool.getRandColor() + GameMinCount });
 					Tool.setSign(mostConfig.Level, mostConfig.Start.get("X"), mostConfig.Start.get("Y"),
 							mostConfig.Start.get("Z"), list);
 					if (ReadyTime <= 0) {
@@ -296,7 +296,7 @@ public class GameHandle {
 			int bs = ac.getConfig().getInt("给予倍率");
 			boolean sb = ac.getConfig().getBoolean("给予惩罚");
 			double Money = score / bs + honor;
-			if (!AdminStopGame)
+			if (!AdminStopGame || isQuitServer)
 				if (!isQuitServer) {
 					if (Money >= 0) {
 						if (Money != 0) {
@@ -368,7 +368,8 @@ public class GameHandle {
 				player.sendTitle(getMessage("开始游戏", player));
 			}
 			Timesleep = ac.getConfig().getInt("掉落间隔");
-			for (int i = 0; i < gamePlayers.size(); i++)
+			int Ps = gamePlayers.size();
+			for (int i = 0; i < Ps * (Ps < 5 ? BjBl : 1); i++)
 				location.level.dropItem(new Vector3(Tool.getRand((int) mostConfig.MinX + 1, (int) mostConfig.MaxX - 1),
 						Tool.getRand((int) mostConfig.MinY + 1, (int) mostConfig.MaxY - 1), mostConfig.MinZ + 2),
 						getItem(), null, true, 3);
@@ -385,7 +386,8 @@ public class GameHandle {
 							player.sendMessage(ac.getMessage().getSon("Game", "管理员终止游戏", Key2,
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()),
 											sender.getName(), gamePlayers.size() }));
-						break;
+						QuitGame();
+						return;
 					}
 					if (gamePlayers.size() <= 0) {
 						ac.getMostBrain().getLogger().info(getMessage("游戏终止"));
@@ -434,7 +436,7 @@ public class GameHandle {
 				QuitGame();
 			} catch (
 
-			InterruptedException e) {
+					InterruptedException e) {
 				e.printStackTrace();
 			}
 			super.run();

@@ -160,6 +160,7 @@ Command:
       reloadOK: '{RandColor}已重载{RandColor}{PluginName}'
       管理员重载: '{RandColor}{Player}已重载{RandColor}{PluginName}'
       暂无已支持的语言: §4没有更多语言支持了！
+      or: 或
       当前已支持以下语言: '{RandColor}当前已支持以下语言'
       已有玩家正在设置: §4当前已经有一个玩家正在设置游戏！Player：{ByPlayer}
       请输入想要设置的语言: §4请输入想要设置的语言Key
@@ -233,3 +234,12 @@ Game:
    - '{RandColor}准备中'
    - 已加入{Count}位玩家
    - '{IsCount}'
+Update:
+   Start: §6检查更新中！若不想使用该功能或出现问题，请关闭该功能.
+   Update: §6已检测到更新！{Msg} §4相关数据以储存到§5{ConfigName}
+   Donwload: §6新版文件下载到§4{FileName}§6，正在尝试重启服务器
+   Downerror: §4自动下载新版文件以失败！请尝试手动下载！错误详情：{Error}
+   NotUpdate: §6暂无更新！
+   UpdateError: §4更新数据错误！
+   ErrorConnect: §4无法连接到更新服务器！
+   UpdateThreadError: §4更新出现错误！请检查！§f{Error}

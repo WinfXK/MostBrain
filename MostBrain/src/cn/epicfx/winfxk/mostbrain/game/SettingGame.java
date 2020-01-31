@@ -20,7 +20,6 @@ import cn.nukkit.utils.Config;
 /**
  * @author Winfxk
  */
-@SuppressWarnings("unchecked")
 public class SettingGame {
 	private Activate ac;
 	private Player player;
@@ -118,7 +117,7 @@ public class SettingGame {
 					for (double j = y2; j < y1; j++)
 						for (double k = z2; k < z1; k++)
 							if (startSign.x != i || startSign.y != j || startSign.z != k
-									|| !SignLevel.equals(StartLevel))
+							|| !SignLevel.equals(StartLevel))
 								level.setBlock(new Vector3(i, j, k), Block.get(0, 0));
 				if (ac.getConfig().getBoolean("生成外壳")) {
 					int sb = 0;

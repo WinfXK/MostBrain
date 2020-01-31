@@ -19,7 +19,6 @@ import cn.nukkit.utils.Config;
 /**
  * @author Winfxk
  */
-@SuppressWarnings("unchecked")
 public class MyPlayer {
 	private Activate ac;
 	public Config config;
@@ -36,7 +35,7 @@ public class MyPlayer {
 
 	/**
 	 * 记录存储玩家的一些数据
-	 * 
+	 *
 	 * @param player
 	 */
 	public MyPlayer(Player player) {
@@ -51,7 +50,7 @@ public class MyPlayer {
 
 	/**
 	 * 增加游戏总分
-	 * 
+	 *
 	 * @param score
 	 * @return
 	 */
@@ -64,7 +63,7 @@ public class MyPlayer {
 
 	/**
 	 * 增加玩家的荣耀
-	 * 
+	 *
 	 * @param honor
 	 * @return
 	 */
@@ -77,7 +76,7 @@ public class MyPlayer {
 
 	/**
 	 * 获取逗比玩家的金币数量
-	 * 
+	 *
 	 * @return
 	 */
 	public double getMoney() {
@@ -86,10 +85,12 @@ public class MyPlayer {
 
 	/**
 	 * 加载玩家的背包
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPlayer loadInventory() {
+		if (config.get("Inventory") == null)
+			return this;
 		Object obj = config.get("Inventory");
 		Map<Integer, Map<String, Object>> map = (obj == null || !(obj instanceof Map)) ? new HashMap<>()
 				: (HashMap<Integer, Map<String, Object>>) obj;
@@ -98,14 +99,12 @@ public class MyPlayer {
 		Map<Integer, Item> map2 = Tool.loadInventory(map);
 		if (map2 != null && map2.size() > 0)
 			player.getInventory().setContents(map2);
-		else
-			player.getInventory().clearAll();
 		return this;
 	}
 
 	/**
 	 * 保存玩家的背包
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPlayer saveInventory() {
@@ -127,7 +126,7 @@ public class MyPlayer {
 
 	/**
 	 * 保存玩家的游戏模式
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPlayer saveGameMode() {
@@ -138,7 +137,7 @@ public class MyPlayer {
 
 	/**
 	 * 保存玩家的血量数据
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPlayer saveHealth() {
@@ -150,7 +149,7 @@ public class MyPlayer {
 
 	/**
 	 * 加载玩家的位置
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPlayer loadXYZ() {
@@ -170,7 +169,7 @@ public class MyPlayer {
 
 	/**
 	 * 保存玩家所在的位置
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPlayer saveXYZ() {
@@ -184,7 +183,7 @@ public class MyPlayer {
 
 	/**
 	 * 加载玩家的血量
-	 * 
+	 *
 	 * @return
 	 */
 	public MyPlayer setHealth() {
@@ -198,7 +197,7 @@ public class MyPlayer {
 
 	/**
 	 * 获取逗比玩家的金币数量
-	 * 
+	 *
 	 * @return
 	 */
 	public static double getMoney(String player) {

@@ -12,6 +12,7 @@ import cn.epicfx.winfxk.mostbrain.cmd.PCommand;
 import cn.epicfx.winfxk.mostbrain.effect.Effecttor;
 import cn.epicfx.winfxk.mostbrain.game.GameEvent;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
+import cn.epicfx.winfxk.mostbrain.game.GameThread;
 import cn.epicfx.winfxk.mostbrain.game.MostConfig;
 import cn.epicfx.winfxk.mostbrain.game.MostEvent;
 import cn.epicfx.winfxk.mostbrain.game.SettingGame;
@@ -46,6 +47,7 @@ public class Activate {
 	private Effecttor effecttor;
 	private EconomyManage money;
 	private MostConfig mostConfig;
+	private GameThread UpdateThread;
 	private static Activate activate;
 	private LinkedHashMap<String, MyPlayer> Players;
 	protected FormID FormID;
@@ -78,11 +80,16 @@ public class Activate {
 		else
 			reloadMostConfig(true);
 		makeForm = new MakeForm(this);
+		(UpdateThread = new GameThread(this, 0)).start();
 		kis.getServer().getCommandMap().register(getName(), new ACommand(this));
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
 		kis.getLogger().info(message.getMessage("插件启动", new String[] { "{loadTime}" },
 				new Object[] { ((float) Duration.between(mis.loadTime, Instant.now()).toMillis()) + "ms" }));
+	}
+
+	public GameThread getUpdateThread() {
+		return UpdateThread;
 	}
 
 	public List<MostEvent> getMostEvents() {

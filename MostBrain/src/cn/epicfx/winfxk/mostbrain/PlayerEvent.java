@@ -53,6 +53,11 @@ public class PlayerEvent implements Listener {
 		msg = ac.getMessage();
 	}
 
+	/**
+	 * 表单接受事件
+	 *
+	 * @param e
+	 */
 	@EventHandler
 	public void onFormResponded(PlayerFormRespondedEvent e) {
 		FormResponse data = e.getResponse();
@@ -120,7 +125,8 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
-		ac.setPlayers(player, new MyPlayer(player));
+		MyPlayer myPlayer;
+		ac.setPlayers(player, myPlayer = new MyPlayer(player));
 		String string = msg.getSun("Event", "PlayerJoin", "Tip", player);
 		if (string != null && !string.isEmpty())
 			if (!player.isOp() && ac.isGameSettingUp)
@@ -131,6 +137,8 @@ public class PlayerEvent implements Listener {
 				player.sendMessage(string);
 		MostConfig mc = ac.getMostConfig();
 		if (ac.isGameSettingUp && mc != null) {
+			if (myPlayer.config.get("Inventory") != null)
+				myPlayer.loadInventory();
 			double x = player.getX(), y = player.getY(), z = player.getZ();
 			if (x > mc.MinX && x < mc.MaxX && y > mc.MinY && y < mc.MaxY && z > mc.MinZ && z < mc.MaxZ
 					&& player.getLevel().getFolderName().equals(mc.StartLevel)) {
@@ -238,6 +246,7 @@ public class PlayerEvent implements Listener {
 		if (!ac.getMostBrain().isEnabled())
 			return;
 		Player player = e.getPlayer();
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
 		if (ac.SettingModel && player.getName().equals(ac.setPlayer.getName())) {
 			ac.setPlayer = null;
 			ac.SettingModel = false;
@@ -248,7 +257,8 @@ public class PlayerEvent implements Listener {
 			ac.getMostBrain().getLogger().warning(ac.settingGame.getMessage("管理员退出"));
 			ac.settingGame = null;
 		} else if (ac.gameEvent != null && ac.isStartGame)
-			ac.gameEvent.QuitGame(e);
+			if (myPlayer != null && (myPlayer.ReadyModel || myPlayer.GameModel))
+				ac.gameHandle.QuitGame(player, true, true, false);
 		if (ac.isPlayers(player))
 			ac.removePlayers(player);
 	}
@@ -314,7 +324,7 @@ public class PlayerEvent implements Listener {
 			}
 			if (ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation())) {
+					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation())) {
 				e.setCancelled();
 				return;
 			}
@@ -325,7 +335,7 @@ public class PlayerEvent implements Listener {
 				Location location = block.getLocation();
 				if (location.level.getFolderName().equals(config.Level))
 					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
-							&& location.z == config.Start.get("Z"))
+					&& location.z == config.Start.get("Z"))
 						ac.gameEvent.Start(e);
 				EffectItem.receiveItemConsume(new PlayerItemConsumeEvent(player, e.getItem()));
 				if (ac.getMostConfig().isNotBreakBlock(block))
@@ -355,7 +365,7 @@ public class PlayerEvent implements Listener {
 			}
 			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
 					&& !player.getName().equals(ac.setPlayer.getName())) {
 				e.setCancelled();
 				return;
@@ -391,7 +401,7 @@ public class PlayerEvent implements Listener {
 			}
 			if ((ac.settingGame.start != null && block.getLocation().equals(ac.settingGame.start.getLocation())
 					|| ac.settingGame.getStartSign() != null
-							&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
+					&& block.getLocation().equals(ac.settingGame.getStartSign().getLocation()))
 					&& !player.getName().equals(ac.setPlayer.getName())) {
 				e.setCancelled();
 				return;
@@ -403,7 +413,7 @@ public class PlayerEvent implements Listener {
 				Location location = block.getLocation();
 				if (location.level.getFolderName().equals(config.Level))
 					if (location.x == config.Start.get("X") && location.y == config.Start.get("Y")
-							&& location.z == config.Start.get("Z"))
+					&& location.z == config.Start.get("Z"))
 						ac.gameEvent.Start(e);
 				if (ac.getMostConfig().isNotBreakBlock(block))
 					e.setCancelled();

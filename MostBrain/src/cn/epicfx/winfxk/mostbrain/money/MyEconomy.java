@@ -12,7 +12,7 @@ public abstract class MyEconomy {
 	/**
 	 * 经济支持管理 </br>
 	 * Economy support management
-	 * 
+	 *
 	 * @param EconomyName 想要支持的经济插件名称（这应该是唯一的，否则可能会有不可预知的错误）</br>
 	 *                    The economic plug-in name you want to support (this should
 	 *                    be unique, otherwise there may be unpredictable errors)
@@ -27,7 +27,7 @@ public abstract class MyEconomy {
 	/**
 	 * 返回货币单位的名称，如：金币 </br>
 	 * Returns the name of the Economy unit.Such as: gold COINS
-	 * 
+	 *
 	 * @return
 	 */
 	public String getMoneyName() {
@@ -37,7 +37,7 @@ public abstract class MyEconomy {
 	/**
 	 * 返回货币的名称 </br>
 	 * Returns the name of the Economy
-	 * 
+	 *
 	 * @return
 	 */
 	public String getEconomyName() {
@@ -47,7 +47,7 @@ public abstract class MyEconomy {
 	/**
 	 * 返回一个玩家拥有的金钱数量</br>
 	 * Returns the amount of money a player has
-	 * 
+	 *
 	 * @param player 要查询金钱数量的玩家名</br>
 	 *               The player name to query for the amount of money
 	 * @return 当前玩家的金钱数量</br>
@@ -60,7 +60,7 @@ public abstract class MyEconomy {
 	/**
 	 * 返回一个玩家拥有的金钱数量</br>
 	 * Returns the amount of money a player has
-	 * 
+	 *
 	 * @param player 要查询金钱数量的玩家名</br>
 	 *               The player name to query for the amount of money
 	 * @return 当前玩家的金钱数量</br>
@@ -73,7 +73,7 @@ public abstract class MyEconomy {
 	/**
 	 * 返回一个玩家拥有的金钱数量</br>
 	 * Returns the amount of money a player has
-	 * 
+	 *
 	 * @param player 要查询金钱数量的玩家名</br>
 	 *               The player name to query for the amount of money
 	 * @return 当前玩家的金钱数量</br>
@@ -84,7 +84,7 @@ public abstract class MyEconomy {
 	/**
 	 * 增加一个玩家的金钱数量</br>
 	 * Increases the amount of money a player has
-	 * 
+	 *
 	 * @param player 要增加金钱的玩家名称</br>
 	 *               Player names to add money to
 	 * @param Money  要增加金钱的数量</br>
@@ -99,7 +99,7 @@ public abstract class MyEconomy {
 	/**
 	 * 增加一个玩家的金钱数量</br>
 	 * Increases the amount of money a player has
-	 * 
+	 *
 	 * @param player 要增加金钱的玩家名称</br>
 	 *               Player names to add money to
 	 * @param Money  要增加金钱的数量</br>
@@ -114,7 +114,7 @@ public abstract class MyEconomy {
 	/**
 	 * 增加一个玩家的金钱数量</br>
 	 * Increases the amount of money a player has
-	 * 
+	 *
 	 * @param player 要增加金钱的玩家名称</br>
 	 *               Player names to add money to
 	 * @param Money  要增加金钱的数量</br>
@@ -127,7 +127,7 @@ public abstract class MyEconomy {
 	/**
 	 * 减少一个玩家的金钱数量</br>
 	 * Reduces the amount of money a player has
-	 * 
+	 *
 	 * @param player 要减少金钱的玩家名称</br>
 	 *               Player names to reduce money
 	 * @param Money  要减少的金钱数量</br>
@@ -142,7 +142,7 @@ public abstract class MyEconomy {
 	/**
 	 * 减少一个玩家的金钱数量</br>
 	 * Reduces the amount of money a player has
-	 * 
+	 *
 	 * @param player 要减少金钱的玩家名称</br>
 	 *               Player names to reduce money
 	 * @param Money  要减少的金钱数量</br>
@@ -157,7 +157,7 @@ public abstract class MyEconomy {
 	/**
 	 * 减少一个玩家的金钱数量</br>
 	 * Reduces the amount of money a player has
-	 * 
+	 *
 	 * @param player 要减少金钱的玩家名称</br>
 	 *               Player names to reduce money
 	 * @param Money  要减少的金钱数量</br>
@@ -170,7 +170,7 @@ public abstract class MyEconomy {
 	/**
 	 * 设置一个玩家的金钱数量为某值</br>
 	 * Sets the amount of money a player has to a certain value
-	 * 
+	 *
 	 * @param player 要设置金钱数量的玩家名称</br>
 	 *               The player name to set the amount of money
 	 * @param Money  要设置成的金钱数量</br>
@@ -185,7 +185,7 @@ public abstract class MyEconomy {
 	/**
 	 * 设置一个玩家的金钱数量为某值</br>
 	 * Sets the amount of money a player has to a certain value
-	 * 
+	 *
 	 * @param player 要设置金钱数量的玩家名称</br>
 	 *               The player name to set the amount of money
 	 * @param Money  要设置成的金钱数量</br>
@@ -200,7 +200,7 @@ public abstract class MyEconomy {
 	/**
 	 * 设置一个玩家的金钱数量为某值</br>
 	 * Sets the amount of money a player has to a certain value
-	 * 
+	 *
 	 * @param player 要设置金钱数量的玩家名称</br>
 	 *               The player name to set the amount of money
 	 * @param Money  要设置成的金钱数量</br>
