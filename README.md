@@ -4,9 +4,10 @@
 **MostBrain是一个多人PVP小游戏！并且附带部分PVE功能**
 
 ***他包含多种附加技能，每种技能都有自己不一样的BUff***
+## Javadoc (http://doc.epicfx.cn/Docs/MostBrain/)[http://doc.epicfx.cn/Docs/MostBrain/]
 
+## 它当前满足以下条件：
 
-##它当前满足以下条件：
 > - [x] 完全的文本自定义
 - [x] 可免拆包更改显示的文本（全局）
 - [x] 包含多个正面，负面的Buff
