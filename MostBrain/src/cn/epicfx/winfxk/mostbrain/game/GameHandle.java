@@ -301,6 +301,7 @@ public class GameHandle {
 				double Money = score / bs + honor;
 				if (!AdminStopGame || isQuitServer)
 					if (!isQuitServer) {
+						myPlayer.addGames().addAttack(myPlayer.gameData.attack);
 						if (Money >= 0) {
 							if (Money != 0) {
 								ac.getEconomy().addMoney(player, Money);
@@ -320,6 +321,7 @@ public class GameHandle {
 					} else {
 						double sbsbsbs = Money <= ac.getConfig().getDouble("游戏费用") ? ac.getConfig().getDouble("游戏费用")
 								: Money;
+						myPlayer.addMalicious(ac.getConfig().getInt("恶意退出增幅"));
 						ac.getEconomy().reduceMoney(player, sbsbsbs);
 						player.sendMessage(ac.getMessage().getSon("Game", "退出惩罚",
 								new String[] { "{Player}", "{Money}", "{MyMoney}" },

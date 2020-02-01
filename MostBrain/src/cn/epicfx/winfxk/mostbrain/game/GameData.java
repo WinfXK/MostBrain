@@ -12,4 +12,8 @@ public class GameData {
 	 * 荣耀
 	 */
 	public int honor = 0;
+	/**
+	 * 攻击次数
+	 */
+	public int attack = 0;
 }

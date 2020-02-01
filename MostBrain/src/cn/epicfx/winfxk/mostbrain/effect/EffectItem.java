@@ -167,6 +167,7 @@ public abstract class EffectItem {
 					e.setDamage(e.getDamage() * Activate.getActivate().getConfig().getInt("倍率加成"));
 					KillB = true;
 					items = new ArrayList<>(myPlayer.items);
+					myPlayer.gameData.attack++;
 					for (EffectItem item : items) {
 						if (e.isCancelled())
 							break;

@@ -42,6 +42,7 @@ public class MyPlayer {
 		this.player = player;
 		ac = Activate.getActivate();
 		config = getConfig(player.getName());
+		config.set("name", player.getName());
 	}
 
 	public Player getPlayer() {
@@ -57,6 +58,17 @@ public class MyPlayer {
 	public MyPlayer addScore(int score) {
 		long h = config.getLong("得分");
 		config.set("得分", h + score);
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 增加玩家死亡次数
+	 *
+	 * @return
+	 */
+	public MyPlayer addDeath() {
+		config.set("死亡", config.getInt("死亡") + 1);
 		config.save();
 		return this;
 	}
@@ -196,6 +208,18 @@ public class MyPlayer {
 	}
 
 	/**
+	 * 增加玩家的恶意度
+	 *
+	 * @param i
+	 * @return
+	 */
+	public MyPlayer addMalicious(int i) {
+		config.set("恶意度", config.getInt("恶意度") + 1);
+		config.save();
+		return this;
+	}
+
+	/**
 	 * 获取逗比玩家的金币数量
 	 *
 	 * @return
@@ -208,15 +232,49 @@ public class MyPlayer {
 		return config;
 	}
 
+	/**
+	 * 增加游戏局数
+	 *
+	 * @return
+	 */
+	public MyPlayer addGames() {
+		config.set("游戏局数", config.getInt("游戏局数") + 1);
+		config.save();
+		return this;
+	}
+
+	/**
+	 * 增加攻击数
+	 *
+	 * @param attack
+	 * @return
+	 */
+	public MyPlayer addAttack(int attack) {
+		config.set("攻击数", config.getInt("攻击数") + attack);
+		config.save();
+		return this;
+	}
+	/**
+	 * 得到一个玩家的配置文件对象
+	 * @param player 玩家名称
+	 * @return
+	 */
 	public static Config getConfig(String player) {
 		return Activate.getActivate().resCheck.Check(new Config(getFile(player), Config.YAML));
 	}
-
+	/**
+	 * 得到一个玩家配置文件的文件对象
+	 * @return
+	 */
 	public File getFile() {
 		return new File(new File(ac.getMostBrain().getDataFolder(), Activate.PlayerDataDirName),
 				player.getName() + ".yml");
 	}
-
+	/**
+	 * 得到一个玩家配置文件的文件对象
+	 * @param player 玩家名称
+	 * @return
+	 */
 	public static File getFile(String player) {
 		return new File(new File(Activate.getActivate().getMostBrain().getDataFolder(), Activate.PlayerDataDirName),
 				player + ".yml");

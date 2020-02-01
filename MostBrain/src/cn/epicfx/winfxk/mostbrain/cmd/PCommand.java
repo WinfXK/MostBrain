@@ -1,5 +1,8 @@
 package cn.epicfx.winfxk.mostbrain.cmd;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 import cn.epicfx.winfxk.mostbrain.Activate;
 import cn.epicfx.winfxk.mostbrain.Message;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
@@ -16,7 +19,7 @@ import cn.nukkit.level.Level;
 /**
  * @author Winfxk
  */
-public class PCommand extends Command {
+public class PCommand extends Command implements FilenameFilter {
 	private Activate ac;
 	public static final String Permission = "MostBrain.Command.main";
 	private static final String MainKey = "Command", SunKey = "PlayerCommand";
@@ -36,15 +39,72 @@ public class PCommand extends Command {
 		commandParameters.put(getMessage("ReferScore"), new CommandParameter[] {
 				new CommandParameter(getMessage("ReferScore"), false, new String[] { "sco", "查询", "score" }) });
 		commandParameters.put(getMessage("List"), new CommandParameter[] {
-				new CommandParameter(getMessage("List"), false, new String[] { "list", "列表", "l" }) });
+				new CommandParameter(getMessage("List"), false, new String[] { "list", "列表" }) });
+		commandParameters.put(getMessage("TopMsg"), new CommandParameter[] {
+				new CommandParameter(getMessage("TopMsg"), false, new String[] { "tm", "top", "排行", "排行榜" }) });
+		commandParameters.put(getMessage("TopDMsg"), new CommandParameter[] {
+				new CommandParameter(getMessage("TopDMsg"), false, new String[] { "td", "topd", "死亡排行", "死亡排行榜" }) });
+		commandParameters.put(getMessage("TopSMsg"), new CommandParameter[] {
+				new CommandParameter(getMessage("TopSMsg"), false, new String[] { "ts", "tops", "得分排行", "得分排行榜" }) });
+		commandParameters.put(getMessage("TopHMsg"), new CommandParameter[] {
+				new CommandParameter(getMessage("TopHMsg"), false, new String[] { "th", "toph", "荣耀排行", "荣耀排行榜" }) });
+
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!ac.getMostBrain().isEnabled())
 			return true;
-		if (args == null || args.length == 0) {
+		if (isHelp(args)) {
 			sender.sendMessage(Tool.getCommandHelp(this));
+			return true;
+		}
+		String s = "";
+		switch (args[0].toLowerCase()) {
+		case "th":
+		case "toph":
+		case "荣耀排行":
+		case "荣耀排行榜":
+			s = ac.getTopH();
+			if (s == null || s.isEmpty()) {
+				sender.sendMessage(getMessage("暂无玩家数据", sender));
+				return true;
+			}
+			sender.sendMessage(s);
+			return true;
+		case "ts":
+		case "tops":
+		case "得分排行":
+		case "得分排行榜":
+			s = ac.getTopS();
+			if (s == null || s.isEmpty()) {
+				sender.sendMessage(getMessage("暂无玩家数据", sender));
+				return true;
+			}
+			sender.sendMessage(s);
+			return true;
+		case "td":
+		case "topd":
+		case "死亡排行":
+		case "死亡排行榜":
+			s = ac.getTopD();
+			if (s == null || s.isEmpty()) {
+				sender.sendMessage(getMessage("暂无玩家数据", sender));
+				return true;
+			}
+			sender.sendMessage(s);
+			return true;
+		case "t":
+		case "top":
+		case "tm":
+		case "排行":
+		case "排行榜":
+			s = ac.getTop();
+			if (s == null || s.isEmpty()) {
+				sender.sendMessage(getMessage("暂无玩家数据", sender));
+				return true;
+			}
+			sender.sendMessage(s);
 			return true;
 		}
 		if (!sender.isPlayer()) {
@@ -123,11 +183,32 @@ public class PCommand extends Command {
 		return true;
 	}
 
+	private String getMessage(String key, CommandSender sender) {
+		return getMessage(key, sender.isPlayer() ? (Player) sender : null);
+	}
+
 	public String getMessage(String Key) {
 		return msg.getSun(MainKey, SunKey, Key);
 	}
 
 	public String getMessage(String Key, Player player) {
 		return msg.getSun(MainKey, SunKey, Key, player);
+	}
+
+	@Override
+	public boolean accept(File arg0, String arg1) {
+		return new File(arg0, arg1).isFile();
+	}
+
+	private boolean isHelp(String[] s) {
+		if (s == null || s.length <= 0 || s[0] == null || s[0].isEmpty())
+			return true;
+		switch (s[0].toLowerCase()) {
+		case "h":
+		case "help":
+		case "帮助":
+			return true;
+		}
+		return false;
 	}
 }

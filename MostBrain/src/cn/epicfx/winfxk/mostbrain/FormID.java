@@ -8,12 +8,17 @@ import cn.nukkit.utils.Config;
  */
 public class FormID {
 	protected Config FormIDConfig;
-	private int MainMenuID = 0;
 
 	public Config getFormIDConfig() {
 		return FormIDConfig;
 	}
 
+	/**
+	 * 根据ID名称得到ID
+	 *
+	 * @param Key
+	 * @return
+	 */
 	public int getID(String Key) {
 		if (Key == null || Key.isEmpty())
 			return getRand();
@@ -22,11 +27,12 @@ public class FormID {
 		return Tool.ObjectToInt(FormIDConfig.get(Key), getRand());
 	}
 
-	public int getMenu() {
-		MainMenuID = MainMenuID == 0 ? 1 : 0;
-		return getID(MainMenuID);
-	}
-
+	/**
+	 * 根据ID位置得到ID
+	 *
+	 * @param ID
+	 * @return
+	 */
 	public int getID(int ID) {
 		if (ID > Activate.FormIDs.length - 1)
 			return getRand();
@@ -36,6 +42,9 @@ public class FormID {
 		return FormIDConfig.getInt(Key);
 	}
 
+	/**
+	 * 进行ID数据检查
+	 */
 	protected void examine() {
 		for (String s : Activate.FormIDs)
 			if (FormIDConfig.exists(s)) {
@@ -47,6 +56,11 @@ public class FormID {
 		FormIDConfig.save();
 	}
 
+	/**
+	 * 返回一个大于零的随机数ID
+	 *
+	 * @return
+	 */
 	private int getRand() {
 		return Tool.getRand(0, 2015641654);
 	}

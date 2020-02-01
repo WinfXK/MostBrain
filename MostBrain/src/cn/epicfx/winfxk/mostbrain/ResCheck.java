@@ -24,7 +24,7 @@ public class ResCheck {
 	private Activate ac;
 	private MostBrain kis;
 	private PluginLogger log;
-	private final static String[] s = { "得分", "造成伤害", "受到损伤", "答题数", "正确数", "杀敌数", "恢复生命", "恶意度", "荣誉" };
+	private final static String[] s = { "得分", "恶意度", "荣誉", "死亡", "游戏局数", "攻击数" };
 
 	public ResCheck(Activate activate) {
 		this.ac = activate;
@@ -32,6 +32,12 @@ public class ResCheck {
 		log = kis.getLogger();
 	}
 
+	/**
+	 * 检查玩家的配置文件
+	 *
+	 * @param config
+	 * @return
+	 */
 	public Config Check(Config config) {
 		if (config == null)
 			return config;
@@ -42,6 +48,11 @@ public class ResCheck {
 		return config;
 	}
 
+	/**
+	 * 检查插件数据
+	 *
+	 * @return
+	 */
 	protected ResCheck start() {
 		File file = Message.getFile();
 		String lang = Tool.getLanguage();

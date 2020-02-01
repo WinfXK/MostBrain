@@ -277,6 +277,9 @@ public class PlayerEvent implements Listener {
 		Player player = e.getEntity();
 		if (!player.isPlayer())
 			return;
+		MyPlayer myPlayer = ac.getPlayers(player.getName());
+		if (myPlayer != null && myPlayer.GameModel)
+			myPlayer.addDeath();
 	}
 
 	/**

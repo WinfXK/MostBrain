@@ -43,12 +43,20 @@ public class Message {
 		load();
 	}
 
+	/**
+	 * 重载语言数据
+	 */
 	public void reload() {
 		Message = new Config(getFile(), 2);
 		ac.getMostBrain().getLogger().info("§6Load the language: §e" + Message.getString("lang"));
 		load();
 	}
 
+	/**
+	 * 得到语言文件的文件对象
+	 *
+	 * @return
+	 */
 	public static File getFile() {
 		return new File(Activate.getActivate().getMostBrain().getDataFolder(), Activate.MessageFileName);
 	}
