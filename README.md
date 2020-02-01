@@ -4,7 +4,8 @@
 **MostBrain是一个多人PVP小游戏！并且附带部分PVE功能**
 
 ***他包含多种附加技能，每种技能都有自己不一样的BUff***
-## Javadoc (http://doc.epicfx.cn/Docs/MostBrain/)[http://doc.epicfx.cn/Docs/MostBrain/]
+
+## Javadoc [http://doc.epicfx.cn/Docs/MostBrain/](http://doc.epicfx.cn/Docs/MostBrain/)
 
 ## 它当前满足以下条件：
 
