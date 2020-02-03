@@ -1,5 +1,7 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.EffectItem;
+
 /**
  * 使用后随机获得两个道具 </br>
  * 绿宝石

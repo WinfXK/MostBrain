@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.epicfx.winfxk.mostbrain.Activate;
+import cn.epicfx.winfxk.mostbrain.EffectItem;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
-import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
 import cn.epicfx.winfxk.mostbrain.tool.SimpleForm;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;

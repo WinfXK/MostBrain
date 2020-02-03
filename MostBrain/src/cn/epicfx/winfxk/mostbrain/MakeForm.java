@@ -2,7 +2,6 @@ package cn.epicfx.winfxk.mostbrain;
 
 import java.util.List;
 
-import cn.epicfx.winfxk.mostbrain.effect.EffectItem;
 import cn.epicfx.winfxk.mostbrain.tool.ItemIDSunName;
 import cn.epicfx.winfxk.mostbrain.tool.SimpleForm;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
@@ -14,7 +13,7 @@ import cn.nukkit.form.response.FormResponseSimple;
  */
 public class MakeForm {
 	private Activate ac;
-	public static final String[] SecondaryKey = { "{Player}", "{Money}", "{Name}", "{Hint}", "{Text}" };
+	public static final String[] SecondaryKey = { "{Player}", "{Money}", "{Name}", "{Hint}", "{Text}", "{Author}" };
 
 	public MakeForm(Activate ac) {
 		this.ac = ac;
@@ -28,8 +27,9 @@ public class MakeForm {
 	 */
 	public boolean ShowEffectitem(Player player, EffectItem item) {
 		SimpleForm form = new SimpleForm(ac.FormID.getID(1), ac.getMessage().getSun("UI", "Secondary", "Title", player),
-				ac.getMessage().getSun("UI", "Secondary", "Content", SecondaryKey, new Object[] { player.getName(),
-						MyPlayer.getMoney(player.getName()), item.getName(), item.getFunction(), item.getText() }));
+				ac.getMessage().getSun("UI", "Secondary", "Content", SecondaryKey,
+						new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), item.getName(),
+								item.getHint(), item.getText(), item.getAuthor() }));
 		form.sendPlayer(player);
 		return true;
 	}

@@ -291,7 +291,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 		if (obj == null || string.isEmpty())
 			return d;
 		try {
-			return Long.valueOf(string);
+			return Long.valueOf(Float.valueOf(string).intValue());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

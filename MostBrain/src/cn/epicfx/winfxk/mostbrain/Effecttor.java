@@ -1,11 +1,8 @@
-package cn.epicfx.winfxk.mostbrain.effect;
+package cn.epicfx.winfxk.mostbrain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import cn.epicfx.winfxk.mostbrain.Activate;
-import cn.epicfx.winfxk.mostbrain.MyPlayer;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;
@@ -22,13 +19,6 @@ public class Effecttor {
 	private List<EffectItem> usEffectItems = new ArrayList<>();
 	public static final int[] Ak = { 268, 272, 276, 283, 267, 258, 271, 275, 279, 286 };
 	public static final int[] AkEn = { 9, 12, 13, 29 };
-	private static final EffectItem[] defEffect = { new Accumulation(), new Beggar(), new Brambles(), new Combustion(),
-			new Deathgodson(), new Dieattack(), new Dodging(), new Eternalife(), new Expedite(), new Ferocity(),
-			new Firegod(), new Flying(), new Formatting(), new Healthgod(), new Highlytoxic(), new Meteors(),
-			new Philanthropist(), new Protection(), new Suckblood(), new Burst(), new Satiate(), new Slowness(),
-			new Theft(), new Rebirth(), new Noregretslife(), new Afterfactory(), new SplashShake(),
-			new Combustionblood(), new Frightened(), new Wrathrebirth(), new Pilfering(), new AQspirit(), new Vertigo(),
-			new Stamp() };
 	private static final String[] Sk = { "{Count}" };
 
 	/**
@@ -37,7 +27,7 @@ public class Effecttor {
 	 * @return
 	 */
 	public List<EffectItem> getList() {
-		list = list == null ? Arrays.asList(defEffect) : list;
+		list = list == null ? Activate.defEffect : list;
 		return new ArrayList<>(list);
 	}
 
@@ -100,7 +90,7 @@ public class Effecttor {
 	public Item getItem(EffectItem item) {
 		Item item2 = new Item(item.getID(), item.getDamage() < 0 ? 0 : item.getDamage(), 1);
 		item2.setCustomName(Tool.getRandColor() + item.getName());
-		item2.setLore(item.getFunction());
+		item2.setLore(item.getHint());
 		item2.addEnchantment(item.getEnchantment());
 		CompoundTag nbt = item2.getNamedTag();
 		nbt = nbt == null ? new CompoundTag() : nbt;
@@ -115,7 +105,7 @@ public class Effecttor {
 	 * 此操作在系统拥有大量Buff时将会消耗很多资源！请慎用.
 	 */
 	public void load() {
-		list = Arrays.asList(defEffect);
+		list =new ArrayList<>( Activate.defEffect);
 		for (EffectItem item : usEffectItems)
 			list.add(item);
 		List<EffectItem> l = new ArrayList<>();
@@ -140,7 +130,7 @@ public class Effecttor {
 			return this;
 		for (EffectItem effectItem : list)
 			if (effectItem.getID() == item.getId()
-					&& (effectItem.getDamage() < 0 || effectItem.getDamage() == item.getDamage()))
+			&& (effectItem.getDamage() < 0 || effectItem.getDamage() == item.getDamage()))
 				putBuff(player, effectItem);
 		return this;
 	}

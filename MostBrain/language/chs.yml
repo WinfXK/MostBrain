@@ -21,7 +21,14 @@ lang: chs-中文
 Buff列表: '{RandColor}当前已支持{RandColor}{Count}{RandColor}种Buff'
 数据加载错误: §4无法读取游戏数据！请删除所有数据后尝试重新创建！
 无法获取已支持的语言列表: §4无法获取已支持的语言列表!
+无法加载Buff: §4无法加载Buff！{Error}
+Buff名称为空: §4Buff{Name}的名称为空！可能未设置或设置错误！
+Buff介绍为空: §4Buff{Name}的介绍为空！可能未设置或设置错误！
+无法加载资源: §4无法加载资源
 EffectItem:
+   Spaceripper:
+      Name: 空间撕裂者
+      Hint: 被赋予这个神力的玩家攻击时会概率触发撕裂效果，将随机将地方传送并扣除大量血量
    Noregretslife:
       Name: 嗜血杀戮
       Hint: 被赋予这个神力的玩家击杀地方时将会吸收对方怨气用于增加自身血气，若达到血气上限，将会增加血量上限，死亡后血量上限增加BUff将会失效(包括其他Buff增幅)！
@@ -131,7 +138,7 @@ EffectItem:
 UI:
    Secondary:
       Title: '{RandColor}{PluginName}'
-      Content: '{RandColor}名称： {RandColor}{Name}{n}{n}{n}{RandColor}介绍： {RandColor}{Hint}'
+      Content: '{RandColor}名称： {RandColor}{Name}{n}{n}{n}{RandColor}介绍： {RandColor}{Hint}{n}{n}作者{Author}'
    Main:
       Title: '{RandColor}{PluginName}'
       Content: '{RandColor}以下为{RandColor}{PluginName}{RandColor}已支持的Buff列表'

@@ -1,5 +1,7 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.EffectItem;
+
 /**
  * 增加血量上限 </br>
  * 附魔金苹果

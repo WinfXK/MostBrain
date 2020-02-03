@@ -2,6 +2,7 @@ package cn.epicfx.winfxk.mostbrain.effect;
 
 import java.util.List;
 
+import cn.epicfx.winfxk.mostbrain.EffectItem;
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.entity.EntityDamageEvent;

@@ -20,7 +20,7 @@ import cn.nukkit.utils.Config;
 public class Update {
 	private PluginBase mis;
 	protected static final String Url = "http://pluginsupdate.epicfx.cn";
-	protected static final int V = 3;
+	protected static final int V = 6;
 	protected static final String ConfigName = "/Update.yml";
 	private Activate activate;
 
@@ -52,10 +52,9 @@ public class Update {
 							String path = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
 							File fsFile = new File(path);
 							Tool.DownFile(map.get("Http"), fsFile.getName(), mis.getServer().getPluginPath());
-							mis.getLogger()
-							.info(activate.getMessage().getSon("Update", "Donwload",
-									new String[] { "{Msg}", "{ConfigName}", "{Versions}" },
-									new Object[] { map.get("Msg"), ConfigName, map.get("V") }));
+							mis.getLogger().info(activate.getMessage().getSon("Update", "Donwload",
+									new String[] { "{Msg}", "{ConfigName}", "{Versions}", "{FileName}" },
+									new Object[] { map.get("Msg"), ConfigName, map.get("V"), fsFile.getName() }));
 							mis.getServer().reload();
 						} catch (Exception e) {
 							mis.getLogger()

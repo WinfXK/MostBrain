@@ -12,7 +12,6 @@ import java.util.Map;
 
 import cn.epicfx.winfxk.mostbrain.cmd.ACommand;
 import cn.epicfx.winfxk.mostbrain.cmd.PCommand;
-import cn.epicfx.winfxk.mostbrain.effect.Effecttor;
 import cn.epicfx.winfxk.mostbrain.game.GameEvent;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.game.GameThread;
@@ -41,7 +40,6 @@ public class Activate implements FilenameFilter {
 	public boolean isStartGame = false;
 	public boolean SettingModel = false;
 	public boolean isGameSettingUp = false;
-	public List<String> langs = new ArrayList<>();
 	public final static String[] FormIDs = { /* 0 */"主页", /* 1 */"副页", /* 2 */"提示" };
 	public final static String MessageFileName = "Message.yml", ConfigFileName = "Config.yml",
 			CommandFileName = "Command.yml", EconomyListConfigName = "EconomyList.yml", FormIDFileName = "FormID.yml",
@@ -58,6 +56,7 @@ public class Activate implements FilenameFilter {
 	protected Message message;
 	protected List<MostEvent> mostEvents;
 	protected Config config, CommandConfig, GameConfig;
+	protected static List<EffectItem> defEffect = new ArrayList<>();
 	protected static final String[] loadFile = { ConfigFileName, CommandFileName };
 	protected static final String[] defaultFile = { ConfigFileName, CommandFileName, MessageFileName };
 
@@ -108,7 +107,8 @@ public class Activate implements FilenameFilter {
 		int wz;
 		long df = 0;
 		List<String> pList;
-		int score, honor, death, malicious;
+		long score;
+		int honor, death, malicious;
 		for (File file2 : files) {
 			config = new Config(file2, Config.YAML);
 			name = config.getString("name");
@@ -124,8 +124,10 @@ public class Activate implements FilenameFilter {
 			death = config.getInt("死亡");
 			malicious = config.getInt("恶意度");
 			if (score > 0) {
-				score = Tool.ObjectToInt(Math.sqrt(score));
-				df = (honor > 0) ? score * Tool.ObjectToInt(Math.sqrt(honor)) : score - (honor * 2);
+				score = Tool.objToLong(Math.sqrt(score));
+				df = Tool.objToLong(honor > 0 ? score * Math.sqrt(honor)
+						: (score - Math.sqrt(
+								Math.abs(honor < 0 ? honor / 3 > -100 ? honor / 3 : honor : Math.sqrt(score) / 2))));
 				if (df > 0) {
 					if (death > 0)
 						df /= death;

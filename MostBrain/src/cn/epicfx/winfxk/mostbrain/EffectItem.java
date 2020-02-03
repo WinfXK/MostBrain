@@ -1,12 +1,10 @@
-package cn.epicfx.winfxk.mostbrain.effect;
+package cn.epicfx.winfxk.mostbrain;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.epicfx.winfxk.mostbrain.Activate;
-import cn.epicfx.winfxk.mostbrain.MyPlayer;
 import cn.epicfx.winfxk.mostbrain.game.GameData;
 import cn.epicfx.winfxk.mostbrain.game.GameHandle;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
@@ -42,6 +40,15 @@ public abstract class EffectItem {
 		handle = ac.gameHandle;
 		myPlayer = ac.getPlayers(player.getName());
 		gameData = new GameData();
+	}
+
+	/**
+	 * 返回作者名称
+	 *
+	 * @return
+	 */
+	public String getAuthor() {
+		return "Winfxk";
 	}
 
 	/**
@@ -247,7 +254,7 @@ public abstract class EffectItem {
 	 *
 	 * @return
 	 */
-	public String getFunction() {
+	public String getHint() {
 		String s = getMeaage("Hint", player);
 		if (s.length() > 15)
 			s = getString("", s);

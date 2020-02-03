@@ -98,7 +98,7 @@ public class ACommand extends Command {
 					sender.sendMessage(msg.getSun("Command", "AdminCommand", "请输入正确的语言Key", sk,
 							new Object[] { sender.getName(),
 									sender.isPlayer() ? MyPlayer.getMoney(sender.getName()) : 0,
-											"0-" + (ac.langs.size() - 1)
+											"0-" + (Files.size() - 1)
 											+ getMessage("or", sender.isPlayer() ? (Player) sender : null)
 											+ Arrays.asList(Files) }));
 					return true;
@@ -131,7 +131,8 @@ public class ACommand extends Command {
 		case "语言列表":
 		case "languages":
 		case "ll":
-			if (ac.langs.size() < 1) {
+			file = new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName);
+			if (file.list().length < 1) {
 				sender.sendMessage(msg.getMessage("暂无已支持的语言", sender.isPlayer() ? (Player) sender : null));
 				return true;
 			}
@@ -142,7 +143,6 @@ public class ACommand extends Command {
 			DumperOptions dumperOptions = new DumperOptions();
 			dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 			Yaml yaml = new Yaml(dumperOptions);
-			file = new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName);
 			for (String string : file.list())
 				if (string != null && string.contains(".")) {
 					ss = string.split("\\.");

@@ -3,6 +3,7 @@ package cn.epicfx.winfxk.mostbrain.effect;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.epicfx.winfxk.mostbrain.EffectItem;
 import cn.epicfx.winfxk.mostbrain.MyPlayer;
 import cn.epicfx.winfxk.mostbrain.tool.Tool;
 import cn.nukkit.Player;

@@ -113,27 +113,64 @@ public class ResCheck {
 		file = new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName);
 		if (!file.exists())
 			file.mkdirs();
-		JarFile localJarFile;
 		try {
-			localJarFile = new JarFile(
+			JarFile localJarFile = new JarFile(
 					new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile()));
 			Enumeration<JarEntry> entries = localJarFile.entries();
 			File Jf, JFB;
-			String JN;
+			String JN, JP, JE;
+			Object obj;
+			EffectItem eItem;
+			String[] HK = { "{Name}" };
 			while (entries.hasMoreElements()) {
 				JarEntry jarEntry = entries.nextElement();
-				Jf = new File(jarEntry.getName());
-				if (Jf.getParent() != null && Jf.getParent().equals("language")) {
-					JN = Jf.getName();
-					ac.langs.add(JN);
+				if (jarEntry == null)
+					continue;
+				JE = jarEntry.getName();
+				if (JE == null)
+					continue;
+				Jf = new File(JE);
+				JP = Jf.getParent();
+				if (JP == null)
+					continue;
+				JN = Jf.getName();
+				if (JP.equals("language")) {
 					JFB = new File(new File(ac.getMostBrain().getDataFolder(), Activate.LanguageDirName), JN);
 					if (!JFB.exists())
-						Utils.writeFile(JFB, Utils.readFile(getClass().getResourceAsStream("/language/" + JN)));
+						try {
+							Utils.writeFile(JFB, Utils.readFile(getClass().getResourceAsStream("/language/" + JN)));
+						} catch (Exception e) {
+							e.printStackTrace();
+							ac.getMostBrain().getLogger().warning(ac.getMessage().getMessage("无法获取已支持的语言列表"));
+						}
+				} else if (JP.equals("cn\\epicfx\\winfxk\\mostbrain\\effect")
+						|| JP.equals("cn/epicfx/winfxk/mostbrain/effect")) {
+					JE = JE.replace("/", "\\").replace("\\", ".");
+					try {
+						obj = Class.forName(JE.substring(0, JE.length() - 6)).newInstance();
+						if (obj instanceof EffectItem) {
+							eItem = (EffectItem) obj;
+							if (eItem.getName() == null || eItem.getName().isEmpty())
+								log.warning(ac.message.getMessage("Buff名称为空", HK,
+										new Object[] { eItem.getClass().getSimpleName() }));
+							else if (eItem.getHint() == null || eItem.getHint().isEmpty())
+								log.warning(ac.message.getMessage("Buff介绍为空", HK,
+										new Object[] { eItem.getClass().getSimpleName() }));
+							else
+								Activate.defEffect.add(eItem);
+						}
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+						log.warning(ac.message.getMessage("无法加载Buff", new String[] { "{Error}" },
+								new Object[] { e.getMessage() }));
+					}
 				}
 			}
+			localJarFile.close();
 		} catch (IOException e2) {
 			e2.printStackTrace();
-			ac.getMostBrain().getLogger().warning(ac.getMessage().getMessage("无法获取已支持的语言列表"));
+			ac.getMostBrain().getLogger().warning(
+					ac.getMessage().getMessage("无法加载资源", new String[] { "{Error}" }, new Object[] { e2.getMessage() }));
 		}
 		Config config;
 		DumperOptions dumperOptions = new DumperOptions();

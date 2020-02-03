@@ -1,5 +1,6 @@
 package cn.epicfx.winfxk.mostbrain.effect;
 
+import cn.epicfx.winfxk.mostbrain.EffectItem;
 import cn.nukkit.event.entity.EntityDamageEvent;
 
 /**
