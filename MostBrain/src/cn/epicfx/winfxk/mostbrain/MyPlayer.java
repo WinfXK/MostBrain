@@ -103,7 +103,7 @@ public class MyPlayer {
 		if (config.get("Inventory") == null)
 			return this;
 		Object obj = config.get("Inventory");
-		Map<Integer, Map<String, Object>> map = (obj == null || !(obj instanceof Map)) ? new HashMap<>()
+		Map<Integer, Map<String, Object>> map = obj == null || !(obj instanceof Map) ? new HashMap<>()
 				: (HashMap<Integer, Map<String, Object>>) obj;
 		config.remove("Inventory");
 		config.save();
@@ -253,24 +253,30 @@ public class MyPlayer {
 		config.save();
 		return this;
 	}
+
 	/**
 	 * 得到一个玩家的配置文件对象
+	 *
 	 * @param player 玩家名称
 	 * @return
 	 */
 	public static Config getConfig(String player) {
 		return Activate.getActivate().resCheck.Check(new Config(getFile(player), Config.YAML));
 	}
+
 	/**
 	 * 得到一个玩家配置文件的文件对象
+	 *
 	 * @return
 	 */
 	public File getFile() {
 		return new File(new File(ac.getMostBrain().getDataFolder(), Activate.PlayerDataDirName),
 				player.getName() + ".yml");
 	}
+
 	/**
 	 * 得到一个玩家配置文件的文件对象
+	 *
 	 * @param player 玩家名称
 	 * @return
 	 */
@@ -278,4 +284,58 @@ public class MyPlayer {
 		return new File(new File(Activate.getActivate().getMostBrain().getDataFolder(), Activate.PlayerDataDirName),
 				player + ".yml");
 	}
+
+	/**
+	 * 得到玩家的综合评分
+	 *
+	 * @param player
+	 * @return
+	 */
+	public static long getCompScore(Player player) {
+		return getCompScore(player.getName());
+	}
+
+	/**
+	 * 得到玩家的综合评分
+	 *
+	 * @param player
+	 * @return
+	 */
+	public static long getCompScore(String player) {
+		if (!getFile(player).exists())
+			return 0;
+		return getCompScore(getConfig(player));
+	}
+
+	/**
+	 * 得到玩家的综合评分
+	 *
+	 * @param player
+	 * @param config
+	 * @return
+	 */
+	public static long getCompScore(Config config) {
+		long df = 0;
+		long score = config.getInt("得分");
+		int honor = config.getInt("荣耀");
+		int death = config.getInt("死亡");
+		int malicious = config.getInt("恶意度");
+		if (score > 0) {
+			score = Tool.objToLong(Math.sqrt(score));
+			df = Tool.objToLong(honor > 0 ? score * Math.sqrt(honor)
+					: score - Math
+							.sqrt(Math.abs(honor < 0 ? honor / 3 > -100 ? honor / 3 : honor : Math.sqrt(score) / 2)));
+			if (df > 0) {
+				if (death > 0)
+					df /= death;
+				if (malicious > 0)
+					df /= Math.pow(malicious, 2);
+				df += config.getInt("游戏局数") + config.getInt("攻击数");
+			} else if (df < 0)
+				df -= death + malicious;
+		} else
+			df += (Math.abs(score) + Math.abs(honor) + Math.abs(death) + Math.abs(malicious)) * -1;
+		return df;
+	}
+
 }

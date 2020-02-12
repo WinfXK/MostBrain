@@ -25,20 +25,20 @@ import cn.nukkit.potion.Effect;
  */
 public class GameHandle {
 	private Activate ac;
-	private boolean ReadyisModel = false;
+	private volatile boolean  ReadyisModel = false;
 	protected GameMainThread gameMainThread;
 	private ReadyiingThread readyiingThread;
-	private int GameMinCount;
+	private volatile int GameMinCount;
 	/**
 	 * 已等待时间
 	 */
-	private int ReadyisTime;
+	private volatile int ReadyisTime;
 	/**
 	 * 剩余等待时间
 	 */
-	private int ReadyTime;
-	private List<Player> gamePlayers;
-	private boolean StartGame = false;
+	private volatile int ReadyTime;
+	private volatile List<Player> gamePlayers;
+	private volatile boolean StartGame = false;
 	/**
 	 * 重生点
 	 */
@@ -55,11 +55,11 @@ public class GameHandle {
 	/**
 	 * 管理员是否终止了游戏
 	 */
-	protected boolean AdminStopGame = false;
+	protected volatile boolean AdminStopGame = false;
 	/**
 	 * 终止游戏的玩家对象
 	 */
-	protected CommandSender sender;
+	protected volatile CommandSender sender;
 	/**
 	 * 黑暗模式
 	 */
@@ -191,7 +191,7 @@ public class GameHandle {
 						ReadyTime--;
 					for (Player player : gamePlayers)
 						if (gamePlayers.size() >= GameMinCount
-						&& ((ReadyTime >= 10 && ReadyTime % 10 == 0) || (ReadyTime <= 3 && ReadyTime > 0)))
+						&& (ReadyTime >= 10 && ReadyTime % 10 == 0 || ReadyTime <= 3 && ReadyTime > 0))
 							player.sendMessage(ac.getMessage().getSon("Game", "即将开始",
 									new String[] { "{Player}", "{Money}", "{ReadyTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), ReadyTime }));
@@ -434,7 +434,7 @@ public class GameHandle {
 								ac.getMessage().getText(Tool.objToString(list.get(3), ""), Key, D));
 					}
 					for (Player player : gamePlayers) {
-						if ((Timesleep <= 3 && Timesleep > 0) || (Timesleep >= 10 && Timesleep % 10 == 0))
+						if (Timesleep <= 3 && Timesleep > 0 || Timesleep >= 10 && Timesleep % 10 == 0)
 							player.sendMessage(ac.getMessage().getSon("Game", "即将发送补给",
 									new String[] { "{Player}", "{Money}", "{SleepTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), Timesleep }));
@@ -448,7 +448,7 @@ public class GameHandle {
 												mostConfig.MinZ + 2),
 										getItem(), null, true, 3);
 						}
-						if (GameTime == 5 || (GameTime % 10 == 0 && GameTime <= 30 && GameTime >= 10))
+						if (GameTime == 5 || GameTime % 10 == 0 && GameTime <= 30 && GameTime >= 10)
 							player.sendTitle(ac.getMessage().getSon("Game", "游戏即将结束",
 									new String[] { "{Player}", "{Money}", "{GameTime}" },
 									new Object[] { player.getName(), MyPlayer.getMoney(player.getName()), GameTime }));

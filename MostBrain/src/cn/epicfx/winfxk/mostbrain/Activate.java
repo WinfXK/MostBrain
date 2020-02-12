@@ -43,7 +43,8 @@ public class Activate implements FilenameFilter {
 	public final static String[] FormIDs = { /* 0 */"主页", /* 1 */"副页", /* 2 */"提示" };
 	public final static String MessageFileName = "Message.yml", ConfigFileName = "Config.yml",
 			CommandFileName = "Command.yml", EconomyListConfigName = "EconomyList.yml", FormIDFileName = "FormID.yml",
-			GameConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players", LanguageDirName = "language";
+			GameConfigFileName = "MostBrain.yml", PlayerDataDirName = "Players", LanguageDirName = "language",
+			PlaceholderAPIName = "PlaceholderAPI.yml";
 	private MostBrain mis;
 	private MyEconomy economy;
 	private Effecttor effecttor;
@@ -55,10 +56,11 @@ public class Activate implements FilenameFilter {
 	protected FormID FormID;
 	protected Message message;
 	protected List<MostEvent> mostEvents;
-	protected Config config, CommandConfig, GameConfig;
+	protected Config config, CommandConfig, GameConfig, papiConfig;
 	protected static List<EffectItem> defEffect = new ArrayList<>();
 	protected static final String[] loadFile = { ConfigFileName, CommandFileName };
-	protected static final String[] defaultFile = { ConfigFileName, CommandFileName, MessageFileName };
+	protected static final String[] defaultFile = { ConfigFileName, CommandFileName, MessageFileName,
+			PlaceholderAPIName };
 
 	/**
 	 * 插件数据的集合类
@@ -77,6 +79,7 @@ public class Activate implements FilenameFilter {
 		money.addEconomyAPI(new EconomyAPI(this));
 		economy = money.getEconomy(config.getString("默认货币"));
 		GameConfig = new Config(new File(kis.getDataFolder(), GameConfigFileName), Config.YAML);
+		papiConfig = new Config(new File(kis.getDataFolder(), PlaceholderAPIName), Config.YAML);
 		isGameSettingUp = GameConfig.getBoolean("GameSettingUp");
 		if (!isGameSettingUp)
 			kis.getLogger().warning(message.getMessage("游戏未设置"));
@@ -87,8 +90,13 @@ public class Activate implements FilenameFilter {
 		kis.getServer().getCommandMap().register(getName(), new ACommand(this));
 		kis.getServer().getCommandMap().register(getName(), new PCommand(this));
 		kis.getServer().getPluginManager().registerEvents(new PlayerEvent(this), kis);
+		new LinkPAPI(this);
 		kis.getLogger().info(message.getMessage("插件启动", new String[] { "{loadTime}" },
-				new Object[] { ((float) Duration.between(mis.loadTime, Instant.now()).toMillis()) + "ms" }));
+				new Object[] { (float) Duration.between(mis.loadTime, Instant.now()).toMillis() + "ms" }));
+	}
+
+	public Config getPapiConfig() {
+		return papiConfig;
 	}
 
 	/**
@@ -105,10 +113,7 @@ public class Activate implements FilenameFilter {
 		String name, rc, rb, re, s, a = "";
 		boolean isF = false;
 		int wz;
-		long df = 0;
 		List<String> pList;
-		long score;
-		int honor, death, malicious;
 		for (File file2 : files) {
 			config = new Config(file2, Config.YAML);
 			name = config.getString("name");
@@ -119,26 +124,7 @@ public class Activate implements FilenameFilter {
 					continue;
 				name = name.substring(0, wz);
 			}
-			score = config.getInt("得分");
-			honor = config.getInt("荣耀");
-			death = config.getInt("死亡");
-			malicious = config.getInt("恶意度");
-			if (score > 0) {
-				score = Tool.objToLong(Math.sqrt(score));
-				df = Tool.objToLong(honor > 0 ? score * Math.sqrt(honor)
-						: (score - Math.sqrt(
-								Math.abs(honor < 0 ? honor / 3 > -100 ? honor / 3 : honor : Math.sqrt(score) / 2))));
-				if (df > 0) {
-					if (death > 0)
-						df /= death;
-					if (malicious > 0)
-						df /= Math.pow(malicious, 2);
-					df += config.getInt("游戏局数") + config.getInt("攻击数");
-				} else if (df < 0)
-					df -= (death + malicious);
-			} else
-				df += (Math.abs(score) + Math.abs(honor) + Math.abs(death) + Math.abs(malicious)) * -1;
-			map.put(name, df);
+			map.put(name, MyPlayer.getCompScore( config));
 		}
 		map = Tool.sortByValueDescending(map);
 		pList = new ArrayList<>(map.keySet());

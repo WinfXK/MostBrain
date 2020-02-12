@@ -75,11 +75,22 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 	 * @return
 	 */
 	public static String getCommandHelp(Command command, CommandParameter[] cp) {
-		String string = "";
+		String string = "", cmd, zy;
+		CommandParameter cs;
 		if (cp.length > 0) {
-			string += "§f/" + command.getName() + " §b";
-			for (int i = 0; i < cp.length; i++)
-				string += (i == 0 ? cp[i].enumData.getValues().get(0) : "§6 " + cp[i].name);
+			cmd = command.getName();
+			for (String s : command.getAliases())
+				if (String_length(s) < String_length(cmd))
+					cmd = s;
+			string += "§f/" + cmd + " §b";
+			for (int i = 0; i < cp.length; i++) {
+				cs = cp[i];
+				zy = cs.enumData.getValues().get(0);
+				for (String s : cs.enumData.getValues())
+					if (String_length(s) < String_length(zy))
+						zy = s;
+				string += i == 0 ? zy : "§6 " + cp[i].name;
+			}
 			string += "§f： §9" + cp[0].name;
 		}
 		return string;
@@ -146,7 +157,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 		if (list == null || block == null)
 			return;
 		BlockEntity blockEntity = block.getLevel().getBlockEntity(block);
-		BlockEntitySign sign = (blockEntity instanceof BlockEntitySign) ? (BlockEntitySign) blockEntity
+		BlockEntitySign sign = blockEntity instanceof BlockEntitySign ? (BlockEntitySign) blockEntity
 				: new BlockEntitySign(block.getLevel().getChunk(block.getFloorX() >> 4, block.getFloorZ() >> 4),
 						BlockEntity.getDefaultCompound(block, BlockEntity.SIGN));
 		String[] Tile = { " ", " ", " ", " " };
@@ -424,7 +435,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 		for (int k = 0; k < floatLength; k++)
 			Fenmu *= 10;
 		long Fenzi = Long.parseLong(sint + sfloat);
-		long lXs = (Fenzi < Fenmu) ? Fenzi : Fenmu, j = 1;
+		long lXs = Fenzi < Fenmu ? Fenzi : Fenmu, j = 1;
 		for (j = lXs; j > 1; j--)
 			if (Fenzi % j == 0 && Fenmu % j == 0)
 				break;
@@ -1094,7 +1105,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
 			@Override
 			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-				int compare = (o1.getValue()).compareTo(o2.getValue());
+				int compare = o1.getValue().compareTo(o2.getValue());
 				return compare;
 			}
 		});
@@ -1117,7 +1128,7 @@ public class Tool implements X509TrustManager, HostnameVerifier {
 		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
 			@Override
 			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-				int compare = (o1.getValue()).compareTo(o2.getValue());
+				int compare = o1.getValue().compareTo(o2.getValue());
 				return -compare;
 			}
 		});

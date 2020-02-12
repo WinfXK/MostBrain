@@ -25,6 +25,7 @@ Buff列表: '{RandColor}当前已支持{RandColor}{Count}{RandColor}种Buff'
 Buff名称为空: §4Buff{Name}的名称为空！可能未设置或设置错误！
 Buff介绍为空: §4Buff{Name}的介绍为空！可能未设置或设置错误！
 无法加载资源: §4无法加载资源
+无法连接PlaceholderAPI: §6PlaceholderAPI交互出现错误
 EffectItem:
    Spaceripper:
       Name: 空间撕裂者

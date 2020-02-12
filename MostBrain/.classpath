@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EconomyAPI"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Nukkit"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/NukkitX"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PlaceholderAPI"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

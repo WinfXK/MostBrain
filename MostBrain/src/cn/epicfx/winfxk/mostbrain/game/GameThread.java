@@ -8,8 +8,8 @@ import cn.epicfx.winfxk.mostbrain.tool.Update;
  */
 public class GameThread extends Thread {
 	private Activate ac;
-	private int Key;
-	private int UpdateTime = 0;
+	private volatile int Key;
+	private volatile int UpdateTime = 0;
 
 	public GameThread(Activate activate, int Key) {
 		this.ac = activate;
